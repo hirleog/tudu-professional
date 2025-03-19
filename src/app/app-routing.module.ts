@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
+import { AppHomeComponent } from './components/main/app-home/app-home.component';
 
 const routes: Routes = [
   { path: '', component: AppComponent }, // Rota primária
-  { path: 'home', component: HomeComponent }, // Rota secundária
+  { path: 'home', component: AppHomeComponent }, // Rota secundária
 ];
 
 @NgModule({

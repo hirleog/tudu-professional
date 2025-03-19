@@ -1,0 +1,8 @@
+
+.navbar-expand-lg {
+  background-color: var(--medium);
+  display: flex;
+  justify-content: space-around;
+  padding: 1em;
+  
+}
