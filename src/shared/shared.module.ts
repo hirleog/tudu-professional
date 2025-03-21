@@ -3,20 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavModule } from 'src/app/components/nav/nav.module';
 
-
-
 @NgModule({
-  declarations: [
-  ],
-  imports: [
-    // CommonModule,
-  ],
-  exports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NavModule,
-
-  ]
+  declarations: [],
+  imports: [],
+  exports: [CommonModule, FormsModule, ReactiveFormsModule, NavModule],
 })
-export class SharedModule { }
+export class SharedModule {}

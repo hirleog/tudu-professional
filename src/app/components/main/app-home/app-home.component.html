@@ -84,25 +84,28 @@
                 class="form-control"
                 aria-label="Amount (to the nearest dollar)"
                 [(ngModel)]="card.editedPrice"
-                [placeholder]="
-                  card.price 
-                "
+                [placeholder]="card.price"
+                [disabled]="!!card.renegotiateActive"
               />
+              <button
+              [ngClass]="{
+                'change-renegotiate-btn': !card.renegotiateActive}"
+                class="btn btn-outline-secondary"
+                type="button"
+                id="btn-renegotiate"
+                (click)="renegotiateActive(card)"
+              >
+                <i
+                  class="fa"
+                  [ngClass]="card.renegotiateActive ? 'fa-pencil' : 'fa-times'"
+                ></i>
+              </button>
+
               <!-- <span class="input-group-text">.00</span> -->
             </div>
           </div>
 
           <div class="request-card-footer d-flex gap-2 p-3">
-            <button
-              style="
-                color: var(--light);
-                background-color: rgb(195 195 195) !important;
-              "
-              class="request-quote-btn bg-secondary col-6"
-            >
-              Detalhes
-            </button>
-
             <button
               class="request-quote-btn col-6"
               [ngClass]="{
@@ -117,6 +120,16 @@
                   ? "Negociar"
                   : "Candidatar-se"
               }}
+            </button>
+            <button
+              style="
+                color: var(--primary) !important;
+                background-color: var(--light) !important;
+                border: 1px solid var(--primary) !important;
+              "
+              class="request-quote-btn bg-secondary col-6"
+            >
+              Detalhes
             </button>
           </div>
         </div>

@@ -6,6 +6,7 @@ export interface CardOrders {
     address: string;
     price: string;
     editedPrice?: string;
+    renegotiateActive?: boolean;
     dateTime: string;
     hasQuotes: boolean; // Se há orçamentos disponíveis
 }

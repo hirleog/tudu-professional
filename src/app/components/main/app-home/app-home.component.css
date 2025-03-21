@@ -176,6 +176,24 @@ i {
   background-color: var(--premium) !important;
 }
 
+
+#btn-renegotiate {
+  background-color: var(--primary);
+  border: 1px solid #E9ECEF;
+  width: 65px
+}
+#btn-renegotiate:hover {
+  background-color: var(--primary-dark);
+  border: 1px solid #E9ECEF;
+}
+
+#btn-renegotiate i {
+  color: var(--light)!important;
+}
+.change-renegotiate-btn {
+  background-color: red!important;
+}
+
 @media (max-width: 400px) {
   .request-quote-btn {
     padding: 7px 10px;
