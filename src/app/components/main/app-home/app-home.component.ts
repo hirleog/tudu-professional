@@ -25,6 +25,7 @@ export class AppHomeComponent implements OnInit {
       serviceName: 'Lavagem Automotiva',
       description: 'Lavagem completa com polimento para meu carro...',
       address: 'Rua doutor paulo de andrade arantes, 52',
+      price: '150,00',
       dateTime: '2021-08-10T10:00:00',
       hasQuotes: false
     },
@@ -34,6 +35,7 @@ export class AppHomeComponent implements OnInit {
       serviceName: 'Pintura Residencial',
       description: 'Preciso pintar a sala e os quartos do apartamento...',
       address: 'Rua doutor antonio lobo sobrinho, 123',
+      price: '150,00',
       dateTime: '2021-08-10T10:00:00',
       hasQuotes: true
     }

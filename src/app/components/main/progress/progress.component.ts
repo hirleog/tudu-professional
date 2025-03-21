@@ -7,6 +7,8 @@ import { ProgressCard } from 'src/interfaces/progress-card';
   styleUrls: ['./progress.component.css']
 })
 export class ProgressComponent implements OnInit {
+  budgets: string[] = ['Em andamento(23)', 'Pedidos aceitos(6)', 'Finalizados(5)']; // Lista dinâmica
+  selectedIndex: number = 0; // Inicia a primeira opção já selecionada
 
   cards: ProgressCard[] = [
     {
@@ -38,6 +40,11 @@ export class ProgressComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  
+  selectItem(index: number): void {
+    this.selectedIndex = index; // Atualiza o item selecionado
   }
 
 }

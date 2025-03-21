@@ -1,5 +1,5 @@
 <section>
-  <!-- <app-nav>
+  <app-nav>
     <a routerLink="/" class="logo">
       <img
         src="../../../assets/logo-rosa.webp"
@@ -12,28 +12,28 @@
     <div></div>
 
     <div></div>
-  </app-nav> -->
+  </app-nav>
 
   <div class="container">
     <h4 class="text-start">Meus pedidos</h4>
     <hr />
+
+    <div class="d-flex gap-1">
+      <button class="icon-btn"><i class="fas fa-filter"></i> Filtrar</button>
+
+      <button class="icon-btn"><i class="fas fa-sort"></i> Ordenar</button>
+    </div>
   </div>
 
   <div id="desktop" class="d-md-block d-none mb-md-5">
-    <div id="header-desktop" class="container">
+    <div class="container">
       <div class="d-flex justify-content-between">
-        <a class="a-selected">Publicados(3)</a>
+        <a class="a-selected header-desktop">Publicados(3)</a>
         <a>Em Andamento(0)</a>
         <a>Finalizados(0)</a>
       </div>
     </div>
   </div>
-
-  <!-- <div id="home-mobile" class="d-block d-md-none">
-
-        <app-menu></app-menu>
-    </div>
- -->
 
   <div id="my-orders" class="container">
     <div class="row g-3 m-0 p-0">
@@ -66,47 +66,59 @@
               {{ card.description }}
             </p>
           </div>
-          <!-- <hr> -->
-          <div class="d-flex justify-content-between card-footer p-3">
-            <!-- <a href="#" class="request-card-link" routerLink="/home/detail">Detalhes</a> -->
-            <button
-              class="request-quote-btn"
-              routerLink="/home/budgets"
-              routerLinkActive="active"
-              *ngIf="card.hasQuotes; else semQuotes"
-            >
-              Oba! Orçamentos disponíveis
-            </button>
-            <ng-template #semQuotes>
-              <span class="request-quote-btn disabled-card bg-secondary">
-                Aguardando uma proposta
-              </span>
-            </ng-template>
 
-            <button
-              class="request-quote-btn"
-              routerLink="/home/detail"
-              routerLinkActive="active"
-              style="background-color: var(--light) important"
-            >
-              <i
-                class="fas fa-search"
-                style="font-size: 1.5em; color: var(--primary) !important"
-                title="Clique para ver os detalhes"
-              ></i>
-            </button>
+          <div class="custom-input-container container">
+            <!-- <input
+              id="valor"
+              type="text"
+              maxlength="15"
+              appCurrencyFormat
+              class="custom-input"
+              [(ngModel)]="card.editedPrice"
+              [placeholder]="card.price | currency : 'BRL' : 'symbol' : '1.2-2'"
+            /> -->
+            <div class="input-group mb-3">
+              <span class="input-group-text">$</span>
+              <input
+                type="text"
+                class="form-control"
+                aria-label="Amount (to the nearest dollar)"
+                [(ngModel)]="card.editedPrice"
+                [placeholder]="
+                  card.price 
+                "
+              />
+              <!-- <span class="input-group-text">.00</span> -->
+            </div>
           </div>
 
-          <!-- <div class="request-card-footer d-flex gap-2">
-                        <button href="#" style="background-color: var(--dark); color: var(--light);"
-                            class="request-quote-btn col-6">Detalhes</button>
+          <div class="request-card-footer d-flex gap-2 p-3">
+            <button
+              style="
+                color: var(--light);
+                background-color: rgb(195 195 195) !important;
+              "
+              class="request-quote-btn bg-secondary col-6"
+            >
+              Detalhes
+            </button>
 
-                        <button class="request-quote-btn col-6"
-                            style="background-color: var(--primary); color: var(--light);">
-                            Aceitar
-                        </button>
-
-                    </div> -->
+            <button
+              class="request-quote-btn col-6"
+              [ngClass]="{
+                'change-button':
+                  card.editedPrice && card.editedPrice !== card.price
+              }"
+              style="background-color: var(--primary); color: var(--light)"
+              routerLink="/home/progress"
+            >
+              {{
+                card.editedPrice && card.editedPrice !== card.price
+                  ? "Negociar"
+                  : "Candidatar-se"
+              }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

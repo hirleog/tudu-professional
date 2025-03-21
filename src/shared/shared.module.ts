@@ -15,7 +15,7 @@ import { NavModule } from 'src/app/components/nav/nav.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    // NavModule,
+    NavModule,
 
   ]
 })

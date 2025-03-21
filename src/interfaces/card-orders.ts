@@ -4,6 +4,8 @@ export interface CardOrders {
     serviceName: string;
     description: string;
     address: string;
+    price: string;
+    editedPrice?: string;
     dateTime: string;
     hasQuotes: boolean; // Se há orçamentos disponíveis
 }

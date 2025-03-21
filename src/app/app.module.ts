@@ -10,7 +10,10 @@ import { MainAppModule } from './components/main/main-app.module';
 import { NavComponent } from './components/nav/nav.component';
 
 @NgModule({
-  declarations: [AppComponent, AppMenuComponent, AppHomeComponent],
+  declarations: [
+    AppComponent, 
+    AppMenuComponent, 
+    ],
   imports: [
     BrowserModule, 
     AppRoutingModule, 
