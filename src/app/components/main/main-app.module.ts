@@ -12,7 +12,7 @@ import { ProgressDetailComponent } from './progress-detail/progress-detail.compo
 import { ProgressComponent } from './progress/progress.component';
 
 const routes: Routes = [
-  { path: '', component: AppHomeComponent },
+  { path: 'home', component: AppHomeComponent },
   { path: 'budgets', component: BudgetsComponent },
   { path: 'progress', component: ProgressComponent },
   { path: 'progress-detail', component: ProgressDetailComponent },

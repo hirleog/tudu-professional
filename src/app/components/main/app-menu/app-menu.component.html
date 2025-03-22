@@ -2,12 +2,49 @@
   <div class="d-flex align-items-center justify-content-around menu-fixo">
     <div
       class="menu-item"
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fas fa-search"></i>
+      <p>Serviços</p>
+    </div>
+    <div
+      class="menu-item"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fas fa-tasks"></i>
+      <p>Pedidos</p>
+    </div>
+
+    <div
+      class="menu-item"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fas fa-clock"></i>
+      <p>Pendentes</p>
+    </div>
+    <div
+      class="menu-item"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="fas fa-user fs-3"></i>
+      <p>Perfil</p>
+    </div>
+  </div>
+</section>
+<!-- <section>
+  <div class="d-flex align-items-center justify-content-around menu-fixo">
+    <div
+      class="menu-item"
       routerLink="/"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i class="fas fa-search"></i>
-      <!-- Ícone de pedidos -->
       <p>Serviços</p>
     </div>
     <div
@@ -17,12 +54,9 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i class="fas fa-tasks"></i>
-      <!-- Ícone de pedidos -->
       <p>Pedidos</p>
     </div>
-    <!-- <div class="menu-item-central">
-            <i class="fas fa-plus" routerLink="/"></i>
-        </div> -->
+  
     <div
       class="menu-item"
       routerLink="/budgets"
@@ -30,7 +64,6 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i class="fas fa-clock"></i>
-      <!-- Ícone de pendentes -->
       <p>Pendentes</p>
     </div>
     <div
@@ -43,4 +76,4 @@
       <p>Perfil</p>
     </div>
   </div>
-</section>
+</section> -->
