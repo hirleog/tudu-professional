@@ -1,21 +1,26 @@
 <section>
   <app-nav>
-    <a routerLink="/" class="logo">
-      <img
-        src="../../../assets/logo-rosa.webp"
-        class="img-fluid"
-        style="width: 4em"
-        alt="error"
-      />
-    </a>
+    <div class="d-flex align-items-center">
+      <a routerLink="/" class="logo">
+        <img
+          src="../../../assets/logo-rosa.webp"
+          class="img-fluid"
+          style="width: 4em"
+          alt="error"
+        />
+      </a>
+      <h3 style="margin-bottom: 0px; margin-top: 3px; font-size: 17px">
+        Profissional
+      </h3>
+    </div>
 
     <div></div>
 
     <div></div>
   </app-nav>
 
-  <div class="container">
-    <h4 class="text-start">Meus pedidos</h4>
+  <!-- <div class="container">
+    <h4 class="text-start">Meus Serviços</h4>
     <hr />
 
     <div class="d-flex gap-1">
@@ -23,16 +28,17 @@
 
       <button class="icon-btn"><i class="fas fa-sort"></i> Ordenar</button>
     </div>
-  </div>
+  </div> -->
 
-  <div id="desktop" class="d-md-block d-none mb-md-5">
-    <div class="container">
-      <div class="d-flex justify-content-between">
-        <a class="a-selected header-desktop">Publicados(3)</a>
-        <a>Em Andamento(0)</a>
-        <a>Finalizados(0)</a>
-      </div>
-    </div>
+  <div class="header-desktop" class="d-flex justify-content-around mt-2 mb-3">
+    <a
+      *ngFor="let item of headerPageOptions; let i = index"
+      class="text-start header-desktop"
+      [class.a-selected]="selectedIndex === i"
+      (click)="selectItem(i)"
+    >
+      {{ item }}
+    </a>
   </div>
 
   <div id="my-orders" class="container">
@@ -88,8 +94,9 @@
                 [disabled]="!!card.renegotiateActive"
               />
               <button
-              [ngClass]="{
-                'change-renegotiate-btn': !card.renegotiateActive}"
+                [ngClass]="{
+                  'change-renegotiate-btn': !card.renegotiateActive
+                }"
                 class="btn btn-outline-secondary"
                 type="button"
                 id="btn-renegotiate"

@@ -11,6 +11,12 @@ export class AppHomeComponent implements OnInit {
   renegotiate: boolean = true;
   faPencil = 'fas fa-pencil-alt';
   faTimes = 'fas fa-times';
+  headerPageOptions: string[] = [
+    'Serviços(23)',
+    'Em andamento(3)',
+    'Finalizados(5)',
+  ]; // Lista dinâmica
+  selectedIndex: number = 0; // Inicia a primeira opção já selecionada
 
   cards: CardOrders[] = [
     {
@@ -57,6 +63,9 @@ export class AppHomeComponent implements OnInit {
     }
   }
 
+  selectItem(index: number): void {
+    this.selectedIndex = index; // Atualiza o item selecionado
+  }
   goToShowcase() {
     this.route.navigate(['/']);
   }
