@@ -1,25 +1,58 @@
 section {
-    margin-top: -3em;
+  margin-top: -3em;
 }
 
 h5,
 p {
-    font-size: 16px !important;
+  font-size: 16px !important;
 }
 
 .card-footer {
-    background-color: transparent;
+  background-color: transparent;
+}
+.calendar-container {
+  display: flex;
+  overflow-x: auto;
 }
 
+.day-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.2;
+}
 
+.day-box.today {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.day-box.has-event {
+  background: #f8f9fa;
+  color: black;
+  font-weight: bold;
+  border: 2px solid var(--primary);
+}
+
+.has-event {
+  background-color: blue;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+}
 @media (max-width: 350px) {
-    .request-card h3 {
-        font-size: 20px;
-    }
+  .request-card h3 {
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 998px) {
-    .request-card h3 {
-        font-size: 21px;
-    }
+  .request-card h3 {
+    font-size: 21px;
+  }
 }

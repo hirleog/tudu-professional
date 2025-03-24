@@ -1,0 +1,82 @@
+<div class="container mt-2 pt-5">
+  <div class="align-calendar">
+    <div
+      *ngIf="showWeekView && weekDays.length > 0"
+      class="week-view-container mt-3 mb-3"
+    >
+      <div class="week-days">
+        <div
+          *ngFor="let day of weekDays"
+          class="day"
+          [class.first-day]="day.isFirst"
+          [class.marked-day]="isMarked(day.date)"
+          (click)="selectDate(day.date)"
+        >
+          <div class="day-name">{{ getDayName(day.date) }}</div>
+          <div class="day-number">{{ day.date.date() }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container d-flex justify-content-center">
+    <div class="d-flex flex-column mt-1">
+      <div class="d-flex justify-content-center mb-2">
+        <button class="calendar-toggle-btn" (click)="toggleCalendar()">
+          <i class="fas fa-calendar-alt"></i>
+        </button>
+      </div>
+
+      <div
+        *ngIf="openCalendar"
+        class="calendar-container bg-white rounded-3 shadow-sm"
+      >
+        <div
+          class="calendar-header d-flex justify-content-between align-items-center p-3 border-bottom"
+        >
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            (click)="prevMonth()"
+          >
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <h5 class="mb-0 fw-normal" style="color: var(--primary)">
+            {{ getMonthYear() }}
+          </h5>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            (click)="nextMonth()"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="calendar-grid">
+          <!-- Cabeçalho dos dias da semana -->
+          <div class="calendar-weekdays row g-0">
+            <div
+              *ngFor="let day of weekdays"
+              class="col p-2 text-center text-muted small fw-normal"
+            >
+              {{ day }}
+            </div>
+          </div>
+
+          <!-- Dias do calendário -->
+          <div class="calendar-days row g-0">
+            <div
+              *ngFor="let day of days"
+              class="col calendar-day position-relative"
+              [class.calendar-day-marked]="isMarked(day)"
+              [class.calendar-day-outside]="!isCurrentMonth(day)"
+              (click)="selectDate(day)"
+            >
+              <div class="day-number">{{ day.date() }}</div>
+              <div *ngIf="isMarked(day)" class="day-marker"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

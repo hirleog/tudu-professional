@@ -8,18 +8,11 @@ import { AppHomeComponent } from './components/main/app-home/app-home.component'
 import { SharedModule } from 'src/shared/shared.module';
 import { MainAppModule } from './components/main/main-app.module';
 import { NavComponent } from './components/nav/nav.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
 
 @NgModule({
-  declarations: [
-    AppComponent, 
-    AppMenuComponent, 
-    ],
-  imports: [
-    BrowserModule, 
-    AppRoutingModule, 
-    SharedModule, 
-    MainAppModule
-  ],
+  declarations: [AppComponent, AppMenuComponent],
+  imports: [BrowserModule, AppRoutingModule, SharedModule, MainAppModule],
 
   providers: [],
   bootstrap: [AppComponent], // Define o componente raizz,

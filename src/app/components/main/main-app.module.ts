@@ -10,6 +10,7 @@ import { FlowEndComponent } from './flow-end/flow-end.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProgressDetailComponent } from './progress-detail/progress-detail.component';
 import { ProgressComponent } from './progress/progress.component';
+import { CalendarComponent } from '../calendar/calendar.component';
 
 const routes: Routes = [
   { path: 'home', component: AppHomeComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
     ProgressDetailComponent,
     ProfileComponent,
     FlowEndComponent,
+    CalendarComponent
   ],
   imports: [SharedModule, NavModule, RouterModule.forChild(routes)],
 })

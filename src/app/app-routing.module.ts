@@ -8,10 +8,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./components/main/main-app.module').then((m) => m.MainAppModule),
   },
-  {
-    path: 'budgets',
-    component: BudgetsComponent,
-  },
 ];
 
 @NgModule({
