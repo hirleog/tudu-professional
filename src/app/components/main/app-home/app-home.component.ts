@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardOrders } from 'src/interfaces/card-orders';
+import { HistoricModel } from 'src/interfaces/historic.model';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,7 @@ export class AppHomeComponent implements OnInit {
       description: 'Lavagem completa com polimento para meu carro...',
       address: 'Rua doutor paulo de andrade arantes, 52',
       price: '150,00',
-      editedPrice: '',
+      editedPrice: '150,00',
       renegotiateActive: true,
       dateTime: '2021-08-10T10:00:00',
       hasQuotes: false,
@@ -42,6 +43,31 @@ export class AppHomeComponent implements OnInit {
       renegotiateActive: true,
       dateTime: '2021-08-10T10:00:00',
       hasQuotes: true,
+    },
+  ];
+
+  historicOrders: HistoricModel[] = [
+    {
+      id: 102,
+      icon: 'fas fa-car', // Ícone FontAwesome
+      serviceName: 'Lavagem Automotiva',
+      description: 'Lavagem completa com polimento para meu carro...',
+      price: '150,00',
+      clientName: 'Guilherme',
+      clientPhoto: '../../../../assets/GUI.PNG',
+      clientAddress: 'Rua doutor paulo de andrade arantes, 52',
+      dateTime: '2021-08-10T10:00:00',
+    },
+    {
+      id: 103,
+      icon: 'fas fa-paint-roller',
+      serviceName: 'Pintura Residencial',
+      description: 'Preciso pintar a sala e os quartos do apartamento...',
+      price: '150,00',
+      clientName: 'Matheus',
+      clientPhoto: '../../../../assets/matheus.PNG',
+      clientAddress: 'Rua doutor antonio lobo sobrinho, 123',
+      dateTime: '2021-08-10T10:00:00',
     },
   ];
 
