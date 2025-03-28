@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgressCard } from 'src/interfaces/progress-card';
 import * as moment from 'moment'; // Importando o Moment.js
+import { CardOrders } from 'src/interfaces/card-orders';
 
 @Component({
   selector: 'app-progress',
@@ -13,30 +14,30 @@ export class ProgressComponent implements OnInit {
  
   yourMarkedDatesArray = ['2025-03-24', '2025-03-25', '2025-03-27'];
 
-  cards: ProgressCard[] = [
+  cards: CardOrders[] = [
     {
-      name: 'Aline',
-      photo: '../../../../assets/aline.PNG', // Ícone FontAwesome
-      icon: 'fa-paint-brush',
-      service: 'Pintura Residencial',
-      status: 'Aguardando prestador',
-      dateTime: '', // Adicionamos esta propriedade
+      id: 102,
+      icon: 'fas fa-car', // Ícone FontAwesome
+      serviceName: 'Lavagem Automotiva',
+      description: 'Lavagem completa com polimento para meu carro...',
+      address: 'Rua doutor paulo de andrade arantes, 52',
+      price: '150,00',
+      editedPrice: '150,00',
+      renegotiateActive: true,
+      dateTime: '2021-08-10T10:00:00',
+      hasQuotes: false,
     },
     {
-      name: 'Matheus',
-      photo: '../../../../assets/matheus.PNG', // Ícone FontAwesome
-      icon: 'fa-paint-brush',
-      service: 'Lavagem de Automotiva',
-      status: 'Hoje, 15:00 - 15:30',
-      dateTime: '', // Adicionamos esta propriedade
-    },
-    {
-      name: 'Guilherme',
-      photo: '../../../../assets/GUI.PNG',
-      icon: 'fa-paint-brush',
-      service: 'Lavagem de Automotiva',
-      status: 'Hoje, 12:20 - 15:00',
-      dateTime: '', // Adicionamos esta propriedade
+      id: 103,
+      icon: 'fas fa-paint-roller',
+      serviceName: 'Pintura Residencial',
+      description: 'Preciso pintar a sala e os quartos do apartamento...',
+      address: 'Rua doutor antonio lobo sobrinho, 123',
+      price: '150,00',
+      editedPrice: '',
+      renegotiateActive: true,
+      dateTime: '2021-08-10T10:00:00',
+      hasQuotes: true,
     },
   ];
 

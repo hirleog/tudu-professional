@@ -10,9 +10,13 @@ export class CalendarComponent {
   currentDate = moment();
   days: moment.Moment[] = [];
   weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-openCalendar = false;
+  // openCalendar = false;
+
+  @Input() openCalendar: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
+  @Input() hasTime: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
   @Input() markedDates: string[] = []; // Array de datas no formato 'YYYY-MM-DD'
   @Output() dateSelected = new EventEmitter<string>();
+  @Output() timeSelected = new EventEmitter<string>();
 
   @Input() showWeekView: boolean = false;
   weekDays: { date: moment.Moment; isFirst: boolean }[] = [];
@@ -28,12 +32,12 @@ openCalendar = false;
     }
   }
 
-  toggleCalendar():void {
+  toggleCalendar(param?: string): void {
     this.openCalendar = !this.openCalendar;
-    // if (this.showWeekView && this.markedDates?.length > 0) {
-      // this.generateWeekDays();
-    // }f
-  } 
+  }
+  closeCalendar() {
+    this.openCalendar = false;
+  }
 
   generateWeekDays() {
     const firstDate = moment(this.markedDates[0]);
@@ -54,7 +58,7 @@ openCalendar = false;
     // Se a tela for menor que 380px, mostra 6 dias, senão mostra todos os 7
     return screenWidth < 380 ? this.weekDays.slice(0, 6) : this.weekDays;
   }
-  
+
   getDayName(date: moment.Moment): string {
     return date.format('ddd');
   }
@@ -104,8 +108,12 @@ openCalendar = false;
 
   selectDate(date: moment.Moment) {
     this.dateSelected.emit(date.format('YYYY-MM-DD'));
+    console.log(date.format('YYYY-MM-DD'));
   }
-
+  onTimeChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.timeSelected.emit(inputElement.value); // Emite o valor para o pai
+  }
   isCurrentMonth(date: moment.Moment): boolean {
     return date.month() === this.currentDate.month();
   }

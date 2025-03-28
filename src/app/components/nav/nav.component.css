@@ -4,5 +4,5 @@
   display: flex;
   justify-content: space-around;
   padding: 1em;
-  
+  z-index: 9999;
 }

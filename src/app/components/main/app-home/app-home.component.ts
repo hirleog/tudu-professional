@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { HistoricModel } from 'src/interfaces/historic.model';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,10 @@ import { HistoricModel } from 'src/interfaces/historic.model';
   styleUrls: ['./app-home.component.css'],
 })
 export class AppHomeComponent implements OnInit {
-  renegotiate: boolean = true;
+  calendarData: string = '';
+  selectedTime: string = '12:00';
+
+  overlay: boolean = false;
   faPencil = 'fas fa-pencil-alt';
   faTimes = 'fas fa-times';
   headerPageOptions: string[] = [
@@ -29,6 +33,7 @@ export class AppHomeComponent implements OnInit {
       price: '150,00',
       editedPrice: '150,00',
       renegotiateActive: true,
+      calendarActive: true,
       dateTime: '2021-08-10T10:00:00',
       hasQuotes: false,
     },
@@ -41,6 +46,7 @@ export class AppHomeComponent implements OnInit {
       price: '150,00',
       editedPrice: '',
       renegotiateActive: true,
+      calendarActive: true,
       dateTime: '2021-08-10T10:00:00',
       hasQuotes: true,
     },
@@ -70,15 +76,20 @@ export class AppHomeComponent implements OnInit {
       dateTime: '2021-08-10T10:00:00',
     },
   ];
+  placeholderDataHora: string = '';
 
-  constructor(private route: Router) {}
+  constructor(private route: Router) {
+    moment.locale('pt-br'); // Define o idioma para português
+    this.placeholderDataHora =
+      moment().add(1, 'days').format('DD/MM/YYYY') + ' - 12:00'; // Data de amanhã às 12:00
+  }
 
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
   }
 
   renegotiateActive(card?: any): void {
-    this.renegotiate = !this.renegotiate;
+    // this.renegotiate = !this.renegotiate;
     const cardInfo = this.cards.find((c) => c.id === card.id);
     if (cardInfo) {
       cardInfo.renegotiateActive = !cardInfo.renegotiateActive; // Alterna o estado
@@ -88,10 +99,40 @@ export class AppHomeComponent implements OnInit {
       }
     }
   }
+  calendarActive(card?: any): void {
+    this.overlay = true;
 
+    // const cardInfo = this.cards.find((c) => c.id === card.id);
+    const cardInfo = this.cards.find((c) => c.id === card.id);
+    if (cardInfo) {
+      cardInfo.calendarActive = !cardInfo.calendarActive; // Alterna o estado
+
+      if (cardInfo.calendarActive === true) {
+        cardInfo.editedPrice = cardInfo.price;
+      }
+    }
+  }
+
+  onDateSelected(date: string) {
+    this.calendarData = date; // Atualiza a data no componente pai
+    this.updatePlaceholder(); // Atualiza a string final
+  }
+
+  onTimeSelected(time: string) {
+    this.selectedTime = time; // Atualiza o horário no componente pai
+    this.updatePlaceholder(); // Atualiza a string final
+  }
+
+  updatePlaceholder(): void {
+    if (this.calendarData && this.selectedTime) {
+      const formattedDate = moment(this.calendarData).format('DD/MM/YYYY'); // Formata a data para padrão BR
+      this.placeholderDataHora = `${formattedDate} - ${this.selectedTime}`;
+    }
+  }
   selectItem(index: number): void {
     this.selectedIndex = index; // Atualiza o item selecionado
   }
+
   goToShowcase() {
     this.route.navigate(['/']);
   }

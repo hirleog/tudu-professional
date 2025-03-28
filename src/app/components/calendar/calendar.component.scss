@@ -1,12 +1,35 @@
 .calendar-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001; /* Acima do overlay */
   width: 100%;
   max-width: 300px;
-  font-family: "Roboto", sans-serif;
+  background: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
   border: 1px solid #e0e0e0;
+  font-family: "Roboto", sans-serif;
 }
-
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
 .calendar-header {
   background-color: #f8f9fa;
+}
+.calendar-header i {
+  color: var(--primary);
+  font-size: 20px !important;
+}
+.calendar-header button {
+  border: none;
 }
 
 .calendar-grid {
@@ -80,9 +103,8 @@
   }
 }
 .align-calendar {
-  display: flex;
-  justify-content: center;
   overflow-x: auto;
+  
 }
 .week-view-container {
   border: 1px solid #e0e0e0;
@@ -96,24 +118,6 @@
   justify-content: space-between;
   min-width: 280px; // Largura mínima para 6 dias
 }
-
-// .align-calendar {
-//   overflow-x: auto;
-// }
-
-// // .week-view-container {
-// //   min-width: 100%;
-// // }
-
-// .week-days {
-//   display: flex;
-//   justify-content: space-between;
-//   min-width: 280px; // Largura mínima para 6 dias
-
-//   @media (min-width: 380px) {
-//     min-width: 320px; // Largura mínima para 7 dias
-//   }
-// }
 
 .day {
   display: flex;
@@ -172,10 +176,7 @@
     background-color: var(--primary);
   }
 }
-// .btn-calender {
-//   display: flex;
-//   justify-content: flex-start;
-// }
+
 /* Estilos para o botão */
 .calendar-toggle-btn {
   width: 36px;
@@ -190,6 +191,7 @@
   transition: all 0.2s ease;
   padding: 0;
   color: #5f6368;
+  z-index: 1002; /* Acima do calendário */
 
   &:hover {
     background-color: #f5f5f5;
@@ -208,11 +210,6 @@
   }
 }
 
-// @media (min-width: 380px) {
-//   .week-view-container {
-//     width: 50%;
-//   }
-// }
 @media (min-width: 992px) {
   .week-view-container {
     width: 50%;
