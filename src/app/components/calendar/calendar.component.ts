@@ -10,7 +10,8 @@ export class CalendarComponent {
   currentDate = moment();
   days: moment.Moment[] = [];
   weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-  // openCalendar = false;
+  selectedDate: moment.Moment | null = null;
+  selectedTime: string = '';
 
   @Input() openCalendar: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
   @Input() hasTime: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
@@ -105,8 +106,41 @@ export class CalendarComponent {
     const dateStr = date.format('YYYY-MM-DD');
     return this.markedDates.includes(dateStr);
   }
+  isSelected(date: moment.Moment): boolean {
+    return !!this.selectedDate && date.isSame(this.selectedDate, 'day');
+  }
+  // isMarked(day: moment.Moment): boolean {
+  //   const compromissos = [1];
+  //   let dateStr: any;
+  //   if (compromissos.length === 0) {
+  //     dateStr = day.format('YYYY-MM-DD');
+  //   }
+  //   // return this.markedDates.includes(dateStr);
+
+  //   return this.selectedDate ? day.isSame(this.selectedDate, 'day') : false;
+  // }
+
+  // selectDate(date: moment.Moment) {
+  //   this.selectedDate = date;
+  //   this.emitFormattedDateTime(); // Atualiza e emite a data e hora sempre que a data for selecionada
+  // }
+
+  // onTimeChange(event: Event): void {
+  //   const inputElement = event.target as HTMLInputElement;
+  //   this.selectedTime = inputElement.value; // Atualiza a variável de horário
+  //   this.emitFormattedDateTime(); // Atualiza e emite a data e hora sempre que o horário for alterado
+  // }
+
+  // emitFormattedDateTime(): void {
+  //   if (this.selectedDate && this.selectedTime) {
+  //     const formattedDateTime = `${this.selectedDate.format('DD/MM/YYYY')} - ${this.selectedTime}`;
+  //     this.dateTimeSelected.emit(formattedDateTime); // Emite o valor formatado para o componente pai
+  //     console.log(formattedDateTime); // Apenas para debug
+  //   }
+  // }
 
   selectDate(date: moment.Moment) {
+    this.selectedDate = date;
     this.dateSelected.emit(date.format('YYYY-MM-DD'));
     console.log(date.format('YYYY-MM-DD'));
   }

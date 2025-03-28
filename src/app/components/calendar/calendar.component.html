@@ -79,6 +79,7 @@
               class="col calendar-day position-relative"
               [class.calendar-day-marked]="isMarked(day)"
               [class.calendar-day-outside]="!isCurrentMonth(day)"
+              [class.calendar-day-selected]="isSelected(day)"
               (click)="selectDate(day)"
             >
               <div class="day-number">{{ day.date() }}</div>
@@ -88,15 +89,26 @@
         </div>
 
         <div class="mb-2 mt-3" *ngIf="hasTime">
-          <label for="inputTime" class="form-label">Escolha um horário</label>
-          <input
-            type="time"
-            class="form-control"
-            id="inputTime"
-            (change)="onTimeChange($event)"
-            placeholder="12:00"
-            required
-          />
+          <div class="col-12">
+            <label for="inputTime" class="form-label">Escolha um horário</label>
+            <input
+              type="time"
+              class="form-control"
+              id="inputTime"
+              (change)="onTimeChange($event)"
+              placeholder="12:00"
+              required
+            />
+          </div>
+          <div class="mt-1">
+            <button
+              class="col-12 check-button d-flex align-items-center justify-content-center gap-2"
+              (click)="openCalendar = false"
+            >
+              Salvar
+              <i class="far fa-check-circle"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>

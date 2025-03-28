@@ -164,7 +164,7 @@ i {
   color: var(--light) !important;
 }
 .change-renegotiate-btn {
-  background-color: red !important;
+  background-color: var(--blue) !important;
 }
 .overlay {
   position: fixed;

@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { HistoricModel } from 'src/interfaces/historic.model';
 import * as moment from 'moment';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,8 @@ import * as moment from 'moment';
   styleUrls: ['./app-home.component.css'],
 })
 export class AppHomeComponent implements OnInit {
+  @ViewChild('calendarContainer') calendarContainer!: ElementRef;
+
   calendarData: string = '';
   selectedTime: string = '12:00';
 
@@ -33,8 +36,9 @@ export class AppHomeComponent implements OnInit {
       price: '150,00',
       editedPrice: '150,00',
       renegotiateActive: true,
-      calendarActive: true,
+      calendarActive: false,
       dateTime: '2021-08-10T10:00:00',
+      placeholderDataHora: '',
       hasQuotes: false,
     },
     {
@@ -46,8 +50,9 @@ export class AppHomeComponent implements OnInit {
       price: '150,00',
       editedPrice: '',
       renegotiateActive: true,
-      calendarActive: true,
+      calendarActive: false,
       dateTime: '2021-08-10T10:00:00',
+      placeholderDataHora: '',
       hasQuotes: true,
     },
   ];
@@ -78,10 +83,19 @@ export class AppHomeComponent implements OnInit {
   ];
   placeholderDataHora: string = '';
 
-  constructor(private route: Router) {
-    moment.locale('pt-br'); // Define o idioma para português
+  constructor(private route: Router, private datePipe: DatePipe) {
+    moment.locale('pt-br');
     this.placeholderDataHora =
       moment().add(1, 'days').format('DD/MM/YYYY') + ' - 12:00'; // Data de amanhã às 12:00
+
+    this.cards.forEach((card) => {
+      if (card.dateTime) {
+        const formattedDate = moment(card.dateTime).format('DD/MM/YYYY');
+        const formattedTime = moment(card.dateTime).format('HH:mm');
+
+        card.placeholderDataHora = `${formattedDate} - ${formattedTime}`;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -99,36 +113,70 @@ export class AppHomeComponent implements OnInit {
       }
     }
   }
-  calendarActive(card?: any): void {
+
+  // No seu componente TypeScript
+  openCalendar(card: any): void {
+    if (!card.calendarActive) {
+      this.overlay = true;
+      card.calendarActive = true;
+    }
+  }
+
+  toggleCalendar(card: any): void {
     this.overlay = true;
+    card.calendarActive = !card.calendarActive;
 
-    // const cardInfo = this.cards.find((c) => c.id === card.id);
-    const cardInfo = this.cards.find((c) => c.id === card.id);
-    if (cardInfo) {
-      cardInfo.calendarActive = !cardInfo.calendarActive; // Alterna o estado
-
-      if (cardInfo.calendarActive === true) {
-        cardInfo.editedPrice = cardInfo.price;
-      }
+    if (card.calendarActive === false) {
+      card.placeholderDataHora = moment(card.dateTime)
+        .format('DD/MM/YYYY - HH:mm')
+        .toString();
     }
   }
 
-  onDateSelected(date: string) {
-    this.calendarData = date; // Atualiza a data no componente pai
-    this.updatePlaceholder(); // Atualiza a string final
-  }
+  // @HostListener('document:click', ['$event'])
+  // onClickOutside(event: MouseEvent) {
+  //   // Verifica se o clique foi fora do container do calendário
+  //   if (this.calendarContainer && !this.calendarContainer.nativeElement.contains(event.target)) {
+  //     // Fecha todos os calendários abertos
+  //     this.cards.forEach(card => {
+  //       if (card.calendarActive) {
+  //         card.calendarActive = false;
+  //         this.overlay = false;
+  //       }
+  //     });
+  //   }
+  // }
+  onDateSelected(cardId: number, date: string) {
+    const card: any = this.cards.find((c) => c.id === cardId);
+    if (card.placeholderDataHora === '') {
+      card.placeholderDataHora = card.dateTime;
+    }
 
-  onTimeSelected(time: string) {
-    this.selectedTime = time; // Atualiza o horário no componente pai
-    this.updatePlaceholder(); // Atualiza a string final
-  }
+    if (card) {
+      const time = card.placeholderDataHora
+        ? card.placeholderDataHora.split(' - ')[1]
+        : moment(card.dateTime).format('HH:mm'); // Mantém a hora se já existir
 
-  updatePlaceholder(): void {
-    if (this.calendarData && this.selectedTime) {
-      const formattedDate = moment(this.calendarData).format('DD/MM/YYYY'); // Formata a data para padrão BR
-      this.placeholderDataHora = `${formattedDate} - ${this.selectedTime}`;
+      card.placeholderDataHora = `${moment(date).format(
+        'DD/MM/YYYY'
+      )} - ${time}`;
     }
   }
+
+  onTimeSelected(cardId: number, time: string) {
+    const card: any = this.cards.find((c) => c.id === cardId);
+    if (card.placeholderDataHora === '') {
+      card.placeholderDataHora = card.dateTime;
+    }
+    if (card) {
+      const date = card.placeholderDataHora
+        ? card.placeholderDataHora.split(' - ')[0]
+        : moment(card.dateTime).format('DD/MM/YYYY'); // Mantém a data se já existir
+
+      card.placeholderDataHora = `${date} - ${time}`;
+    }
+  }
+
   selectItem(index: number): void {
     this.selectedIndex = index; // Atualiza o item selecionado
   }

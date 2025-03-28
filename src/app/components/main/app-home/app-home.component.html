@@ -102,43 +102,51 @@
               >
                 <i
                   class="fa"
-                  [ngClass]="card.renegotiateActive ? 'fa-pencil' : 'fa-times'"
+                  [ngClass]="card.renegotiateActive ? 'fa-pencil' : 'fa-undo'"
                 ></i>
               </button>
             </div>
           </div>
 
-          <div>
+          <div #calendarContainer>
             <div class="custom-input-container container">
               <div class="input-group mb-3">
                 <span class="input-group-text">#</span>
                 <input
+                  [readonly]="true"
                   type="text"
                   class="form-control"
                   aria-label="Amount (to the nearest dollar)"
-                  [placeholder]="placeholderDataHora"
-                  [disabled]="!!card.calendarActive"
+                  [placeholder]="card.placeholderDataHora"
+                  [disabled]="!card.calendarActive"
+                  (click)="openCalendar(card)"
                 />
+          
                 <button
                   [ngClass]="{
-                    'change-renegotiate-btn': !card.calendarActive
+                    'change-renegotiate-btn': card.calendarActive
                   }"
                   class="btn btn-outline-secondary"
                   type="button"
                   id="btn-renegotiate"
-                  (click)="calendarActive(card)"
+                  (click)="toggleCalendar(card)"
                 >
-                  <i class="fas fa-calendar-alt"></i>
+                  <i
+                    class="fas"
+                    [ngClass]="
+                      !card.calendarActive ? 'fa-calendar-alt' : 'fa-undo'
+                    "
+                  ></i>
                 </button>
               </div>
             </div>
-
+          
             <div style="z-index: 1001">
               <app-calendar
-                [openCalendar]="!card.calendarActive"
+                [openCalendar]="card.calendarActive || false"
                 [hasTime]="true"
-                (dateSelected)="onDateSelected($event)"
-                (timeSelected)="onTimeSelected($event)"
+                (dateSelected)="onDateSelected(card.id, $event)"
+                (timeSelected)="onTimeSelected(card.id, $event)"
                 [showWeekView]="false"
               >
               </app-calendar>
@@ -153,7 +161,7 @@
               class="request-quote-btn col-6"
               [ngClass]="{
                 'change-button':
-                  card.editedPrice && card.editedPrice !== card.price
+                  (card.editedPrice && card.editedPrice !== card.price) || card.calendarActive === true
               }"
               style="background-color: var(--primary); color: var(--light)"
               routerLink="/tudu-professional/progress"
@@ -263,7 +271,7 @@
               >
                 <i
                   class="fa"
-                  [ngClass]="card.renegotiateActive ? 'fa-pencil' : 'fa-times'"
+                  [ngClass]="card.renegotiateActive ? 'fa-pencil' : 'fa-undo'"
                 ></i>
               </button>
             </div>

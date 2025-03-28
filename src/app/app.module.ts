@@ -1,18 +1,24 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
+import { SharedModule } from 'src/shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppMenuComponent } from './components/main/app-menu/app-menu.component';
-import { AppHomeComponent } from './components/main/app-home/app-home.component';
-import { SharedModule } from 'src/shared/shared.module';
 import { MainAppModule } from './components/main/main-app.module';
-import { NavComponent } from './components/nav/nav.component';
-import { CalendarComponent } from './components/calendar/calendar.component';
+import { NgxMaskModule } from 'ngx-mask';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent, AppMenuComponent],
-  imports: [BrowserModule, AppRoutingModule, SharedModule, MainAppModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    SharedModule,
+    MainAppModule,
+
+    NgxMaskModule.forRoot(), // Importando o NgxMaskModule
+  ],
 
   providers: [],
   bootstrap: [AppComponent], // Define o componente raizz,

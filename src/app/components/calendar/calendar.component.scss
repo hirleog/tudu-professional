@@ -8,9 +8,15 @@
   max-width: 300px;
   background: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  padding: 20px;
+  padding: 12px;
   border: 1px solid #e0e0e0;
   font-family: "Roboto", sans-serif;
+}
+.check-button {
+  background-color: var(--blue);
+  border-radius: 5;
+  border: 0px;
+  color: white;
 }
 .overlay {
   position: fixed;
@@ -77,9 +83,16 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background-color: var(--primary);
+    background-color: var(--primary) !important;
     margin-top: 2px;
   }
+}
+
+.calendar-day-selected {
+  background-color: var(--blue) !important; /* Azul para o dia selecionado */
+  color: white !important;
+  // border-radius: 50%;
+  border: 1px solid var(--blue);
 }
 
 .calendar-day-marked {
@@ -104,7 +117,6 @@
 }
 .align-calendar {
   overflow-x: auto;
-  
 }
 .week-view-container {
   border: 1px solid #e0e0e0;
