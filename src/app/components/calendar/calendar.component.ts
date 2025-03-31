@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, SimpleChanges } from '@angular/core';
 import * as moment from 'moment';
 
 @Component({
@@ -6,7 +6,7 @@ import * as moment from 'moment';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnInit {
   currentDate = moment();
   days: moment.Moment[] = [];
   weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -16,6 +16,11 @@ export class CalendarComponent {
   @Input() openCalendar: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
   @Input() hasTime: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
   @Input() markedDates: string[] = []; // Array de datas no formato 'YYYY-MM-DD'
+
+  @Input() initialDate: string = ''; // Nova entrada para definir a data inicial
+  @Input() initialTime: string = ''; // Adicione isso junto com os outros @Input()
+  @Input() initialDateTime: any; // Adicione isso junto com os outros @Input()
+
   @Output() dateSelected = new EventEmitter<string>();
   @Output() timeSelected = new EventEmitter<string>();
 
@@ -26,10 +31,41 @@ export class CalendarComponent {
     this.generateCalendar();
   }
 
-  ngOnChanges() {
-    this.generateCalendar();
-    if (this.showWeekView && this.markedDates?.length > 0) {
-      this.generateWeekDays();
+  ngOnInit() {
+    this.processInitialDateTime();
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialDateTime']) {
+      this.processInitialDateTime();
+    }
+
+    if (changes['markedDates'] || changes['showWeekView']) {
+      if (this.showWeekView && this.markedDates?.length > 0) {
+        this.generateWeekDays();
+      }
+    }
+  }
+
+  private processInitialDateTime() {
+    if (!this.initialDateTime) return;
+
+    // Separa a data e hora (formato "DD/MM/YYYY - HH:mm")
+    const [datePart, timePart] = this.initialDateTime.split(' - ');
+
+    // Processa a data
+    if (datePart) {
+      const parsedDate = moment(datePart, 'DD/MM/YYYY');
+      if (parsedDate.isValid()) {
+        this.selectedDate = parsedDate;
+        this.currentDate = parsedDate.clone();
+        this.generateCalendar();
+      }
+    }
+
+    // Processa a hora
+    if (timePart) {
+      // Garante que o formato é HH:mm (24 horas)
+      this.selectedTime = timePart.length === 5 ? timePart : '';
     }
   }
 
@@ -109,35 +145,6 @@ export class CalendarComponent {
   isSelected(date: moment.Moment): boolean {
     return !!this.selectedDate && date.isSame(this.selectedDate, 'day');
   }
-  // isMarked(day: moment.Moment): boolean {
-  //   const compromissos = [1];
-  //   let dateStr: any;
-  //   if (compromissos.length === 0) {
-  //     dateStr = day.format('YYYY-MM-DD');
-  //   }
-  //   // return this.markedDates.includes(dateStr);
-
-  //   return this.selectedDate ? day.isSame(this.selectedDate, 'day') : false;
-  // }
-
-  // selectDate(date: moment.Moment) {
-  //   this.selectedDate = date;
-  //   this.emitFormattedDateTime(); // Atualiza e emite a data e hora sempre que a data for selecionada
-  // }
-
-  // onTimeChange(event: Event): void {
-  //   const inputElement = event.target as HTMLInputElement;
-  //   this.selectedTime = inputElement.value; // Atualiza a variável de horário
-  //   this.emitFormattedDateTime(); // Atualiza e emite a data e hora sempre que o horário for alterado
-  // }
-
-  // emitFormattedDateTime(): void {
-  //   if (this.selectedDate && this.selectedTime) {
-  //     const formattedDateTime = `${this.selectedDate.format('DD/MM/YYYY')} - ${this.selectedTime}`;
-  //     this.dateTimeSelected.emit(formattedDateTime); // Emite o valor formatado para o componente pai
-  //     console.log(formattedDateTime); // Apenas para debug
-  //   }
-  // }
 
   selectDate(date: moment.Moment) {
     this.selectedDate = date;
@@ -155,4 +162,6 @@ export class CalendarComponent {
   getMonthYear(): string {
     return this.currentDate.format('MMMM YYYY');
   }
+
+  
 }

@@ -124,7 +124,7 @@
 
                 <button
                   [ngClass]="{
-                    'change-renegotiate-btn': card.calendarActive
+                    'change-renegotiate-btn': card.calendarActive && card.placeholderDataHora
                   }"
                   class="btn btn-outline-secondary"
                   type="button"
@@ -143,6 +143,7 @@
 
             <div style="z-index: 1001">
               <app-calendar
+                [initialDateTime]="card.placeholderDataHora"
                 [openCalendar]="card.calendarActive || false"
                 [hasTime]="true"
                 (dateSelected)="onDateSelected(card.id, $event)"
@@ -162,7 +163,7 @@
               [ngClass]="{
                 'change-button':
                   (card.editedPrice && card.editedPrice !== card.price) ||
-                  card.calendarActive === true
+                  card.calendarActive === true && dateTimeFormatted !== card.placeholderDataHora
               }"
               style="background-color: var(--primary); color: var(--light)"
               routerLink="/tudu-professional/progress"
@@ -332,7 +333,8 @@
               class="request-quote-btn col-6"
               [ngClass]="{
                 'change-button':
-                  card.editedPrice && card.editedPrice !== card.price
+                  (card.editedPrice && card.editedPrice !== card.price) ||
+                  card.calendarActive === true && dateTimeFormatted !== card.placeholderDataHora
               }"
               style="background-color: var(--primary); color: var(--light)"
               routerLink="/home/progress"

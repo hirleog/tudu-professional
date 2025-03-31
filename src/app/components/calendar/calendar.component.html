@@ -95,6 +95,7 @@
               type="time"
               class="form-control"
               id="inputTime"
+              [value]="selectedTime"
               (change)="onTimeChange($event)"
               placeholder="12:00"
               required
@@ -102,7 +103,7 @@
           </div>
           <div class="mt-1">
             <button
-            style="border-radius: 5px;"
+              style="border-radius: 5px"
               class="col-12 check-button d-flex align-items-center justify-content-center gap-2 p-2"
               (click)="openCalendar = false"
             >

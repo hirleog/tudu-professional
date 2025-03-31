@@ -1,4 +1,11 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { HistoricModel } from 'src/interfaces/historic.model';
@@ -9,12 +16,12 @@ import { DatePipe } from '@angular/common';
   selector: 'app-home',
   templateUrl: './app-home.component.html',
   styleUrls: ['./app-home.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush, // Adicione isso
 })
 export class AppHomeComponent implements OnInit {
-  @ViewChild('calendarContainer') calendarContainer!: ElementRef;
-
   calendarData: string = '';
   selectedTime: string = '12:00';
+  initialDate = ['2023-11-15'];
 
   overlay: boolean = false;
   faPencil = 'fas fa-pencil-alt';
@@ -25,6 +32,7 @@ export class AppHomeComponent implements OnInit {
     'Finalizados(5)',
   ]; // Lista dinâmica
   selectedIndex: number = 0; // Inicia a primeira opção já selecionada
+  dateTimeFormatted: string = '';
 
   cards: CardOrders[] = [
     {
@@ -83,7 +91,7 @@ export class AppHomeComponent implements OnInit {
   ];
   placeholderDataHora: string = '';
 
-  constructor(private route: Router, private datePipe: DatePipe) {
+  constructor(private route: Router, private datePipe: DatePipe, private eRef: ElementRef) {
     moment.locale('pt-br');
     this.placeholderDataHora =
       moment().add(1, 'days').format('DD/MM/YYYY') + ' - 12:00'; // Data de amanhã às 12:00
@@ -92,8 +100,9 @@ export class AppHomeComponent implements OnInit {
       if (card.dateTime) {
         const formattedDate = moment(card.dateTime).format('DD/MM/YYYY');
         const formattedTime = moment(card.dateTime).format('HH:mm');
+        this.dateTimeFormatted = `${formattedDate} - ${formattedTime}`;
 
-        card.placeholderDataHora = `${formattedDate} - ${formattedTime}`;
+        card.placeholderDataHora = this.dateTimeFormatted;
       }
     });
   }
@@ -127,25 +136,10 @@ export class AppHomeComponent implements OnInit {
     card.calendarActive = !card.calendarActive;
 
     if (card.calendarActive === false) {
-      card.placeholderDataHora = moment(card.dateTime)
-        .format('DD/MM/YYYY - HH:mm')
-        .toString();
+      card.placeholderDataHora = this.dateTimeFormatted;
     }
   }
 
-  // @HostListener('document:click', ['$event'])
-  // onClickOutside(event: MouseEvent) {
-  //   // Verifica se o clique foi fora do container do calendário
-  //   if (this.calendarContainer && !this.calendarContainer.nativeElement.contains(event.target)) {
-  //     // Fecha todos os calendários abertos
-  //     this.cards.forEach(card => {
-  //       if (card.calendarActive) {
-  //         card.calendarActive = false;
-  //         this.overlay = false;
-  //       }
-  //     });
-  //   }
-  // }
   onDateSelected(cardId: number, date: string) {
     const card: any = this.cards.find((c) => c.id === cardId);
     if (card.placeholderDataHora === '') {
@@ -176,6 +170,9 @@ export class AppHomeComponent implements OnInit {
       card.placeholderDataHora = `${date} - ${time}`;
     }
   }
+
+  
+  
 
   selectItem(index: number): void {
     this.selectedIndex = index; // Atualiza o item selecionado
