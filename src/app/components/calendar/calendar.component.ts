@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  SimpleChanges,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 import * as moment from 'moment';
 
 @Component({
@@ -23,11 +32,12 @@ export class CalendarComponent implements OnInit {
 
   @Output() dateSelected = new EventEmitter<string>();
   @Output() timeSelected = new EventEmitter<string>();
+  @Output() closeCalendar = new EventEmitter<void>();
 
   @Input() showWeekView: boolean = false;
   weekDays: { date: moment.Moment; isFirst: boolean }[] = [];
 
-  constructor() {
+  constructor(private elementRef: ElementRef) {
     this.generateCalendar();
   }
 
@@ -71,9 +81,6 @@ export class CalendarComponent implements OnInit {
 
   toggleCalendar(param?: string): void {
     this.openCalendar = !this.openCalendar;
-  }
-  closeCalendar() {
-    this.openCalendar = false;
   }
 
   generateWeekDays() {
@@ -146,10 +153,15 @@ export class CalendarComponent implements OnInit {
     return !!this.selectedDate && date.isSame(this.selectedDate, 'day');
   }
 
-  selectDate(date: moment.Moment) {
+  selectDate(date: moment.Moment, event: MouseEvent) {
+    event.stopPropagation(); // Impede que o clique propague para o document
     this.selectedDate = date;
     this.dateSelected.emit(date.format('YYYY-MM-DD'));
-    console.log(date.format('YYYY-MM-DD'));
+
+    // Mantém o calendário aberto se tiver campo de hora
+    if (this.hasTime) {
+      this.openCalendar = true;
+    }
   }
   onTimeChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
@@ -163,5 +175,20 @@ export class CalendarComponent implements OnInit {
     return this.currentDate.format('MMMM YYYY');
   }
 
-  
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (this.openCalendar) {
+      const calendarContainer = this.elementRef.nativeElement.querySelector(
+        '.calendar-container'
+      );
+      const clickedInside =
+        this.elementRef.nativeElement.contains(event.target) ||
+        (calendarContainer && calendarContainer.contains(event.target));
+
+      if (!clickedInside) {
+        this.openCalendar = false;
+        this.closeCalendar.emit();
+      }
+    }
+  }
 }

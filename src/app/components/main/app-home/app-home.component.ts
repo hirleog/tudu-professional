@@ -90,8 +90,9 @@ export class AppHomeComponent implements OnInit {
     },
   ];
   placeholderDataHora: string = '';
+  clickOutside: boolean = false;
 
-  constructor(private route: Router, private datePipe: DatePipe, private eRef: ElementRef) {
+  constructor(private route: Router) {
     moment.locale('pt-br');
     this.placeholderDataHora =
       moment().add(1, 'days').format('DD/MM/YYYY') + ' - 12:00'; // Data de amanhã às 12:00
@@ -131,12 +132,26 @@ export class AppHomeComponent implements OnInit {
     }
   }
 
-  toggleCalendar(card: any): void {
-    this.overlay = true;
+  // Adicione esta função ao seu componente pai
+  toggleCalendar(card: any, event?: Event) {
+    if (event) {
+      event.stopPropagation(); // Impede que o evento chegue ao document.click
+    }
     card.calendarActive = !card.calendarActive;
 
     if (card.calendarActive === false) {
       card.placeholderDataHora = this.dateTimeFormatted;
+    }
+  }
+
+  // Adicione este handler para quando o calendário emitir o evento de fechar
+  onCalendarClose(card: any) {
+    // this.clickOutside = true
+
+    if (card.placeholderDataHora !== this.dateTimeFormatted) {
+      card.calendarActive = true;
+    } else {
+      card.calendarActive = false;
     }
   }
 
@@ -171,11 +186,14 @@ export class AppHomeComponent implements OnInit {
     }
   }
 
-  
-  
-
   selectItem(index: number): void {
     this.selectedIndex = index; // Atualiza o item selecionado
+
+    // this.cards.forEach((card) => {
+    //   card.calendarActive = false;
+    //   if (this.selectedIndex === 0 || this.selectedIndex === 1 || this.selectedIndex === 2) {
+    //   }
+    // });
   }
 
   goToShowcase() {

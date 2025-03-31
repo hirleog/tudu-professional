@@ -12,7 +12,7 @@
           class="day"
           [class.first-day]="day.isFirst"
           [class.marked-day]="isMarked(day.date)"
-          (click)="selectDate(day.date)"
+          (click)="selectDate(day.date, $event)"
         >
           <div class="day-name">{{ getDayName(day.date) }}</div>
           <div class="day-number">{{ day.date.date() }}</div>
@@ -80,7 +80,7 @@
               [class.calendar-day-marked]="isMarked(day)"
               [class.calendar-day-outside]="!isCurrentMonth(day)"
               [class.calendar-day-selected]="isSelected(day)"
-              (click)="selectDate(day)"
+              (click)="selectDate(day, $event)"
             >
               <div class="day-number">{{ day.date() }}</div>
               <div *ngIf="isMarked(day)" class="day-marker"></div>
@@ -96,6 +96,7 @@
               class="form-control"
               id="inputTime"
               [value]="selectedTime"
+
               (change)="onTimeChange($event)"
               placeholder="12:00"
               required
@@ -103,7 +104,7 @@
           </div>
           <div class="mt-1">
             <button
-              style="border-radius: 5px"
+            style="border-radius: 5px;"
               class="col-12 check-button d-flex align-items-center justify-content-center gap-2 p-2"
               (click)="openCalendar = false"
             >

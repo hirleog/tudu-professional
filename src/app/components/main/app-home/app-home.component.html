@@ -122,9 +122,10 @@
                   (click)="openCalendar(card)"
                 />
 
-                <button
+                <!-- <button
                   [ngClass]="{
-                    'change-renegotiate-btn': card.calendarActive && card.placeholderDataHora
+                    'change-renegotiate-btn':
+                      card.calendarActive && card.placeholderDataHora
                   }"
                   class="btn btn-outline-secondary"
                   type="button"
@@ -137,6 +138,38 @@
                       !card.calendarActive ? 'fa-calendar-alt' : 'fa-undo'
                     "
                   ></i>
+                </button> -->
+
+                <button
+                  [ngClass]="{
+                    'change-renegotiate-btn':
+                      card.calendarActive && card.placeholderDataHora
+                  }"
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="btn-renegotiate"
+                  (click)="toggleCalendar(card, $event)"
+                >
+                  <i
+                    class="fas"
+                    [ngClass]="
+                      !card.calendarActive ? 'fa-calendar-alt' : 'fa-undo'
+                    "
+                  ></i>
+
+                  <!-- 
+                  <i
+                  class="fas"
+                  [ngClass]="
+                    (
+                      clickOutside
+                        ? !card.calendarActive
+                        : card.calendarActive
+                    )
+                      ? 'fa-undo'
+                      : 'fa-calendar-alt'
+                  "
+                ></i> -->
                 </button>
               </div>
             </div>
@@ -148,6 +181,7 @@
                 [hasTime]="true"
                 (dateSelected)="onDateSelected(card.id, $event)"
                 (timeSelected)="onTimeSelected(card.id, $event)"
+                (closeCalendar)="onCalendarClose(card)"
                 [showWeekView]="false"
               >
               </app-calendar>
@@ -163,7 +197,8 @@
               [ngClass]="{
                 'change-button':
                   (card.editedPrice && card.editedPrice !== card.price) ||
-                  card.calendarActive === true && dateTimeFormatted !== card.placeholderDataHora
+                  (card.calendarActive === true &&
+                    dateTimeFormatted !== card.placeholderDataHora)
               }"
               style="background-color: var(--primary); color: var(--light)"
               routerLink="/tudu-professional/progress"
@@ -191,7 +226,7 @@
   </div>
 
   <!-- SERVIÇOS EM ANDAMENTO -->
-  <div id="in-progress" class="container" *ngIf="selectedIndex === 1">
+  <div id="in-progress" class="container" *ngIf="selectedIndex === 1" >
     <div class="row g-3 m-0 p-0">
       <div
         class="col-12 col-md-6 col-lg-6 m-0 p-2"
@@ -292,15 +327,15 @@
                   [disabled]="!card.calendarActive"
                   (click)="openCalendar(card)"
                 />
-
                 <button
                   [ngClass]="{
-                    'change-renegotiate-btn': card.calendarActive
+                    'change-renegotiate-btn':
+                      card.calendarActive && card.placeholderDataHora
                   }"
                   class="btn btn-outline-secondary"
                   type="button"
                   id="btn-renegotiate"
-                  (click)="toggleCalendar(card)"
+                  (click)="toggleCalendar(card, $event)"
                 >
                   <i
                     class="fas"
@@ -314,10 +349,12 @@
 
             <div style="z-index: 1001">
               <app-calendar
+                [initialDateTime]="card.placeholderDataHora"
                 [openCalendar]="card.calendarActive || false"
                 [hasTime]="true"
                 (dateSelected)="onDateSelected(card.id, $event)"
                 (timeSelected)="onTimeSelected(card.id, $event)"
+                (closeCalendar)="onCalendarClose(card)"
                 [showWeekView]="false"
               >
               </app-calendar>
@@ -334,7 +371,8 @@
               [ngClass]="{
                 'change-button':
                   (card.editedPrice && card.editedPrice !== card.price) ||
-                  card.calendarActive === true && dateTimeFormatted !== card.placeholderDataHora
+                  (card.calendarActive === true &&
+                    dateTimeFormatted !== card.placeholderDataHora)
               }"
               style="background-color: var(--primary); color: var(--light)"
               routerLink="/home/progress"
