@@ -18,10 +18,7 @@
   </app-nav>
 
   <div>
-    <app-calendar
-      [markedDates]="yourMarkedDatesArray"
-      [showWeekView]="true"
-    >
+    <app-calendar [markedDates]="yourMarkedDatesArray" [showWeekView]="true">
     </app-calendar>
   </div>
 
@@ -81,6 +78,30 @@
             <p class="request-card-description truncate-text">
               {{ card.description }}
             </p>
+          </div>
+
+          <div class="custom-input-container container">
+            <div class="input-group mb-3">
+              <span class="input-group-text">$</span>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="card.editedPrice"
+                [placeholder]="card.price"
+                [disabled]="true"
+              />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text">#</span>
+              <input
+                [readonly]="true"
+                type="text"
+                class="form-control"
+                aria-label="Amount (to the nearest dollar)"
+                [placeholder]="card.dateTime"
+                [disabled]="true"
+              />
+            </div>
           </div>
 
           <!-- Botões de ação -->

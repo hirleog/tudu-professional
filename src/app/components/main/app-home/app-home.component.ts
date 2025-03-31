@@ -45,7 +45,7 @@ export class AppHomeComponent implements OnInit {
       editedPrice: '150,00',
       renegotiateActive: true,
       calendarActive: false,
-      dateTime: '2021-08-10T10:00:00',
+      dateTime: '2025-08-08T10:00:00',
       placeholderDataHora: '',
       hasQuotes: false,
     },
@@ -59,7 +59,7 @@ export class AppHomeComponent implements OnInit {
       editedPrice: '',
       renegotiateActive: true,
       calendarActive: false,
-      dateTime: '2021-08-10T10:00:00',
+      dateTime: '2025-10-10T10:00:00',
       placeholderDataHora: '',
       hasQuotes: true,
     },
@@ -98,12 +98,18 @@ export class AppHomeComponent implements OnInit {
       moment().add(1, 'days').format('DD/MM/YYYY') + ' - 12:00'; // Data de amanhã às 12:00
 
     this.cards.forEach((card) => {
+      let dateTimeFormatted: string = '';
+
       if (card.dateTime) {
         const formattedDate = moment(card.dateTime).format('DD/MM/YYYY');
         const formattedTime = moment(card.dateTime).format('HH:mm');
-        this.dateTimeFormatted = `${formattedDate} - ${formattedTime}`;
+        dateTimeFormatted = `${formattedDate} - ${formattedTime}`;
 
-        card.placeholderDataHora = this.dateTimeFormatted;
+        card.placeholderDataHora = dateTimeFormatted;
+      }
+
+      if (card.editedPrice) {
+        card.editedPrice = card.price;
       }
     });
   }
@@ -134,13 +140,23 @@ export class AppHomeComponent implements OnInit {
 
   // Adicione esta função ao seu componente pai
   toggleCalendar(card: any, event?: Event) {
+    let dateTimeFormatted: string = '';
+
     if (event) {
       event.stopPropagation(); // Impede que o evento chegue ao document.click
     }
     card.calendarActive = !card.calendarActive;
 
-    if (card.calendarActive === false) {
-      card.placeholderDataHora = this.dateTimeFormatted;
+    if (card) {
+      const formattedDate = moment(card.dateTime).format('DD/MM/YYYY');
+      const formattedTime = moment(card.dateTime).format('HH:mm');
+      dateTimeFormatted = `${formattedDate} - ${formattedTime}`;
+
+      card.placeholderDataHora = dateTimeFormatted
+
+      if (card.calendarActive === false) {
+        card.placeholderDataHora = dateTimeFormatted;
+      }
     }
   }
 
@@ -187,12 +203,32 @@ export class AppHomeComponent implements OnInit {
   }
 
   selectItem(index: number): void {
+    let dateTimeFormatted: string = '';
     this.selectedIndex = index; // Atualiza o item selecionado
 
+    this.cards.forEach((card) => {
+      if (card.dateTime) {
+        const formattedDate = moment(card.dateTime).format('DD/MM/YYYY');
+        const formattedTime = moment(card.dateTime).format('HH:mm');
+        dateTimeFormatted = `${formattedDate} - ${formattedTime}`;
+      }
+
+      if (
+        this.selectedIndex === 0 ||
+        this.selectedIndex === 1 ||
+        this.selectedIndex === 2
+      ) {
+        card.placeholderDataHora = dateTimeFormatted;
+        card.calendarActive = false; // desabilita campo de calendario
+      }
+
+      if (card.editedPrice) {
+        card.editedPrice = card.price;
+        card.renegotiateActive = true; // desabilita campo de edição de valor
+      }
+    });
+
     // this.cards.forEach((card) => {
-    //   card.calendarActive = false;
-    //   if (this.selectedIndex === 0 || this.selectedIndex === 1 || this.selectedIndex === 2) {
-    //   }
     // });
   }
 

@@ -23,6 +23,7 @@ export class CalendarComponent implements OnInit {
   selectedTime: string = '';
 
   @Input() openCalendar: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
+  @Input() showChangeDateBtn: boolean = true; // Array de datas no formato 'YYYY-MM-DD'
   @Input() hasTime: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
   @Input() markedDates: string[] = []; // Array de datas no formato 'YYYY-MM-DD'
 
