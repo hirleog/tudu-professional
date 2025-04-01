@@ -1,13 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgxMaskModule } from 'ngx-mask';
 import { SharedModule } from 'src/shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppMenuComponent } from './components/main/app-menu/app-menu.component';
 import { MainAppModule } from './components/main/main-app.module';
-import { NgxMaskModule } from 'ngx-mask';
-import { DatePipe } from '@angular/common';
+
 
 @NgModule({
   declarations: [AppComponent, AppMenuComponent],
@@ -16,7 +16,6 @@ import { DatePipe } from '@angular/common';
     AppRoutingModule,
     SharedModule,
     MainAppModule,
-
     NgxMaskModule.forRoot(), // Importando o NgxMaskModule
   ],
 

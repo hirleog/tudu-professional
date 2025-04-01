@@ -1,38 +1,29 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
+import { Carousel } from 'bootstrap';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { HistoricModel } from 'src/interfaces/historic.model';
-import * as moment from 'moment';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   templateUrl: './app-home.component.html',
   styleUrls: ['./app-home.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush, // Adicione isso
 })
 export class AppHomeComponent implements OnInit {
-  calendarData: string = '';
-  selectedTime: string = '12:00';
-  initialDate = ['2023-11-15'];
+  @ViewChild('carouselOrders') carousel: any;
+  bsCarousel!: Carousel;
 
-  overlay: boolean = false;
-  faPencil = 'fas fa-pencil-alt';
-  faTimes = 'fas fa-times';
   headerPageOptions: string[] = [
     'Serviços(23)',
     'Em andamento(3)',
     'Finalizados(5)',
   ]; // Lista dinâmica
-  selectedIndex: number = 0; // Inicia a primeira opção já selecionada
+  overlay: boolean = false;
   dateTimeFormatted: string = '';
+
+  selectedIndex: number = 0; // Inicia a primeira opção já selecionada
+  placeholderDataHora: string = '';
 
   cards: CardOrders[] = [
     {
@@ -89,9 +80,6 @@ export class AppHomeComponent implements OnInit {
       dateTime: '2021-08-10T10:00:00',
     },
   ];
-  placeholderDataHora: string = '';
-  clickOutside: boolean = false;
-
   constructor(private route: Router) {
     moment.locale('pt-br');
     this.placeholderDataHora =
@@ -113,7 +101,20 @@ export class AppHomeComponent implements OnInit {
       }
     });
   }
+  ngAfterViewInit() {
+    this.bsCarousel = new Carousel(this.carousel.nativeElement, {
+      interval: false,
+      touch: true, // Habilita o arrasto
+    });
 
+    // Listen to slide events
+    this.carousel.nativeElement.addEventListener(
+      'slid.bs.carousel',
+      (event: any) => {
+        this.selectedIndex = event.to;
+      }
+    );
+  }
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
   }
@@ -152,7 +153,7 @@ export class AppHomeComponent implements OnInit {
       const formattedTime = moment(card.dateTime).format('HH:mm');
       dateTimeFormatted = `${formattedDate} - ${formattedTime}`;
 
-      card.placeholderDataHora = dateTimeFormatted
+      card.placeholderDataHora = dateTimeFormatted;
 
       if (card.calendarActive === false) {
         card.placeholderDataHora = dateTimeFormatted;
@@ -204,7 +205,24 @@ export class AppHomeComponent implements OnInit {
 
   selectItem(index: number): void {
     let dateTimeFormatted: string = '';
-    this.selectedIndex = index; // Atualiza o item selecionado
+
+    if (index >= 0 && index <= 2 && index !== this.selectedIndex) {
+      this.selectedIndex = index;
+
+      // Adicione esta verificação para garantir que o carrossel está inicializado
+      if (this.bsCarousel) {
+        // Força uma transição suave
+        const carouselElement = this.carousel.nativeElement;
+        carouselElement.classList.remove('slide'); // Remove temporariamente a classe de transição
+
+        this.bsCarousel.to(index);
+
+        // Restaura a classe após um pequeno delay
+        setTimeout(() => {
+          carouselElement.classList.add('slide');
+        }, 50);
+      }
+    }
 
     this.cards.forEach((card) => {
       if (card.dateTime) {
@@ -227,9 +245,10 @@ export class AppHomeComponent implements OnInit {
         card.renegotiateActive = true; // desabilita campo de edição de valor
       }
     });
-
-    // this.cards.forEach((card) => {
-    // });
+  }
+  // Método para quando o carrossel muda via navegação
+  onSlideChanged(event: any) {
+    this.selectedIndex = event.to;
   }
 
   goToShowcase() {

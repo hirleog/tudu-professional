@@ -108,73 +108,14 @@ i {
   /* Mostra o cursor de "não permitido" */
 }
 
-.icon-btn {
-  background: none;
-  border: 1px solid #000; /* Cor do contorno */
-  padding: 5px 8px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 90px; /* Tamanho do botão */
-  height: 32px;
-  text-align: center;
+/* .carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
 }
+.carousel-item {
+  transition: transform 0.6s ease-in-out;
+} */
 
-.icon-btn i {
-  color: var(--tag-p-grey) !important; /* Cor do ícone */
-  margin-right: 5px;
-}
-
-.icon-btn:hover {
-  background: rgba(0, 0, 0, 0.1); /* Efeito de hover */
-}
-.request-quote-btn {
-  color: white;
-  padding: 10px 15px;
-  font-size: 17px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.8s ease-in-out;
-  /* Tempo aumentado para 0.8s */
-}
-
-.request-quote-btn:hover {
-  background: var(--primary-dark);
-}
-.change-button {
-  background-color: var(--premium) !important;
-}
-
-#btn-renegotiate {
-  background-color: var(--primary);
-  border: 1px solid #e9ecef;
-  width: 65px;
-}
-#btn-renegotiate:hover {
-  background-color: var(--primary-dark);
-  border: 1px solid #e9ecef;
-}
-
-#btn-renegotiate i {
-  color: var(--light) !important;
-}
-.change-renegotiate-btn {
-  background-color: var(--blue) !important;
-}
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-}
 @media (max-width: 400px) {
   .request-quote-btn {
     padding: 7px 10px;
