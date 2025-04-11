@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { AppMenuComponent } from './components/main/app-menu/app-menu.component';
 import { MainAppModule } from './components/main/main-app.module';
 
-
 @NgModule({
   declarations: [AppComponent, AppMenuComponent],
   imports: [
