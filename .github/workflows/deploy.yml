@@ -16,7 +16,7 @@ jobs:
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}" > ~/.ssh/deploy_key
+          echo "${{ secrets.TUDU_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           echo -e "Host 89.116.73.70\n  HostKeyAlgorithms ssh-ed25519,rsa-sha2-512\n  KexAlgorithms curve25519-sha256\n  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com" >> ~/.ssh/config
           ssh-keyscan -t ed25519,rsa-sha2-512 89.116.73.70 >> ~/.ssh/known_hosts
@@ -49,7 +49,7 @@ jobs:
         with:
           host: "89.116.73.70"
           username: "deployer"
-          key: ${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}
+          key: ${{ secrets.TUDU_SSH_KEY }}
           script: |
             echo "Limpando diretório /var/www/mfe-tudu-professional"
             rm -rf /var/www/mfe-tudu-professional/{*.js,*.css,*.html,assets}
@@ -66,7 +66,7 @@ jobs:
         with:
           host: "89.116.73.70"
           username: "deployer"
-          key: ${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}
+          key: ${{ secrets.TUDU_SSH_KEY }}
           script: |
             echo "Ajustando permissões..."
             sudo chown -R deployer:www-data /var/www/mfe-tudu-professional
