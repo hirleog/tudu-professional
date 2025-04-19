@@ -74,15 +74,6 @@ i {
   border-radius: 5px;
 }
 
-.truncate-text {
-  white-space: nowrap;
-  /* Não permite que o texto quebre a linha */
-  overflow: hidden;
-  /* Esconde o texto que ultrapassa o limite do contêiner */
-  text-overflow: ellipsis;
-  /* Adiciona as reticências (...) ao final do texto */
-}
-
 .request-quote-btn {
   background: var(--primary);
   color: white;
