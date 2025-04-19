@@ -1,0 +1,48 @@
+name: Deploy Tudu Professional
+
+on:
+  push:
+    branches: ["main"] # Altere para a branch desejada
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Configuração do SSH
+      - name: Configurar ambiente SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo -e "Host 89.116.73.70\n  HostKeyAlgorithms ssh-ed25519,rsa-sha2-512\n  KexAlgorithms curve25519-sha256\n  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com" >> ~/.ssh/config
+          ssh-keyscan -t ed25519,rsa-sha2-512 89.116.73.70 >> ~/.ssh/known_hosts
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm install --force
+
+      - name: Buildar projeto
+        run: npm run build -- --configuration=production
+
+      # Deploy via SCP
+      - name: Enviar arquivos para o servidor
+        run: |
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -r dist/tudu-professional/* deployer@89.116.73.70:/var/www/mfe-tudu-professional/
+
+      # Verificação pós-deploy
+      - name: Verificar arquivos no servidor
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: "89.116.73.70"
+          username: "deployer"
+          key: ${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}
+          script: |
+            ls -la /var/www/mfe-tudu-professional/
+            echo "Deploy do Tudu Professional concluído!"
