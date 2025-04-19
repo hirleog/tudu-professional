@@ -2,47 +2,83 @@ name: Deploy Tudu Professional
 
 on:
   push:
-    branches: ["main"] # Altere para a branch desejada
+    branches: ["main"]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
       - uses: actions/checkout@v4
 
-      # Configuração do SSH
-      - name: Configurar ambiente SSH
+      # Configuração SSH reforçada
+      - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          echo -e "Host 89.116.73.70\n  HostKeyAlgorithms ssh-ed25519,rsa-sha2-512\n  KexAlgorithms curve25519-sha256\n  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com" >> ~/.ssh/config
+          echo -e "Host 89.116.73.70\n  StrictHostKeyChecking yes\n  HostKeyAlgorithms ssh-ed25519,rsa-sha2-512\n  KexAlgorithms curve25519-sha256\n  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com" >> ~/.ssh/config
           ssh-keyscan -t ed25519,rsa-sha2-512 89.116.73.70 >> ~/.ssh/known_hosts
 
+      # Configuração do Node.js com cache
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
+      # Instalação otimizada de dependências
       - name: Instalar dependências
-        run: npm install --force
+        run: |
+          npm ci --no-audit || npm install --force
+          npm cache clean --force
 
+      # Build com verificação
       - name: Buildar projeto
-        run: npm run build -- --configuration=production
+        run: |
+          npm run build -- --configuration=production
+          echo "Conteúdo da pasta dist:"
+          ls -la dist/tudu-professional/
 
-      # Deploy via SCP
+      # Deploy com limpeza prévia e verificação
       - name: Enviar arquivos para o servidor
         run: |
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -r dist/tudu-professional/* deployer@89.116.73.70:/var/www/mfe-tudu-professional/
+          echo "Limpando diretório remoto..."
+          ssh -i ~/.ssh/deploy_key deployer@89.116.73.70 "
+            rm -rf /var/www/mfe-tudu-professional/{*.js,*.css,*.html,assets}
+          "
 
-      # Verificação pós-deploy
-      - name: Verificar arquivos no servidor
-        uses: appleboy/ssh-action@v0.1.10
+          echo "Enviando arquivos..."
+          scp -i ~/.ssh/deploy_key -rp dist/tudu-professional/* deployer@89.116.73.70:/var/www/mfe-tudu-professional/
+
+          echo "Verificando transferência..."
+          ssh -i ~/.ssh/deploy_key deployer@89.116.73.70 "ls -la /var/www/mfe-tudu-professional/ | head -n 10"
+
+      # Pós-deploy completo
+      - name: Executar pós-deploy
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: "89.116.73.70"
           username: "deployer"
           key: ${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}
           script: |
+            echo "=== Verificando diretório ==="
             ls -la /var/www/mfe-tudu-professional/
-            echo "Deploy do Tudu Professional concluído!"
+
+            echo -e "\n=== Ajustando permissões ==="
+            sudo chown -R deployer:www-data /var/www/mfe-tudu-professional
+            find /var/www/mfe-tudu-professional/ -type d -exec chmod 755 {} \;
+            find /var/www/mfe-tudu-professional/ -type f -exec chmod 644 {} \;
+
+            echo -e "\n=== Reiniciando serviços ==="
+            sudo systemctl reload nginx
+            if pm2 list | grep -q "tudu-professional"; then
+              pm2 restart tudu-professional --update-env
+            else
+              echo "Serviço PM2 não encontrado"
+            fi
+
+            echo -e "\n=== Limpando cache ==="
+            sudo rm -rf /var/cache/nginx/*
+            echo -e "\n✅ Deploy do Tudu Professional concluído com sucesso!"
