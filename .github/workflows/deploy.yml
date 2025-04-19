@@ -41,7 +41,6 @@ jobs:
           echo "Conteúdo da pasta dist:"
           ls -la dist/tudu-professional/
 
-      # Deploy com limpeza prévia e verificação
       - name: Enviar arquivos para o servidor
         run: |
           echo "Limpando diretório remoto..."
