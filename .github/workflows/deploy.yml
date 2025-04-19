@@ -1,4 +1,4 @@
-name: Deploy Tudu Professional
+name: Deploy Tudu Professional (Main Branch)
 
 on:
   push:
@@ -7,83 +7,101 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
 
-      # Configuração SSH reforçada
-      - name: Configurar SSH
+      # Configuração SSH robusta
+      - name: Configurar acesso ao servidor
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          echo -e "Host 89.116.73.70\n  StrictHostKeyChecking yes\n  HostKeyAlgorithms ssh-ed25519,rsa-sha2-512\n  KexAlgorithms curve25519-sha256\n  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com" >> ~/.ssh/config
-          ssh-keyscan -t ed25519,rsa-sha2-512 89.116.73.70 >> ~/.ssh/known_hosts
 
-      # Configuração do Node.js com cache
-      - name: Instalar Node.js
+          cat <<EOF > ~/.ssh/config
+          Host tudu-prod
+            HostName 89.116.73.70
+            User deployer
+            IdentityFile ~/.ssh/deploy_key
+            StrictHostKeyChecking yes
+            LogLevel VERBOSE
+          EOF
+
+          ssh-keyscan -t ed25519 89.116.73.70 >> ~/.ssh/known_hosts
+
+      # Ambiente Node.js
+      - name: Configurar Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
-      # Instalação otimizada de dependências
+      # Instalação limpa de dependências
       - name: Instalar dependências
         run: |
-          npm ci --no-audit || npm install --force
+          npm ci --no-audit --prefer-offline
+          if [ $? -ne 0 ]; then
+            echo "⚠️ Fallback para npm install"
+            npm install --force
+          fi
           npm cache clean --force
 
       # Build com verificação
-      - name: Buildar projeto
+      - name: Build do projeto
         run: |
           npm run build -- --configuration=production
-          echo "Conteúdo da pasta dist:"
-          ls -la dist/tudu-professional/
+          echo "✔ Build completo. Conteúdo:"
+          ls -lh dist/tudu-professional/
+          echo "build_version=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
 
-      - name: Enviar arquivos para o servidor
-        run: |
-          echo "Limpando diretório remoto..."
-          ssh -i ~/.ssh/deploy_key deployer@89.116.73.70 "
-            rm -rf /var/www/mfe-tudu-professional/{*.js,*.css,*.html,assets}
-          "
-
-          echo "Enviando arquivos..."
-          scp -i ~/.ssh/deploy_key -rp dist/tudu-professional/* deployer@89.116.73.70:/var/www/mfe-tudu-professional/
-
-          echo "Verificando transferência..."
-          ssh -i ~/.ssh/deploy_key deployer@89.116.73.70 "ls -la /var/www/mfe-tudu-professional/ | head -n 10"
-
-      # Pós-deploy completo
-      - name: Executar pós-deploy
+      # Deploy em 3 etapas
+      - name: 1. Preparar servidor (limpeza)
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: "89.116.73.70"
-          username: "deployer"
+          host: 89.116.73.70
+          username: deployer
           key: ${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}
           script: |
-            echo "=== Verificando diretório ==="
-            ls -la /var/www/mfe-tudu-professional/
+            echo "🔄 Limpando diretório (exceto .env)"
+            cd /var/www/mfe-tudu-professional/
+            shopt -s extglob
+            rm -rf !(.env|.env.production|uploads)
+            echo "📂 Conteúdo atual:"
+            ls -lah
 
-            echo -e "\n=== Ajustando permissões ==="
+      - name: 2. Sincronizar arquivos (rsync)
+        run: |
+          rsync -avz \
+            --progress \
+            --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            dist/tudu-professional/ \
+            deployer@89.116.73.70:/var/www/mfe-tudu-professional/
+
+      - name: 3. Finalizar deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: 89.116.73.70
+          username: deployer
+          key: ${{ secrets.TUDU_PROFESSIONAL_SSH_KEY }}
+          script: |
+            # Permissões
+            echo "🔒 Ajustando permissões"
             sudo chown -R deployer:www-data /var/www/mfe-tudu-professional
-            find /var/www/mfe-tudu-professional/ -type d -exec chmod 755 {} \;
-            find /var/www/mfe-tudu-professional/ -type f -exec chmod 644 {} \;
+            find /var/www/mfe-tudu-professional -type d -exec chmod 775 {} \;
+            find /var/www/mfe-tudu-professional -type f -exec chmod 664 {} \;
 
-            echo -e "\n=== Reiniciando serviços ==="
+            # Serviços
+            echo "🔄 Reiniciando serviços"
             sudo systemctl reload nginx
             if pm2 list | grep -q "tudu-professional"; then
               pm2 restart tudu-professional --update-env
-            else
-              echo "Serviço PM2 não encontrado"
             fi
 
-            echo -e "\n=== Limpando cache ==="
-            sudo rm -rf /var/cache/nginx/*
-            echo -e "\n✅ Deploy do Tudu Professional concluído com sucesso!"
-
-
-      - name: Enviar arquivos para o servidor
-        run: |
-          # Envia o conteúdo DE DENTRO da pasta tudu-professional/
-          scp -i ~/.ssh/deploy_key -rp dist/tudu-professional/* deployer@89.116.73.70:/var/www/mfe-tudu-professional/
+            # Verificação final
+            echo "✅ DEPLOY COMPLETO"
+            echo "🕒 Versão: ${{ env.build_version }}"
+            echo "📝 Últimos arquivos:"
+            ls -lt /var/www/mfe-tudu-professional/ | head -5
+            echo "🌐 URL: https://professional.use-tudu.com.br"
