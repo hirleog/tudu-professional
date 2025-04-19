@@ -18,7 +18,6 @@
 					"builder": "ngx-build-plus:browser",
 					"options": {
 						"outputPath": "dist/tudu-professional",
-						"watch": true,
 						"index": "src/index.html",
 						"main": "src/main.ts",
 						"polyfills": "src/polyfills.ts",
