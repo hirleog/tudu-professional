@@ -60,7 +60,6 @@ jobs:
         run: |
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -r dist/tudu-professional/* deployer@89.116.73.70:${{ steps.project.outputs.dest_dir }}
 
-      # Pós-deploy adaptado
       - name: Finalizar deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
