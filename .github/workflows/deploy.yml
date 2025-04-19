@@ -81,3 +81,9 @@ jobs:
             echo -e "\n=== Limpando cache ==="
             sudo rm -rf /var/cache/nginx/*
             echo -e "\n✅ Deploy do Tudu Professional concluído com sucesso!"
+
+
+      - name: Enviar arquivos para o servidor
+        run: |
+          # Envia o conteúdo DE DENTRO da pasta tudu-professional/
+          scp -i ~/.ssh/deploy_key -rp dist/tudu-professional/* deployer@89.116.73.70:/var/www/mfe-tudu-professional/
