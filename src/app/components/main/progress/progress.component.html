@@ -58,17 +58,20 @@
 
           <!-- Cabeçalho do Card -->
           <div class="request-card-header p-3">
-            <div class="request-card-icon border-0">
-              <!-- <i [class]="card.icon"></i> -->
+            <div class="col-1 request-card-icon border-0">
+              <i
+                [class]="card.icon"
+                style="color: var(--primary) !important"
+              ></i>
             </div>
-            <div class="request-card-title">
+            <div class="col-11 request-card-title">
               <div class="d-flex align-items-center">
                 <h5>{{ card.categoria }}</h5>
-                <div>&nbsp;•&nbsp;</div>
+                <!-- <div>&nbsp;•&nbsp;</div> -->
               </div>
               <p class="request-card-description truncate-text">
-                <!-- {{ card.address.street }}, {{ card.address.number }} -
-                {{ card.address.city }} - {{ card.address.state }} -->
+                {{ card.address.street }}, {{ card.address.number }} -
+                {{ card.address.city }} - {{ card.address.state }}
               </p>
             </div>
           </div>

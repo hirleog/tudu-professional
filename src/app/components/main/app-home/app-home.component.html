@@ -1,7 +1,7 @@
 <section>
   <app-nav>
     <div class="d-flex align-items-center">
-      <a routerLink="/" class="logo">
+      <a routerLink="/tudu-professional/home" class="logo">
         <img
           src="../../../assets/logo-rosa.webp"
           class="img-fluid"
@@ -34,7 +34,7 @@
   </div>
 
   <!-- Item 0 - Meus Pedidos -->
-  <div class="container" >
+  <div class="container">
     <div class="row g-3 m-0 p-0">
       <div
         class="col-12 col-md-6 col-lg-6 m-0 p-2"
@@ -52,7 +52,7 @@
             <div class="request-card-title">
               <div class="d-flex align-items-center">
                 <h5>{{ card.categoria }}</h5>
-                <div>&nbsp;•&nbsp;</div>
+                <!-- <div>&nbsp;•&nbsp;</div> -->
               </div>
               <p class="request-card-description truncate-text"></p>
               <p class="request-card-description truncate-text">
@@ -146,13 +146,14 @@
             class="request-card-footer d-flex gap-2 p-3"
             style="margin-top: -3em"
           >
-          <!-- (click)="onSubmit()" -->
+            <!-- (click)="onSubmit()" -->
             <button
-            (click)="updateCard(card)"
+              (click)="updateCard(card)"
               class="request-quote-btn col-6"
               [ngClass]="{
                 'change-renegotiate-btn':
-                  (card.valor_negociado && card.valor_negociado !== card.valor) ||
+                  (card.valor_negociado &&
+                    card.valor_negociado !== card.valor) ||
                   (card.calendarActive === true &&
                     dateTimeFormatted !== card.placeholderDataHora)
               }"
@@ -161,8 +162,8 @@
             >
               {{
                 (card.valor_negociado && card.valor_negociado !== card.valor) ||
-                  (card.calendarActive === true &&
-                    dateTimeFormatted !== card.placeholderDataHora)
+                (card.calendarActive === true &&
+                  dateTimeFormatted !== card.placeholderDataHora)
                   ? "Negociar"
                   : "Candidatar-se"
               }}

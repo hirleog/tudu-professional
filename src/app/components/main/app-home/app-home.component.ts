@@ -4,8 +4,8 @@ import * as moment from 'moment';
 import { Carousel } from 'bootstrap';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { HistoricModel } from 'src/interfaces/historic.model';
-import { CardService } from '../../services/card.service';
 import { Observable, of } from 'rxjs';
+import { CardService } from '../../services/card.service';
 
 @Component({
   selector: 'app-home',
@@ -140,6 +140,8 @@ export class AppHomeComponent implements OnInit {
           placeholderDataHora: '', // Adiciona o campo manualmente
         }));
         this.selectItem(0);
+        console.log('home', this.cards);
+        
       },
       error: (error) => {
         console.error('Erro ao obter os cartões:', error);
@@ -152,7 +154,6 @@ export class AppHomeComponent implements OnInit {
 
   updateCard(card: CardOrders): Observable<CardOrders> {
     const payloadCard: any = {
-      id_pedido: card.id_pedido,
       id_cliente: Number(card.id_pedido), // precisa criar tabela de cliente para pegar o ID auto incrementavel
       id_prestador: 0, // precisa criar tabela de cliente para pegar o ID auto incrementavel
 
@@ -176,13 +177,13 @@ export class AppHomeComponent implements OnInit {
       valor: card.valor,
       horario_preferencial: card.horario_preferencial,
 
-      cep: card.cep,
-      street: card.street,
-      neighborhood: card.neighborhood,
-      city: card.city,
-      state: card.state,
-      number: card.number,
-      complement: card.complement,
+      cep: card.address.cep,
+      street: card.address.street,
+      neighborhood: card.address.neighborhood,
+      city: card.address.city,
+      state: card.address.state,
+      number: card.address.number,
+      complement: card.address.complement,
     };
 
     const route: string =
