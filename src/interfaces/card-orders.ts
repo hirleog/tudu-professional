@@ -1,14 +1,11 @@
+import { Candidatura } from './candidaturas.model';
+
 export interface CardOrders {
   id?: number;
   id_pedido?: string;
   id_cliente?: number;
   id_prestador?: number;
   icon?: string; // Ícone FontAwesome
-
-  valor_negociado?: string;
-  horario_negociado?: string;
-  data_candidatura?: string;
-  status?: string;
 
   categoria: string;
   subcategoria: string;
@@ -34,4 +31,6 @@ export interface CardOrders {
   calendarActive?: boolean;
   placeholderDataHora?: string;
   hasQuotes: boolean; // Se há orçamentos disponíveis
+
+  candidaturas?: Candidatura[]; // ✅ Agora com tipo correto
 }

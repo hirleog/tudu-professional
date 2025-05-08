@@ -16,16 +16,14 @@ export class AppHomeComponent implements OnInit {
   @ViewChild('carouselOrders') carousel: any;
   bsCarousel!: Carousel;
 
-  headerPageOptions: string[] = [
-    'Serviços(23)',
-    'Em andamento(3)',
-    'Finalizados(5)',
-  ]; // Lista dinâmica
+  headerPageOptions: string[] = [];
   overlay: boolean = false;
   dateTimeFormatted: string = '';
 
   selectedIndex: number = 0; // Inicia a primeira opção já selecionada
   placeholderDataHora: string = '';
+
+  id_prestador: any;
 
   cards: CardOrders[] = [];
 
@@ -104,10 +102,16 @@ export class AppHomeComponent implements OnInit {
         card.placeholderDataHora = dateTimeFormatted;
       }
 
-      if (card.valor_negociado) {
-        card.valor_negociado = card.valor;
+      const candidatura = card.candidaturas?.find(
+        (c) => c.prestador_id === this.id_prestador
+      );
+
+      if (candidatura && candidatura.valor_negociado) {
+        candidatura.valor_negociado = card.valor;
       }
     });
+
+    this.id_prestador = localStorage.getItem('prestador_id');
   }
   ngAfterViewInit() {
     this.bsCarousel = new Carousel(this.carousel.nativeElement, {
@@ -126,6 +130,9 @@ export class AppHomeComponent implements OnInit {
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
     this.listCards();
+
+    // id_prestador = localStorage.getItem('prestador_id');
+    // console.log('User ID recebido do Shell:', userId);
   }
 
   listCards() {
@@ -139,9 +146,8 @@ export class AppHomeComponent implements OnInit {
           horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
           placeholderDataHora: '', // Adiciona o campo manualmente
         }));
+        this.updateHeaderCounts(); // ATUALIZA A CONTAGEM
         this.selectItem(0);
-        console.log('home', this.cards);
-        
       },
       error: (error) => {
         console.error('Erro ao obter os cartões:', error);
@@ -153,26 +159,26 @@ export class AppHomeComponent implements OnInit {
   }
 
   updateCard(card: CardOrders): Observable<CardOrders> {
-    const payloadCard: any = {
-      id_cliente: Number(card.id_pedido), // precisa criar tabela de cliente para pegar o ID auto incrementavel
-      id_prestador: 0, // precisa criar tabela de cliente para pegar o ID auto incrementavel
+    const horario_negociado_formatted = moment(
+      card.placeholderDataHora,
+      'DD/MM/YYYY - HH:mm'
+    ).format('YYYY-MM-DD HH:mm');
 
-      valor_negociado:
-        card.valor_negociado === '' ? card.valor : card.valor_negociado,
-      horario_negociado: card.horario_negociado,
-      data_candidatura: card.data_candidatura,
-      status: card.status,
+    // Obtém a candidatura do prestador atual (se existir)
+    const candidaturaAtual = card.candidaturas?.find(
+      (c) => c.prestador_id === this.id_prestador
+    );
+
+    const payloadCard: any = {
+      id_cliente: Number(card.id_pedido),
+      id_prestador: null,
+
+      // Usa a data da candidatura, se existir
+      // data_candidatura:
+      //   candidaturaAtual?.data_candidatura ?? new Date().toISOString(),
 
       categoria: card.categoria,
-
-      status_pedido:
-        (card.valor_negociado !== undefined &&
-          card.valor_negociado !== card.valor) ||
-        (card.horario_negociado !== undefined &&
-          card.horario_negociado !== card.horario_preferencial)
-          ? 'em andamento'
-          : 'pendente',
-
+      status_pedido: card.status_pedido,
       subcategoria: card.subcategoria,
       valor: card.valor,
       horario_preferencial: card.horario_preferencial,
@@ -184,21 +190,48 @@ export class AppHomeComponent implements OnInit {
       state: card.address.state,
       number: card.address.number,
       complement: card.address.complement,
+
+      candidaturas: [
+        {
+          prestador_id: Number(this.id_prestador),
+          valor_negociado:
+            candidaturaAtual?.valor_negociado === ''
+              ? card.valor
+              : candidaturaAtual?.valor_negociado ?? card.valor,
+          horario_negociado: horario_negociado_formatted,
+          status: 'ativa',
+          data_finalizacao: '',
+        },
+      ],
     };
 
     const route: string =
       card.status_pedido === 'pendente' ? '/progress' : '/home';
 
-    // if (this.isLogged) {
-    this.cardService
-      .updateCard(card.id_pedido!, payloadCard) // Use non-null assertion
-      .subscribe(() => {
-        route === '/home' ? this.selectItem(1) : this.route.navigate([route]); // Atualiza a lista de cartões após a atualização
-      });
-    // } else {
-    // this.route.navigate(['/']);
+    this.cardService.updateCard(card.id_pedido!, payloadCard).subscribe({
+      next: (response) => {
+        console.log('Card atualizado com sucesso:', response);
+        route === '/home' ? this.selectItem(1) : this.route.navigate([route]); // direciona para tela de em andamento se não vai para tela de progress
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar o cartão:', error);
+      },
+      complete: () => {
+        console.log('Requisição concluída');
+      },
+    });
+
     return of();
-    // }
+    // // if (this.isLogged) {
+    // this.cardService
+    //   .updateCard(card.id_pedido!, payloadCard) // Use non-null assertion
+    //   .subscribe(() => {
+    //     route === '/home' ? this.selectItem(1) : this.route.navigate([route]); // Atualiza a lista de cartões após a atualização
+    //   });
+    // // } else {
+    // // this.route.navigate(['/']);
+    // return of();
+    // // }
   }
 
   renegotiateActive(card?: any): void {
@@ -208,7 +241,12 @@ export class AppHomeComponent implements OnInit {
       cardInfo.renegotiateActive = !cardInfo.renegotiateActive; // Alterna o estado
 
       if (cardInfo.renegotiateActive === true) {
-        cardInfo.valor_negociado = cardInfo.valor;
+        const minhaCandidatura = cardInfo.candidaturas?.find(
+          (c) => c.prestador_id === this.id_prestador
+        );
+        if (minhaCandidatura) {
+          minhaCandidatura.valor_negociado = cardInfo.valor;
+        }
       }
     }
   }
@@ -287,6 +325,43 @@ export class AppHomeComponent implements OnInit {
     }
   }
 
+  // get cardsDisponiveis(): any[] {
+  //   return this.cards.filter(
+  //     (card) =>
+  //       !card.candidaturas?.some((c) => c.prestador_id === this.id_prestador)
+  //   );
+  // }
+
+  // get cardsEmAndamento(): any[] {
+  //   return this.cards.filter((card) =>
+  //     card.candidaturas?.some((c) => c.prestador_id === this.id_prestador)
+  //   );
+  // }
+
+  updateHeaderCounts() {
+    const publicados = this.cards.filter(
+      (card) => card.status_pedido === 'publicado'
+    ).length;
+
+    const emAndamento = this.cards.filter(
+      (card) =>
+        card.status_pedido === 'publicado' &&
+        card.candidaturas?.some(
+          (c: any) => c.prestador_id === this.id_prestador
+        )
+    ).length;
+
+    const finalizados = this.cards.filter(
+      (card) => card.status_pedido === 'finalizado'
+    ).length;
+
+    this.headerPageOptions = [
+      `Serviços(${publicados})`,
+      `Em andamento(${emAndamento})`,
+      `Finalizados(${finalizados})`,
+    ];
+  }
+
   selectItem(index: number): void {
     let dateTimeFormatted: string = '';
 
@@ -310,10 +385,12 @@ export class AppHomeComponent implements OnInit {
         card.calendarActive = false; // desabilita campo de calendario
       }
 
-      if (card.valor_negociado) {
-        card.valor_negociado = card.valor;
-        card.renegotiateActive = true; // desabilita campo de edição de valor
-      }
+      card.candidaturas?.forEach((candidatura) => {
+        if (candidatura.valor_negociado) {
+          candidatura.valor_negociado = card.valor;
+          card.renegotiateActive = true; // ainda pode usar no card
+        }
+      });
     });
   }
   // Método para quando o carrossel muda via navegação

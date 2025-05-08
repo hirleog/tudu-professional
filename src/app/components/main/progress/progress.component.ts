@@ -19,6 +19,7 @@ export class ProgressComponent implements OnInit {
 
   cards: CardOrders[] = [];
   isLogged: any = false;
+  id_prestador: any;
 
   // cards: any[] = [
   //   {
@@ -47,7 +48,9 @@ export class ProgressComponent implements OnInit {
   //   },
   // ];
 
-  constructor(public cardService: CardService, public route: Router) {}
+  constructor(public cardService: CardService, public route: Router) {
+    this.id_prestador = localStorage.getItem('prestador_id');
+  }
 
   ngOnInit() {
     this.listCards(); // Chama a função para listar os cartões ao iniciar o componente
@@ -76,27 +79,30 @@ export class ProgressComponent implements OnInit {
   // }
 
   listCards() {
-    this.cardService.getCards().subscribe({
-      next: (response) => {
-        this.cards = (response as CardOrders[]).map((card) => ({
-          ...card, // Mantém os campos existentes
-          icon: this.cardService.getIconByLabel(card.categoria) || '', // Garante que o ícone nunca seja null
-          renegotiateActive: true, // Adiciona o campo manualmente
-          calendarActive: false, // Adiciona o campo manualmente
-          horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
-          placeholderDataHora: '', // Adiciona o campo manualmente
-        }));
-        this.selectItem(0);
-        console.log('progess', this.cards);
+    // this.cardService.getCards().subscribe({
+    //   next: (response) => {
+    //     this.cards = (response as CardOrders[]).map((card) => ({
+    //       ...card, // Mantém os campos existentes
+    //       icon: this.cardService.getIconByLabel(card.categoria) || '', // Garante que o ícone nunca seja null
+    //       renegotiateActive: true, // Adiciona o campo manualmente
+    //       calendarActive: false, // Adiciona o campo manualmente
+    //       horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
+    //       placeholderDataHora: '', // Adiciona o campo manualmente
+    //     }));
+    //     this.selectItem(0);
+    //     console.log('progess', this.cards);
+    //   },
+    //   error: (error) => {
+    //     console.error('Erro ao obter os cartões:', error);
+    //   },
+    //   complete: () => {
+    //     console.log('Requisição concluída');
+    //   },
+    // });
+  }
 
-      },
-      error: (error) => {
-        console.error('Erro ao obter os cartões:', error);
-      },
-      complete: () => {
-        console.log('Requisição concluída');
-      },
-    });
+  getMinhaCandidatura(card: CardOrders) {
+    return card.candidaturas?.find((c) => c.prestador_id === this.id_prestador);
   }
 
   onDateSelected(date: string) {

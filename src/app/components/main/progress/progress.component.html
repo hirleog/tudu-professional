@@ -31,109 +31,115 @@
         data-aos="fade-down"
       >
         <div class="request-card position-relative">
-          <!-- Notificação (Toast) no topo do card -->
-          <div
-            *ngIf="card.valor_negociado !== ''"
-            class="toast show position-absolute top-0 end-0 m-1"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-          >
-            <div class="toast-header">
-              <strong class="me-auto">Notificação</strong>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="toast-body">
-              O cliente gostaria de pagar
-              <span class="fw-bold text-black">R$ 100</span> pelo serviço.<br />
-              Você pode aceitar ou clicar no <i class="fa fa-pencil"></i> para
-              renegociar.
-            </div>
-          </div>
-
-          <!-- Cabeçalho do Card -->
-          <div class="request-card-header p-3">
-            <div class="col-1 request-card-icon border-0">
-              <i
-                [class]="card.icon"
-                style="color: var(--primary) !important"
-              ></i>
-            </div>
-            <div class="col-11 request-card-title">
-              <div class="d-flex align-items-center">
-                <h5>{{ card.categoria }}</h5>
-                <!-- <div>&nbsp;•&nbsp;</div> -->
+          <!-- Pega a candidatura do prestador logado -->
+          <ng-container *ngIf="getMinhaCandidatura(card) as candidatura">
+            <!-- Notificação (Toast) no topo do card -->
+            <div
+              *ngIf="candidatura.valor_negociado !== ''"
+              class="toast show position-absolute top-0 end-0 m-1"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              <div class="toast-header">
+                <strong class="me-auto">Notificação</strong>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"
+                ></button>
               </div>
+              <div class="toast-body">
+                O cliente gostaria de pagar
+                <span class="fw-bold text-black">
+                  R$ {{ candidatura.valor_negociado }}
+                </span>
+                pelo serviço.<br />
+                Você pode aceitar ou clicar no <i class="fa fa-pencil"></i> para
+                renegociar.
+              </div>
+            </div>
+
+            <!-- Cabeçalho do Card -->
+            <div class="request-card-header p-3">
+              <div class="col-1 request-card-icon border-0">
+                <i
+                  [class]="card.icon"
+                  style="color: var(--primary) !important"
+                ></i>
+              </div>
+              <div class="col-11 request-card-title">
+                <div class="d-flex align-items-center">
+                  <h5>{{ card.categoria }}</h5>
+                </div>
+                <p class="request-card-description truncate-text">
+                  {{ card.address.street }}, {{ card.address.number }} -
+                  {{ card.address.city }} - {{ card.address.state }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Corpo do Card -->
+            <div class="request-card-body card-body p-3">
+              <p class="request-card-number">Pedido #{{ card.id_pedido }}</p>
               <p class="request-card-description truncate-text">
-                {{ card.address.street }}, {{ card.address.number }} -
-                {{ card.address.city }} - {{ card.address.state }}
+                {{ card.subcategoria }}
               </p>
             </div>
-          </div>
 
-          <!-- Corpo do Card -->
-          <div class="request-card-body card-body p-3">
-            <p class="request-card-number">Pedido #{{ card.id_pedido }}</p>
-            <p class="request-card-description truncate-text">
-              {{ card.subcategoria }}
-            </p>
-          </div>
-
-          <div class="custom-input-container container">
-            <div class="input-group mb-3">
-              <span class="input-group-text">$</span>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="card.valor_negociado"
-                [placeholder]="card.valor | currency : 'BRL'"
-                [disabled]="true"
-              />
+            <!-- Input de valores e horários -->
+            <div class="custom-input-container container">
+              <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="candidatura.valor_negociado"
+                  [placeholder]="card.valor | currency : 'BRL'"
+                  [disabled]="true"
+                />
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text">#</span>
+                <input
+                  [readonly]="true"
+                  type="text"
+                  class="form-control"
+                  [placeholder]="
+                    card.horario_preferencial | date : 'dd/MM/yyyy - HH:mm'
+                  "
+                  [disabled]="true"
+                />
+              </div>
             </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text">#</span>
-              <input
-                [readonly]="true"
-                type="text"
-                class="form-control"
-                aria-label="Amount (to the nearest dollar)"
-                [placeholder]="
-                  card.horario_preferencial | date : 'dd/MM/yyyy - HH:mm'
+
+            <!-- Botões de ação -->
+            <div class="request-card-footer d-flex gap-2 p-3">
+              <button
+                class="request-quote-btn col-6"
+                [ngClass]="{
+                  'change-button':
+                    candidatura.valor_negociado &&
+                    candidatura.valor_negociado !== card.valor
+                }"
+                style="background-color: var(--primary); color: var(--light)"
+                routerLink="/tudu-professional/progress-detail"
+              >
+                Iniciar
+              </button>
+              <button
+                style="
+                  color: var(--primary) !important;
+                  background-color: var(--light) !important;
+                  border: 1px solid var(--primary) !important;
                 "
-                [disabled]="true"
-              />
+                class="request-quote-btn bg-secondary col-6"
+              >
+                Detalhes
+              </button>
             </div>
-          </div>
-
-          <!-- Botões de ação -->
-          <div class="request-card-footer d-flex gap-2 p-3">
-            <button
-              class="request-quote-btn col-6"
-              [ngClass]="{
-                'change-button':
-                  card.valor_negociado && card.valor_negociado !== card.valor
-              }"
-              style="background-color: var(--primary); color: var(--light)"
-              routerLink="/tudu-professional/progress-detail"
-            >
-              Iniciar
-            </button>
-            <button
-              style="
-                color: var(--primary) !important;
-                background-color: var(--light) !important;
-                border: 1px solid var(--primary) !important;
-              "
-              class="request-quote-btn bg-secondary col-6"
-            >
-              Detalhes
-            </button>
-          </div>
+          </ng-container>
         </div>
       </div>
     </div>

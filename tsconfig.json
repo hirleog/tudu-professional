@@ -19,7 +19,8 @@
     "module": "es2020",
     "lib": ["es2020", "dom"],
     "paths": {
-      "tudu-ui-calendar": ["dist/tudu-ui-calendar"]
+      "tudu-ui-calendar": ["dist/tudu-ui-calendar"],
+      "src/app/services/auth.service": ["src/app/services/auth.service.ts"]
     }
   },
   "angularCompilerOptions": {
