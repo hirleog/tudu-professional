@@ -64,6 +64,14 @@
             </div>
           </div>
           <div class="request-card-body card-body p-3">
+            <div *ngIf="selectedIndex === 1">
+              <h5>
+                Valor orçamento:
+                <span style="color: var(--blue)">{{
+                  card.valor | currency : "BRL"
+                }}</span>
+              </h5>
+            </div>
             <p class="request-card-number">Pedido #{{ card.id_pedido }}</p>
             <p class="request-card-description truncate-text">
               {{ card.subcategoria }}
@@ -71,6 +79,12 @@
           </div>
 
           <div class="custom-input-container container">
+            <div
+              *ngIf="selectedIndex === 1"
+              class="d-flex justify-content-start"
+            >
+              <p>Meu lance</p>
+            </div>
             <div class="input-group mb-3">
               <span class="input-group-text">$</span>
               <input
@@ -78,7 +92,7 @@
                 class="form-control"
                 aria-label="Amount (to the nearest dollar)"
                 [(ngModel)]="card.valor_negociado"
-                [placeholder]="card.valor | currency : 'BRL'"
+                [placeholder]="card.valorFormatted | currency : 'BRL'"
                 [disabled]="!!card.renegotiateActive"
               />
               <button
@@ -160,7 +174,6 @@
                     dateTimeFormatted !== card.placeholderDataHora)
               }"
               style="background-color: var(--primary); color: var(--light)"
-              routerLink="/tudu-professional/progress"
             >
               {{
                 (card.valor_negociado && card.valor_negociado !== card.valor) ||
