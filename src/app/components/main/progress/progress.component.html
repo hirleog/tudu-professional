@@ -32,7 +32,7 @@
       >
         <div class="request-card position-relative">
           <!-- Pega a candidatura do prestador logado -->
-          <ng-container *ngIf="getMinhaCandidatura(card) as candidatura">
+          <ng-container *ngFor="let candidatura of card.candidaturas">
             <!-- Notificação (Toast) no topo do card -->
             <div
               *ngIf="candidatura.valor_negociado !== ''"
@@ -95,7 +95,6 @@
                 <input
                   type="text"
                   class="form-control"
-                  [(ngModel)]="candidatura.valor_negociado"
                   [placeholder]="card.valor | currency : 'BRL'"
                   [disabled]="true"
                 />

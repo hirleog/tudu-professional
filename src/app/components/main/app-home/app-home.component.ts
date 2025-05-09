@@ -13,9 +13,6 @@ import { CardService } from '../../services/card.service';
   styleUrls: ['./app-home.component.css'],
 })
 export class AppHomeComponent implements OnInit {
-  @ViewChild('carouselOrders') carousel: any;
-  bsCarousel!: Carousel;
-
   headerPageOptions: string[] = [];
   overlay: boolean = false;
   dateTimeFormatted: string = '';
@@ -26,37 +23,6 @@ export class AppHomeComponent implements OnInit {
   id_prestador: any;
 
   cards: CardOrders[] = [];
-
-  // cards: CardOrders[] = [
-  //   {
-  //     id: 102,
-  //     icon: 'fas fa-car', // Ícone FontAwesome
-  //     serviceName: 'Lavagem Automotiva',
-  //     description: 'Lavagem completa com polimento para meu carro...',
-  //     address: 'Rua doutor paulo de andrade arantes, 52',
-  //     price: '150,00',
-  //     valor_negociado: '150,00',
-  //     renegotiateActive: true,
-  //     calendarActive: false,
-  //     dateTime: '2025-08-08T10:00:00',
-  //     placeholderDataHora: '',
-  //     hasQuotes: false,
-  //   },
-  //   {
-  //     id: 103,
-  //     icon: 'fas fa-paint-roller',
-  //     serviceName: 'Pintura Residencial',
-  //     description: 'Preciso pintar a sala e os quartos do apartamento...',
-  //     address: 'Rua doutor antonio lobo sobrinho, 123',
-  //     price: '150,00',
-  //     valor_negociado: '',
-  //     renegotiateActive: true,
-  //     calendarActive: false,
-  //     dateTime: '2025-10-10T10:00:00',
-  //     placeholderDataHora: '',
-  //     hasQuotes: true,
-  //   },
-  // ];
 
   historicOrders: HistoricModel[] = [
     {
@@ -83,6 +49,9 @@ export class AppHomeComponent implements OnInit {
     },
   ];
   isLogged: any = false;
+  publicados: number = 0;
+  emAndamento: number = 0;
+  finalizados: number = 0;
 
   constructor(private route: Router, public cardService: CardService) {
     moment.locale('pt-br');
@@ -113,22 +82,11 @@ export class AppHomeComponent implements OnInit {
 
     this.id_prestador = localStorage.getItem('prestador_id');
   }
-  ngAfterViewInit() {
-    this.bsCarousel = new Carousel(this.carousel.nativeElement, {
-      interval: false,
-      touch: true, // Habilita o arrasto
-    });
-
-    // Listen to slide events
-    this.carousel.nativeElement.addEventListener(
-      'slid.bs.carousel',
-      (event: any) => {
-        this.selectedIndex = event.to;
-      }
-    );
-  }
+  ngAfterViewInit() {}
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
+
+    this.selectItem(0);
     this.listCards();
 
     // id_prestador = localStorage.getItem('prestador_id');
@@ -136,7 +94,7 @@ export class AppHomeComponent implements OnInit {
   }
 
   listCards() {
-    this.cardService.getCards().subscribe({
+    this.cardService.getCards('publicado').subscribe({
       next: (response) => {
         this.cards = (response as CardOrders[]).map((card) => ({
           ...card, // Mantém os campos existentes
@@ -169,16 +127,28 @@ export class AppHomeComponent implements OnInit {
       (c) => c.prestador_id === this.id_prestador
     );
 
+    // Determina o valor negociado
+    const valorNegociado = candidaturaAtual
+      ? candidaturaAtual.valor_negociado === ''
+        ? card.valor
+        : candidaturaAtual.valor_negociado ?? card.valor
+      : card.valor_negociado && card.valor_negociado !== card.valor
+      ? card.valor_negociado
+      : card.valor;
+
+    // Determina o status com base nas negociações
+    const statusPedido =
+      valorNegociado !== card.valor ||
+      (horario_negociado_formatted &&
+        horario_negociado_formatted !== card.horario_preferencial)
+        ? 'publicado'
+        : 'pendente';
+
     const payloadCard: any = {
       id_cliente: Number(card.id_pedido),
       id_prestador: null,
-
-      // Usa a data da candidatura, se existir
-      // data_candidatura:
-      //   candidaturaAtual?.data_candidatura ?? new Date().toISOString(),
-
       categoria: card.categoria,
-      status_pedido: card.status_pedido,
+      status_pedido: statusPedido, // Usa o status calculado
       subcategoria: card.subcategoria,
       valor: card.valor,
       horario_preferencial: card.horario_preferencial,
@@ -194,10 +164,7 @@ export class AppHomeComponent implements OnInit {
       candidaturas: [
         {
           prestador_id: Number(this.id_prestador),
-          valor_negociado:
-            candidaturaAtual?.valor_negociado === ''
-              ? card.valor
-              : candidaturaAtual?.valor_negociado ?? card.valor,
+          valor_negociado: valorNegociado,
           horario_negociado: horario_negociado_formatted,
           status: 'ativa',
           data_finalizacao: '',
@@ -325,40 +292,27 @@ export class AppHomeComponent implements OnInit {
     }
   }
 
-  // get cardsDisponiveis(): any[] {
-  //   return this.cards.filter(
-  //     (card) =>
-  //       !card.candidaturas?.some((c) => c.prestador_id === this.id_prestador)
-  //   );
-  // }
-
-  // get cardsEmAndamento(): any[] {
-  //   return this.cards.filter((card) =>
-  //     card.candidaturas?.some((c) => c.prestador_id === this.id_prestador)
-  //   );
-  // }
-
   updateHeaderCounts() {
-    const publicados = this.cards.filter(
-      (card) => card.status_pedido === 'publicado'
-    ).length;
+    const id = Number(this.id_prestador);
 
-    const emAndamento = this.cards.filter(
+    this.publicados = this.cards.filter(
       (card) =>
         card.status_pedido === 'publicado' &&
-        card.candidaturas?.some(
-          (c: any) => c.prestador_id === this.id_prestador
-        )
+        !card.candidaturas?.some((c: any) => c.prestador_id === id)
     ).length;
 
-    const finalizados = this.cards.filter(
+    this.emAndamento = this.cards.filter((card) =>
+      card.candidaturas?.some((c: any) => c.prestador_id === id)
+    ).length;
+
+    this.finalizados = this.cards.filter(
       (card) => card.status_pedido === 'finalizado'
     ).length;
 
     this.headerPageOptions = [
-      `Serviços(${publicados})`,
-      `Em andamento(${emAndamento})`,
-      `Finalizados(${finalizados})`,
+      `Serviços(${this.publicados})`,
+      `Em andamento(${this.emAndamento})`,
+      `Finalizados(${this.finalizados})`,
     ];
   }
 
@@ -392,10 +346,6 @@ export class AppHomeComponent implements OnInit {
         }
       });
     });
-  }
-  // Método para quando o carrossel muda via navegação
-  onSlideChanged(event: any) {
-    this.selectedIndex = event.to;
   }
 
   goToShowcase() {

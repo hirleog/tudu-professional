@@ -79,26 +79,26 @@ export class ProgressComponent implements OnInit {
   // }
 
   listCards() {
-    // this.cardService.getCards().subscribe({
-    //   next: (response) => {
-    //     this.cards = (response as CardOrders[]).map((card) => ({
-    //       ...card, // Mantém os campos existentes
-    //       icon: this.cardService.getIconByLabel(card.categoria) || '', // Garante que o ícone nunca seja null
-    //       renegotiateActive: true, // Adiciona o campo manualmente
-    //       calendarActive: false, // Adiciona o campo manualmente
-    //       horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
-    //       placeholderDataHora: '', // Adiciona o campo manualmente
-    //     }));
-    //     this.selectItem(0);
-    //     console.log('progess', this.cards);
-    //   },
-    //   error: (error) => {
-    //     console.error('Erro ao obter os cartões:', error);
-    //   },
-    //   complete: () => {
-    //     console.log('Requisição concluída');
-    //   },
-    // });
+    this.cardService.getCards('pendente').subscribe({
+      next: (response) => {
+        this.cards = (response as CardOrders[]).map((card) => ({
+          ...card, // Mantém os campos existentes
+          icon: this.cardService.getIconByLabel(card.categoria) || '', // Garante que o ícone nunca seja null
+          renegotiateActive: true, // Adiciona o campo manualmente
+          calendarActive: false, // Adiciona o campo manualmente
+          horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
+          placeholderDataHora: '', // Adiciona o campo manualmente
+        }));
+        this.selectItem(0);
+        console.log('progess', this.cards);
+      },
+      error: (error) => {
+        console.error('Erro ao obter os cartões:', error);
+      },
+      complete: () => {
+        console.log('Requisição concluída');
+      },
+    });
   }
 
   getMinhaCandidatura(card: CardOrders) {

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -81,14 +81,16 @@ export class CardService {
 
     return this.http.get(`${this.url}/cards/${id}`, { headers });
   }
-  getCards() {
+  getCards(status_pedido: string) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'access-control-allow-origin': '*',
     });
 
-    return this.http.get(`${this.url}/cards`, { headers });
+    const params = new HttpParams().set('status_pedido', status_pedido);
+
+    return this.http.get(`${this.url}/cards`, { headers, params });
   }
 
   // Método para buscar o ícone com base no label

@@ -10,6 +10,7 @@ export interface CardOrders {
   categoria: string;
   subcategoria: string;
   valor: string;
+  valor_negociado: string;
   horario_preferencial: string;
 
   codigo_confirmacao?: string;
