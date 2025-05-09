@@ -103,7 +103,10 @@ export class AppHomeComponent implements OnInit {
           calendarActive: false, // Adiciona o campo manualmente
           horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
           placeholderDataHora: '', // Adiciona o campo manualmente
+
+          valorFormatted: card.candidaturas?.[0]?.valor_negociado ?? card.valor,
         }));
+
         this.updateHeaderCounts(); // ATUALIZA A CONTAGEM
         this.selectItem(0);
       },
@@ -172,12 +175,17 @@ export class AppHomeComponent implements OnInit {
       ],
     };
 
-    const route: string =
-      card.status_pedido === 'pendente' ? '/progress' : '/home';
+    const flow =
+      payloadCard.candidaturas[0].valor_negociado !== payloadCard.valor ||
+      payloadCard.candidaturas[0].horario_negociado !==
+        payloadCard.horario_preferencial
+        ? 'emAndamento'
+        : 'pendente';
+
+    const route: string = flow === 'pendente' ? '/progress' : '/home';
 
     this.cardService.updateCard(card.id_pedido!, payloadCard).subscribe({
       next: (response) => {
-        console.log('Card atualizado com sucesso:', response);
         route === '/home' ? this.selectItem(1) : this.route.navigate([route]); // direciona para tela de em andamento se não vai para tela de progress
       },
       error: (error) => {
