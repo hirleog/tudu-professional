@@ -169,11 +169,14 @@ export class AppHomeComponent implements OnInit {
           prestador_id: Number(this.id_prestador),
           valor_negociado: valorNegociado,
           horario_negociado: horario_negociado_formatted,
-          status: 'ativa',
+          status: statusPedido === 'pendente' ? 'aceito' : 'em negociacao',
           data_finalizacao: '',
         },
       ],
     };
+
+    //  status: valorNegociado !== card.valor || (horario_negociado_formatted && horario_negociado_formatted !== card.horario_preferencial)
+    //         ? 'em negociacao' : 'pendente',
 
     const flow =
       payloadCard.candidaturas[0].valor_negociado !== payloadCard.valor ||
