@@ -90,7 +90,10 @@ export class CardService {
 
     const params = new HttpParams().set('status_pedido', status_pedido);
 
-    return this.http.get(`${this.url}/cards`, { headers, params });
+    return this.http.get<{ cards: CardOrders[]; counts: any }>(
+      `${this.url}/cards`,
+      { headers, params }
+    );
   }
 
   // Método para buscar o ícone com base no label

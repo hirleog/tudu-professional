@@ -20,6 +20,7 @@ export class ProgressComponent implements OnInit {
   cards: CardOrders[] = [];
   isLogged: any = false;
   id_prestador: any;
+  counts: any;
 
   // cards: any[] = [
   //   {
@@ -80,17 +81,19 @@ export class ProgressComponent implements OnInit {
 
   listCards() {
     this.cardService.getCards('pendente').subscribe({
-      next: (response) => {
-        this.cards = (response as CardOrders[]).map((card) => ({
-          ...card, // Mantém os campos existentes
-          icon: this.cardService.getIconByLabel(card.categoria) || '', // Garante que o ícone nunca seja null
-          renegotiateActive: true, // Adiciona o campo manualmente
-          calendarActive: false, // Adiciona o campo manualmente
-          horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
-          placeholderDataHora: '', // Adiciona o campo manualmente
+      next: (response: { cards: CardOrders[]; counts: any }) => {
+        this.cards = response.cards.map((card) => ({
+          ...card,
+          icon: this.cardService.getIconByLabel(card.categoria) || '',
+          renegotiateActive: true,
+          calendarActive: false,
+          horario_preferencial: card.horario_preferencial,
+          placeholderDataHora: '',
         }));
+
+        this.counts = response.counts; // Armazena os contadores recebidos
         this.selectItem(0);
-        console.log('progess', this.cards);
+        console.log('progress', this.cards);
       },
       error: (error) => {
         console.error('Erro ao obter os cartões:', error);

@@ -34,7 +34,7 @@
           <!-- Pega a candidatura do prestador logado -->
           <ng-container *ngFor="let candidatura of card.candidaturas">
             <!-- Notificação (Toast) no topo do card -->
-            <div
+            <!-- <div
               *ngIf="candidatura.valor_negociado !== ''"
               class="toast show position-absolute top-0 end-0 m-1"
               role="alert"
@@ -59,7 +59,7 @@
                 Você pode aceitar ou clicar no <i class="fa fa-pencil"></i> para
                 renegociar.
               </div>
-            </div>
+            </div> -->
 
             <!-- Cabeçalho do Card -->
             <div class="request-card-header p-3">
@@ -95,7 +95,11 @@
                 <input
                   type="text"
                   class="form-control"
-                  [placeholder]="card.valor | currency : 'BRL'"
+                  [placeholder]="
+                    candidatura.valor_negociado !== card.valor
+                      ? (candidatura.valor_negociado | currency : 'BRL')
+                      : (card.valor | currency : 'BRL')
+                  "
                   [disabled]="true"
                 />
               </div>
@@ -106,7 +110,11 @@
                   type="text"
                   class="form-control"
                   [placeholder]="
-                    card.horario_preferencial | date : 'dd/MM/yyyy - HH:mm'
+                    candidatura.horario_negociado !== card.horario_preferencial
+                      ? (candidatura.horario_negociado
+                        | date : 'dd/MM/yyyy - HH:mm')
+                      : (card.horario_preferencial
+                        | date : 'dd/MM/yyyy - HH:mm')
                   "
                   [disabled]="true"
                 />

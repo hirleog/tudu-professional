@@ -21,7 +21,7 @@ export class StatusFilterPipe implements PipeTransform {
         return cards.filter((card) =>
           card.candidaturas?.some((c: any) => c.prestador_id === id)
         );
-      case 2: // Aba "Em andamento"
+      case 2: 
         return cards.filter((card) => card.status_pedido === 'publicado');
 
       default:

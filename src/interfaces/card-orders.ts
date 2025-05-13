@@ -33,5 +33,7 @@ export interface CardOrders {
   placeholderDataHora?: string;
   hasQuotes: boolean; // Se há orçamentos disponíveis
 
-  candidaturas?: Candidatura[]; // ✅ Agora com tipo correto
+  candidaturas: Candidatura[]; // ✅ Agora com tipo correto
+
+  valorFormatted?: string; // Valor formatado
 }

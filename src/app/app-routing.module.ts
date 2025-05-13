@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BudgetsComponent } from './components/main/budgets/budgets.component';
 
 const routes: Routes = [
   {
