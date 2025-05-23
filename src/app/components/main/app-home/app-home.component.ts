@@ -95,14 +95,21 @@ export class AppHomeComponent implements OnInit {
     this.cardService.getCards(step).subscribe({
       next: (response: { cards: CardOrders[]; counts: any }) => {
         this.cards = response.cards.map((card) => {
-          const horario = card.horario_preferencial
-            ? moment(card.horario_preferencial)
-            : null;
-
+          // const horario = card.horario_preferencial
+          //   ? moment(card.horario_preferencial)
+          //   : null;
           const placeholderDataHora =
-            horario && [0, 1, 2].includes(this.selectedIndex)
-              ? `${horario.format('DD/MM/YYYY')} - ${horario.format('HH:mm')}`
-              : '';
+            card.candidaturas?.[0]?.horario_negociado !==
+              card.horario_preferencial && card.candidaturas.length > 0
+              ? moment(card.candidaturas?.[0]?.horario_negociado).format(
+                  'DD/MM/YYYY - HH:mm'
+                )
+              : moment(card.horario_preferencial).format('DD/MM/YYYY - HH:mm');
+
+          // const placeholderDataHora =
+          //   horario && [0, 1, 2].includes(this.selectedIndex)
+          //     ? `${horario.format('DD/MM/YYYY')} - ${horario.format('HH:mm')}`
+          //     : '';
 
           const valorFormatted =
             card.candidaturas?.[0]?.valor_negociado ?? card.valor;
@@ -164,9 +171,13 @@ export class AppHomeComponent implements OnInit {
         ? 'publicado'
         : 'pendente';
 
+    const isAceito =
+      valorNegociado === card.valor &&
+      horario_negociado_formatted === card.horario_preferencial;
+
     const payloadCard: any = {
       id_cliente: Number(card.id_pedido),
-      id_prestador: null,
+      id_prestador: isAceito ? Number(this.id_prestador) : null,
       categoria: card.categoria,
       status_pedido: statusPedido, // Usa o status calculado
       subcategoria: card.subcategoria,
@@ -186,7 +197,8 @@ export class AppHomeComponent implements OnInit {
           prestador_id: Number(this.id_prestador),
           valor_negociado: valorNegociado,
           horario_negociado: horario_negociado_formatted,
-          status: statusPedido === 'pendente' ? 'aceito' : 'negociacao',
+          status:
+            statusPedido === 'pendente' || isAceito ? 'aceito' : 'negociacao',
           data_finalizacao: '',
         },
       ],

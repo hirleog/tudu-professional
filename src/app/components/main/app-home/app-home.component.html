@@ -21,7 +21,7 @@
 
   <!-- <div class="container" *ngIf="cards.length > 0"> -->
   <div class="container">
-    <div class="header-desktop d-flex justify-content-between mt-5 mb-3">
+    <!-- <div class="header-desktop d-flex justify-content-between mt-5 mb-3">
       <a
         *ngFor="let item of headerPageOptions; let i = index"
         class="text-start header-desktop"
@@ -31,12 +31,30 @@
       >
         {{ item }}
       </a>
+    </div> -->
+
+    <div
+      class="tab-bar d-flex justify-content-between mt-4 mb-3 position-relative"
+    >
+      <a
+        *ngFor="let item of headerPageOptions; let i = index"
+        class="tab-link"
+        [class.active]="selectedIndex === i"
+        (click)="selectItem(i)"
+        [attr.aria-current]="selectedIndex === i ? 'page' : null"
+      >
+        {{ item }}
+      </a>
+      <div
+        class="tab-indicator"
+        [ngStyle]="{ transform: 'translateX(' + selectedIndex * 100 + '%)' }"
+      ></div>
     </div>
   </div>
 
   <!-- Item 0 - Meus Pedidos -->
   <div class="container">
-    <div class="row g-3 m-0 p-0">
+    <div class="row g-3 m-0 ">
       <div
         class="col-12 col-md-6 col-lg-6 m-0 p-2"
         *ngFor="let card of cards"
@@ -48,7 +66,8 @@
             card.valorFormatted !== card.valor &&
             card.candidaturas[0]?.status === 'recusado'
           "
-          class="toast show position-absolute top-0 end-0 m-1 " style="z-index: 1000;"
+          class="toast show position-absolute top-0 end-0 m-1"
+          style="z-index: 1000"
           role="alert"
           aria-live="assertive"
           aria-atomic="true"
