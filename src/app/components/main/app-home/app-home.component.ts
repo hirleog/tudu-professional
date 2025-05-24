@@ -85,7 +85,7 @@ export class AppHomeComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
 
     this.selectItem(0);
-    this.listCards('publicado');
+    this.listCards('finalizado');
 
     // id_prestador = localStorage.getItem('prestador_id');
     // console.log('User ID recebido do Shell:', userId);
@@ -354,16 +354,37 @@ export class AppHomeComponent implements OnInit {
       case 0:
         this.listCards('publicado');
         break;
+      // case 1:
+      //   this.listCards('andamento');
+      //   break;
       case 1:
-        this.listCards('andamento');
-        break;
-      case 2:
         this.listCards('finalizado');
         break;
       case 3:
         this.route.navigate(['/tudu-professional/progress']);
         break;
     }
+  }
+
+  formatarHorario(pedido: any): string {
+    const candidatura = pedido.candidaturas?.[0];
+    let horario = pedido.horario_preferencial;
+
+    if (
+      candidatura &&
+      candidatura.horario_negociado !== pedido.horario_preferencial
+    ) {
+      horario = candidatura.horario_negociado;
+    }
+
+    const data = moment(horario);
+    const hoje = moment();
+
+    if (data.isSame(hoje, 'day')) {
+      return `Hoje, ${data.format('HH:mm')}`;
+    }
+
+    return data.format('DD/MM/YYYY - HH:mm');
   }
 
   goToShowcase() {
