@@ -85,7 +85,7 @@ export class AppHomeComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
 
     this.selectItem(0);
-    this.listCards('finalizado');
+    this.listCards('publicado');
 
     // id_prestador = localStorage.getItem('prestador_id');
     // console.log('User ID recebido do Shell:', userId);
@@ -155,13 +155,15 @@ export class AppHomeComponent implements OnInit {
     );
 
     // Determina o valor negociado
-    const valorNegociado = candidaturaAtual
-      ? candidaturaAtual.valor_negociado === ''
-        ? card.valor
-        : candidaturaAtual.valor_negociado ?? card.valor
-      : card.valor_negociado && card.valor_negociado !== card.valor
-      ? card.valor_negociado
-      : card.valor;
+    const valorNegociado =
+      candidaturaAtual && candidaturaAtual.valor_negociado !== card.valor
+        ? candidaturaAtual.valor_negociado
+        : card.valor;
+
+    //   : candidaturaAtual.valor_negociado ?? card.valor
+    // : card.valor_negociado && card.valor_negociado !== card.valor
+    // ? card.valor_negociado
+    // : card.valor;
 
     // Determina o status com base nas negociações
     const statusPedido =
@@ -354,10 +356,10 @@ export class AppHomeComponent implements OnInit {
       case 0:
         this.listCards('publicado');
         break;
-      // case 1:
-      //   this.listCards('andamento');
-      //   break;
       case 1:
+        this.listCards('andamento');
+        break;
+      case 2:
         this.listCards('finalizado');
         break;
       case 3:

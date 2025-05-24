@@ -47,7 +47,7 @@
         *ngFor="let card of cards"
         data-aos="fade-down"
       >
-        <div *ngIf="card.status_pedido !== 'finalizado'">
+        <div *ngIf="card.status_pedido === 'publicado'">
           <div
             *ngIf="
               selectedIndex === 1 &&
@@ -205,11 +205,11 @@
             </div>
 
             <div
-              class="request-card-footer d-flex gap-2 p-3"
+              class="request-card-footer d-flex gap-2 p-3 d-flex justify-content-end"
               style="margin-top: -3em"
             >
-              <!-- (click)="onSubmit()" -->
               <button
+                *ngIf="selectedIndex === 0"
                 (click)="updateCard(card)"
                 class="request-quote-btn col-6"
                 [ngClass]="{
