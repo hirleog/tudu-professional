@@ -62,7 +62,7 @@
             </div> -->
 
             <!-- Cabeçalho do Card -->
-            <div class="request-card-header p-3">
+            <div class="request-card-header bg-light p-3">
               <div class="col-1 request-card-icon border-0">
                 <i
                   [class]="card.icon"
@@ -122,8 +122,9 @@
             </div>
 
             <!-- Botões de ação -->
-            <div class="request-card-footer d-flex gap-2 p-3">
+            <div class="request-card-footer bg-light d-flex gap-2 p-3">
               <button
+              (click)="goToDetails(card)"
                 class="request-quote-btn col-6"
                 [ngClass]="{
                   'change-button':
@@ -131,7 +132,6 @@
                     candidatura.valor_negociado !== card.valor
                 }"
                 style="background-color: var(--primary); color: var(--light)"
-                routerLink="/tudu-professional/progress-detail"
               >
                 Iniciar
               </button>

@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { Carousel } from 'bootstrap';
+import { Observable, of } from 'rxjs';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { HistoricModel } from 'src/interfaces/historic.model';
-import { Observable, of } from 'rxjs';
 import { CardService } from '../../services/card.service';
 
 @Component({
@@ -17,7 +16,7 @@ export class AppHomeComponent implements OnInit {
   overlay: boolean = false;
   dateTimeFormatted: string = '';
 
-  selectedIndex: number = 0; // Inicia a primeira opção já selecionada
+  selectedIndex: any = 0; // Inicia a primeira opção já selecionada
   placeholderDataHora: string = '';
 
   id_prestador: any;
@@ -154,16 +153,13 @@ export class AppHomeComponent implements OnInit {
       (c) => c.prestador_id === this.id_prestador
     );
 
-    // Determina o valor negociado
-    const valorNegociado =
-      candidaturaAtual && candidaturaAtual.valor_negociado !== card.valor
-        ? candidaturaAtual.valor_negociado
-        : card.valor;
-
-    //   : candidaturaAtual.valor_negociado ?? card.valor
-    // : card.valor_negociado && card.valor_negociado !== card.valor
-    // ? card.valor_negociado
-    // : card.valor;
+    const valorNegociado = !candidaturaAtual
+      ? card.valor_negociado && card.valor_negociado !== card.valor
+        ? card.valor_negociado
+        : card.valor
+      : candidaturaAtual.valor_negociado !== card.valor
+      ? candidaturaAtual.valor_negociado
+      : card.valor;
 
     // Determina o status com base nas negociações
     const statusPedido =

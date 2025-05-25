@@ -108,6 +108,12 @@ export class ProgressComponent implements OnInit {
     return card.candidaturas?.find((c) => c.prestador_id === this.id_prestador);
   }
 
+  goToDetails(card: any): void {
+    this.route.navigate(['tudu-professional/progress-detail'], {
+      queryParams: { id: card.id_pedido },
+    });
+  }
+
   onDateSelected(date: string) {
     console.log('Data selecionada:', date);
     // Faça algo com a data selecionada
