@@ -144,7 +144,7 @@ export class ProgressDetailComponent implements OnInit {
         next: () => {
           this.codigoInvalido = false;
 
-          this.route.navigate(['/home/end']);
+          this.route.navigate(['/tudu-professional/end']);
         },
         error: (error: any) => {
           console.error('Erro ao atualizar o cartão:', error);

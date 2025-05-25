@@ -34,7 +34,7 @@ export class FlowEndComponent {
         modal.show();
       }
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['/tudu-professional/home']);
     }
   }
 }
