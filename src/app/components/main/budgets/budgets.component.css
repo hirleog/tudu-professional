@@ -16,7 +16,7 @@ p {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
-.request-quote-btn {
+/* .request-quote-btn {
     color: white;
     padding: 10px 15px;
     font-size: 17px;
@@ -25,12 +25,11 @@ p {
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.8s ease-in-out;
-    /* Tempo aumentado para 0.8s */
 }
 
 .request-quote-btn:hover {
     background: var(--primary-dark);
-}
+} */
 
 .card-footer {
     background-color: transparent;
