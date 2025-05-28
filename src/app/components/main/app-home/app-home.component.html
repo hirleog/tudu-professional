@@ -50,7 +50,7 @@
         *ngIf="
           selectedIndex === 1 &&
           card.valorFormatted !== card.valor &&
-          card.candidaturas[0]?.status === 'recusado'
+          card.candidaturas[0].status === 'recusado'
         "
         class="toast show position-absolute top-0 end-0 m-1"
         style="z-index: 1000"
@@ -113,7 +113,7 @@
           <div *ngIf="selectedIndex === 1" class="d-flex justify-content-start">
             <p>
               {{
-                card.candidaturas[0].status === "recusado"
+                card.candidaturas[0]?.status === 'recusado'
                   ? "Meu lance atual"
                   : "Meu lance"
               }}
