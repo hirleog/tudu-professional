@@ -137,6 +137,7 @@ export class ProgressDetailComponent implements OnInit {
   updateCard(card: CardOrders): Observable<CardOrders> {
     const payloadCard: any = {
       status_pedido: 'finalizado',
+      data_finalizacao: moment().format('YYYY-MM-DD HH:mm:ss'),
     };
 
     if (card.codigo_confirmacao === this.finalizeCode) {

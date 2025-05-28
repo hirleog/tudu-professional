@@ -244,6 +244,12 @@ export class AppHomeComponent implements OnInit {
     // // }
   }
 
+  goToDetails(id_pedido: any): void {
+    this.route.navigate(['/tudu-professional/detail'], {
+      queryParams: { id: id_pedido },
+    });
+  }
+
   renegotiateActive(card?: any): void {
     // this.renegotiate = !this.renegotiate;
     const cardInfo = this.cards.find((c) => c.id_pedido === card.id_pedido);

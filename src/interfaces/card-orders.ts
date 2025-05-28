@@ -36,4 +36,7 @@ export interface CardOrders {
   candidaturas: Candidatura[]; // ✅ Agora com tipo correto
 
   valorFormatted?: string; // Valor formatado
+
+  createdAt: string;
+  updatedAt: string;
 }
