@@ -181,6 +181,7 @@ export class AppHomeComponent implements OnInit {
       subcategoria: card.subcategoria,
       valor: card.valor,
       horario_preferencial: card.horario_preferencial,
+      data_finalizacao: card.data_finalizacao || null,
 
       cep: card.address.cep,
       street: card.address.street,
@@ -197,7 +198,6 @@ export class AppHomeComponent implements OnInit {
           horario_negociado: horario_negociado_formatted,
           status:
             statusPedido === 'pendente' || isAceito ? 'aceito' : 'negociacao',
-          data_finalizacao: '',
         },
       ],
     };

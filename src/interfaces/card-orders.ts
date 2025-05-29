@@ -37,6 +37,6 @@ export interface CardOrders {
 
   valorFormatted?: string; // Valor formatado
 
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
