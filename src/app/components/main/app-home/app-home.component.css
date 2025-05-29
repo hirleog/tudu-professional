@@ -35,14 +35,14 @@ i {
   background-color: transparent;
 }
 
-/* .request-card-description {
+.request-card-description {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-} */
+}
 
 .request-card-link {
   font-size: 0.9rem;
