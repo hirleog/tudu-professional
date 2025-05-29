@@ -18,10 +18,7 @@ i {
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
-.request-card-title p {
-  font-size: 0.9rem;
-  color: #666;
-}
+
 
 .request-card-body {
   margin-bottom: 20px;
@@ -35,14 +32,7 @@ i {
   background-color: transparent;
 }
 
-.request-card-description {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+
 
 .request-card-link {
   font-size: 0.9rem;

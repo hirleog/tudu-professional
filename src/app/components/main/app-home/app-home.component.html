@@ -245,12 +245,15 @@
           <div class="request-card-icon border-0">
             <i [class]="card.icon" style="color: var(--primary) !important"></i>
           </div>
-          <div class="request-card-title">
-            <div class="d-flex align-items-center">
-              <h5>{{ card.categoria }}</h5>
+          <div class="col-11 request-card-title">
+            <div class="d-flex align-items-center flex-wrap w-100">
+              <h5 class="mb-0 text-break">{{ card.categoria }}</h5>
               <!-- <div>&nbsp;•&nbsp;</div> -->
             </div>
-            <p class="request-card-description truncate-text w-100">
+            <p
+              class="request-card-description truncate-text mb-0 text-break"
+            ></p>
+            <p class="request-card-description truncate-text text-break">
               {{ card.address.street }}, {{ card.address.number }} -
               {{ card.address.city }} - {{ card.address.state }}
             </p>
@@ -302,7 +305,6 @@
             style="
               border: 1px solid var(--tag-p-grey);
               color: var(--primary);
-              font-size: 18px;
               background-color: var(--light);
             "
             routerLink="/tudu-professional/detail"
