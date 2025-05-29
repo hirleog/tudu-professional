@@ -192,7 +192,7 @@
 
         <div
           [ngClass]="selectedIndex === 0 ? 'ajust-space' : 'ajust-space2'"
-          class="request-card-footer p-3 bg-light"
+          class="request-card-footer p-3 d-flex justify-content-center gap-1 bg-light"
           style="margin-top: -3em"
         >
           <button
@@ -207,6 +207,10 @@
             }"
             style="background-color: var(--primary); color: var(--light)"
           >
+            <i
+              class="fas fa-paper-plane"
+              style="color: var(--light) !important"
+            ></i>
             {{
               (card.valor_negociado && card.valor_negociado !== card.valor) ||
               (card.calendarActive === true &&
@@ -215,21 +219,28 @@
                 : "Candidatar-se"
             }}
           </button>
+
           <!-- <button
-            style="
-              color: var(--primary) !important;
-              background-color: var(--light) !important;
-              border: 1px solid var(--primary) !important;
-            "
-            class="request-quote-btn bg-secondary col-6"
-          >
-            Detalhes
-          </button> -->
-          <button
             (click)="goToDetails(card.id_pedido)"
             class="bg-light fas fa-search"
             style="border: none; color: var(--primary); font-size: 25px"
-          ></button>
+          ></button> -->
+
+          <button
+            (click)="goToDetails(card.id_pedido)"
+            class="request-quote-btn d-flex align-items-center gap-2 col-6 text-center justify-content-center"
+            style="
+              border: 1px solid var(--tag-p-grey);
+              color: var(--primary);
+              background-color: var(--light);
+            "
+          >
+            <i
+              class="fas fa-search"
+              style="color: var(--secondary) !important"
+            ></i>
+            Detalhes
+          </button>
         </div>
       </div>
     </div>
