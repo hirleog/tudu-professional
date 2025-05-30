@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { CardOrders } from 'src/interfaces/card-orders';
-import { HistoricModel } from 'src/interfaces/historic.model';
 import { CardService } from '../../services/card.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -16,41 +16,24 @@ export class AppHomeComponent implements OnInit {
   overlay: boolean = false;
   dateTimeFormatted: string = '';
 
-  selectedIndex: any = 0; // Inicia a primeira opção já selecionada
+  selectedIndex: any = 0;
   placeholderDataHora: string = '';
 
   id_prestador: any;
 
   cards: CardOrders[] = [];
 
-  historicOrders: HistoricModel[] = [
-    {
-      id: 102,
-      icon: 'fas fa-car', // Ícone FontAwesome
-      serviceName: 'Lavagem Automotiva',
-      description: 'Lavagem completa com polimento para meu carro...',
-      price: '150,00',
-      clientName: 'Guilherme',
-      clientPhoto: '../../../../assets/GUI.PNG',
-      clientAddress: 'Rua doutor paulo de andrade arantes, 52',
-      dateTime: '2021-08-10T10:00:00',
-    },
-    {
-      id: 103,
-      icon: 'fas fa-paint-roller',
-      serviceName: 'Pintura Residencial',
-      description: 'Preciso pintar a sala e os quartos do apartamento...',
-      price: '150,00',
-      clientName: 'Matheus',
-      clientPhoto: '../../../../assets/matheus.PNG',
-      clientAddress: 'Rua doutor antonio lobo sobrinho, 123',
-      dateTime: '2021-08-10T10:00:00',
-    },
-  ];
   isLogged: any = false;
   counts: any;
+  flow: string = '';
+  homeFlow: string = '';
 
-  constructor(private route: Router, public cardService: CardService) {
+  constructor(
+    private route: Router,
+    public cardService: CardService,
+    private activeRoute: ActivatedRoute,
+    private location: Location
+  ) {
     moment.locale('pt-br');
     this.placeholderDataHora =
       moment().add(1, 'days').format('DD/MM/YYYY') + ' - 12:00'; // Data de amanhã às 12:00
@@ -77,17 +60,20 @@ export class AppHomeComponent implements OnInit {
       }
     });
 
+    this.activeRoute.queryParams.subscribe((params) => {
+      this.homeFlow = params['homeFlow'];
+    });
+
     this.id_prestador = localStorage.getItem('prestador_id');
   }
   ngAfterViewInit() {}
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
 
-    this.selectItem(0);
-    this.listCards('publicado');
-
-    // id_prestador = localStorage.getItem('prestador_id');
-    // console.log('User ID recebido do Shell:', userId);
+    this.location.subscribe(() => {
+      this.flowNavigate(); // chama seu método back() quando clicar em voltar do navegador
+    });
+    this.flowNavigate();
   }
 
   listCards(step: string) {
@@ -232,22 +218,6 @@ export class AppHomeComponent implements OnInit {
     });
 
     return of();
-    // // if (this.isLogged) {
-    // this.cardService
-    //   .updateCard(card.id_pedido!, payloadCard) // Use non-null assertion
-    //   .subscribe(() => {
-    //     route === '/home' ? this.selectItem(1) : this.route.navigate([route]); // Atualiza a lista de cartões após a atualização
-    //   });
-    // // } else {
-    // // this.route.navigate(['/']);
-    // return of();
-    // // }
-  }
-
-  goToDetails(id_pedido: any): void {
-    this.route.navigate(['/tudu-professional/detail'], {
-      queryParams: { id: id_pedido },
-    });
   }
 
   renegotiateActive(card?: any): void {
@@ -349,6 +319,39 @@ export class AppHomeComponent implements OnInit {
     ];
   }
 
+  // navega para detail com o parametro guardado do fluxo atual
+  goToDetails(id_pedido: any): void {
+    this.route.navigate(['/tudu-professional/detail'], {
+      queryParams: { id: id_pedido, flow: this.flow },
+    });
+  }
+
+  // recebe o parametro 'flow' de volta para guardar qual fluxo estava (publicado, andamento ou finalizado)
+  flowNavigate(): void {
+    let routeSelected: number = 0;
+    if (this.homeFlow) {
+      switch (this.homeFlow) {
+        case 'publicado':
+          routeSelected = 0;
+          break;
+        case 'andamento':
+          routeSelected = 1;
+          break;
+        case 'finalizado':
+          routeSelected = 2;
+          break;
+        default:
+          routeSelected = 0;
+          break;
+      }
+      this.selectItem(routeSelected);
+      //  remove o parâmetro da URL
+      this.cleanActualRoute();
+    } else {
+      this.selectItem(routeSelected);
+    }
+  }
+
   selectItem(index: number): void {
     // if (this.selectedIndex === index) return;
 
@@ -357,12 +360,24 @@ export class AppHomeComponent implements OnInit {
     switch (index) {
       case 0:
         this.listCards('publicado');
+        this.flow = 'publicado';
+        this.cleanActualRoute();
+
+        // this.homeFlow === 'publicado' ? this.selectedIndex === 0 : '';
         break;
       case 1:
         this.listCards('andamento');
+        this.flow = 'andamento';
+        this.cleanActualRoute();
+
+        // this.homeFlow === 'andamento' ? this.selectedIndex === 0 : '';
         break;
       case 2:
         this.listCards('finalizado');
+        this.flow = 'finalizado';
+        this.cleanActualRoute();
+
+        // this.homeFlow === 'finalizado' ? this.selectedIndex === 0 : '';
         break;
       case 3:
         this.route.navigate(['/tudu-professional/progress']);
@@ -389,6 +404,16 @@ export class AppHomeComponent implements OnInit {
     }
 
     return data.format('DD/MM/YYYY - HH:mm');
+  }
+
+  cleanActualRoute(): void {
+    this.route.navigate([], {
+      relativeTo: this.activeRoute,
+      queryParams: {
+        homeFlow: null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   goToShowcase() {

@@ -17,6 +17,8 @@ export interface CardOrders {
   data_finalizacao?: string;
   status_pedido: string; // publicado, em andamento, finalizado
 
+  imagens: any[];
+
   address: {
     cep: string; // CEP do endereço
     street: string; // Rua
@@ -34,8 +36,8 @@ export interface CardOrders {
   hasQuotes: boolean; // Se há orçamentos disponíveis
 
   candidaturas: Candidatura[]; // ✅ Agora com tipo correto
-
   valorFormatted?: string; // Valor formatado
+  currentImageIndex: any;
 
   createdAt?: string;
   updatedAt?: string;

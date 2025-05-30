@@ -124,7 +124,7 @@
             <!-- Botões de ação -->
             <div class="request-card-footer bg-light d-flex gap-2 p-3">
               <button
-              (click)="goToDetails(card)"
+                (click)="startCard(card)"
                 class="request-quote-btn col-6"
                 [ngClass]="{
                   'change-button':
@@ -141,6 +141,7 @@
                   background-color: var(--light) !important;
                   border: 1px solid var(--primary) !important;
                 "
+                (click)="goToDetails(card)"
                 class="request-quote-btn bg-secondary col-6"
               >
                 Detalhes
