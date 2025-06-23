@@ -190,6 +190,21 @@
   }
 }
 
+.calendar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // background-color: rgba(0, 0, 0, 0.2);
+  z-index: 999; /* Ajuste conforme necessário */
+}
+
+.calendar-container-ajust {
+  position: relative;
+  z-index: 1000; /* Deve ser maior que o overlay */
+}
+
 /* Estilos para o botão */
 .calendar-toggle-btn {
   width: 36px;

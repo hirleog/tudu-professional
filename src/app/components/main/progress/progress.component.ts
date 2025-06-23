@@ -5,6 +5,7 @@ import { CardOrders } from 'src/interfaces/card-orders';
 import { CardService } from '../../services/card.service';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { StateManagementService } from '../../services/state-management.service';
 
 @Component({
   selector: 'app-progress',
@@ -21,6 +22,7 @@ export class ProgressComponent implements OnInit {
   isLogged: any = false;
   id_prestador: any;
   counts: any;
+  isLoading: boolean = false;
 
   // cards: any[] = [
   //   {
@@ -49,7 +51,11 @@ export class ProgressComponent implements OnInit {
   //   },
   // ];
 
-  constructor(public cardService: CardService, public route: Router) {
+  constructor(
+    public cardService: CardService,
+    public route: Router,
+    private stateManagement: StateManagementService
+  ) {
     this.id_prestador = localStorage.getItem('prestador_id');
   }
 
@@ -80,6 +86,21 @@ export class ProgressComponent implements OnInit {
   // }
 
   listCards() {
+    if (this.stateManagement.cards && this.stateManagement.counts) {
+      this.cards = this.stateManagement.cards;
+      this.counts = this.stateManagement.counts;
+      this.isLoading = false;
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.stateManagement.scrollY,
+          behavior: 'auto',
+        });
+      }, 0);
+    }
+
+    this.isLoading = true;
+
     this.cardService.getCards('pendente').subscribe({
       next: (response: { cards: CardOrders[]; counts: any }) => {
         this.cards = response.cards.map((card) => ({
@@ -91,16 +112,17 @@ export class ProgressComponent implements OnInit {
           placeholderDataHora: '',
         }));
 
+        this.stateManagement.cards = this.cards;
+        this.stateManagement.counts = this.counts;
+
         this.counts = response.counts; // Armazena os contadores recebidos
         this.selectItem(0);
-        console.log('progress', this.cards);
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Erro ao obter os cartões:', error);
       },
-      complete: () => {
-        console.log('Requisição concluída');
-      },
+      complete: () => {},
     });
   }
 

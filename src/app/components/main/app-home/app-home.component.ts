@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { CardService } from '../../services/card.service';
 import { Location } from '@angular/common';
+import { StateManagementService } from '../../services/state-management.service';
 
 @Component({
   selector: 'app-home',
@@ -27,12 +28,14 @@ export class AppHomeComponent implements OnInit {
   counts: any;
   flow: string = '';
   homeFlow: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private route: Router,
     public cardService: CardService,
     private activeRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private stateManagement: StateManagementService
   ) {
     moment.locale('pt-br');
     this.placeholderDataHora =
@@ -77,12 +80,29 @@ export class AppHomeComponent implements OnInit {
   }
 
   listCards(step: string) {
+    if (
+      this.stateManagement.cards &&
+      this.stateManagement.counts &&
+      step === 'publicado'
+    ) {
+      this.cards = this.stateManagement.cards;
+      this.counts = this.stateManagement.counts;
+      this.updateHeaderCounts();
+      this.isLoading = false;
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.stateManagement.scrollY,
+          behavior: 'auto',
+        });
+      }, 0);
+    }
+
+    this.isLoading = true;
+
     this.cardService.getCards(step).subscribe({
       next: (response: { cards: CardOrders[]; counts: any }) => {
         this.cards = response.cards.map((card) => {
-          // const horario = card.horario_preferencial
-          //   ? moment(card.horario_preferencial)
-          //   : null;
           const placeholderDataHora =
             card.candidaturas?.[0]?.horario_negociado !==
               card.horario_preferencial && card.candidaturas.length > 0
@@ -90,11 +110,6 @@ export class AppHomeComponent implements OnInit {
                   'DD/MM/YYYY - HH:mm'
                 )
               : moment(card.horario_preferencial).format('DD/MM/YYYY - HH:mm');
-
-          // const placeholderDataHora =
-          //   horario && [0, 1, 2].includes(this.selectedIndex)
-          //     ? `${horario.format('DD/MM/YYYY')} - ${horario.format('HH:mm')}`
-          //     : '';
 
           const valorFormatted =
             card.candidaturas?.[0]?.valor_negociado ?? card.valor;
@@ -107,8 +122,6 @@ export class AppHomeComponent implements OnInit {
                 : candidatura.valor_negociado,
             })) ?? [];
 
-          // const renegotiateActive = candidaturas.some((c) => c.valor_negociado);
-
           return {
             ...card,
             icon: this.cardService.getIconByLabel(card.categoria) || '',
@@ -119,9 +132,11 @@ export class AppHomeComponent implements OnInit {
             candidaturas,
           };
         });
-
-        this.counts = response.counts; // armazena os contadores
-        this.updateHeaderCounts(); // atualiza o cabeçalho usando this.counts
+        this.counts = response.counts;
+        this.stateManagement.cards = this.cards;
+        this.stateManagement.counts = this.counts;
+        this.updateHeaderCounts();
+        this.isLoading = false;
       },
       error: (error) => console.error('Erro ao obter os cartões:', error),
       complete: () => console.log('Requisição concluída'),
@@ -289,11 +304,9 @@ export class AppHomeComponent implements OnInit {
     if (card) {
       const time = card.placeholderDataHora
         ? card.placeholderDataHora.split(' - ')[1]
-        : moment(card.dateTime).format('HH:mm'); // Mantém a hora se já existir
+        : card.dateTime; // Mantém a hora se já existir
 
-      card.placeholderDataHora = `${moment(date).format(
-        'DD/MM/YYYY'
-      )} - ${time}`;
+      card.placeholderDataHora = `${date} - ${time}`;
     }
   }
 
@@ -415,6 +428,20 @@ export class AppHomeComponent implements OnInit {
       queryParamsHandling: 'merge',
     });
   }
+
+  // onDateSelected(date: string) {
+  //   const time =
+  //     this.dateTimeSelected?.split(' - ')[1] || this.timeSelected || '00:00';
+
+  //   this.dateSelected = date;
+  //   this.dateTimeSelected = `${date} - ${time}`;
+  // }
+
+  // onTimeSelected(time: string) {
+  //   this.timeSelected = time;
+  //   const date = this.dateSelected || moment().format('DD/MM/YYYY');
+  //   this.dateTimeSelected = `${date} - ${time}`;
+  // }
 
   goToShowcase() {
     this.route.navigate(['/']);

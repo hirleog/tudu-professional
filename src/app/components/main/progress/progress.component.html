@@ -1,66 +1,46 @@
-<section>
-  <app-nav>
-    <a
-      routerLink="/tudu-professional/home"
-      class="text-decoration-none text-dark"
-      style="margin-right: 10px"
-    >
-      <i class="fas fa-arrow-left"></i>
-    </a>
+<app-nav>
+  <a
+    left-content
+    routerLink="/tudu-professional/home"
+    class="text-decoration-none text-dark"
+    style="margin-right: 10px"
+  >
+    <i class="fas fa-arrow-left"></i>
+  </a>
 
-    <h3 class="title-page m-0">PENDENTES</h3>
+  <h3 central-content class="title-page m-0">PENDENTES</h3>
 
-    <i
-      class="fas fa-question-circle"
-      style="font-size: 1.5em; color: var(--primary)"
-      title="Clique para mais informações"
-    ></i>
-  </app-nav>
+  <i
+    right-content
+    class="fas fa-question-circle"
+    style="font-size: 1.5em; color: var(--primary)"
+    title="Clique para mais informações"
+  ></i>
+</app-nav>
 
-  <div *ngIf="cards.length >= 1">
-    <app-calendar [markedDates]="yourMarkedDatesArray" [showWeekView]="true">
-    </app-calendar>
-  </div>
+<div *ngIf="cards.length >= 1" class="mt-5 pt-5">
+  <app-calendar
+    [hideCalendarInput]="true"
+    [markedDates]="yourMarkedDatesArray"
+    [showWeekView]="true"
+  >
+  </app-calendar>
+</div>
 
+<div class="container" *ngIf="isLoading">
+  <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
+</div>
+
+<section
+  class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 d-flex flex-column justify-content-center align-items-center"
+>
   <!-- SERVIÇOS EM ANDAMENTO -->
   <div id="in-progress" class="container">
     <div class="row g-3 m-0 p-0">
-      <div
-        class="col-12 col-md-6 col-lg-6 m-0 p-2"
-        *ngFor="let card of cards"
-        data-aos="fade-down"
-      >
+      <div class="col-12" *ngFor="let card of cards" data-aos="fade-down">
         <div class="request-card position-relative">
           <!-- Pega a candidatura do prestador logado -->
           <ng-container *ngFor="let candidatura of card.candidaturas">
-            <!-- Notificação (Toast) no topo do card -->
-            <!-- <div
-              *ngIf="candidatura.valor_negociado !== ''"
-              class="toast show position-absolute top-0 end-0 m-1"
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-            >
-              <div class="toast-header">
-                <strong class="me-auto">Notificação</strong>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="toast"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="toast-body">
-                O cliente gostaria de pagar
-                <span class="fw-bold text-black">
-                  R$ {{ candidatura.valor_negociado }}
-                </span>
-                pelo serviço.<br />
-                Você pode aceitar ou clicar no <i class="fa fa-pencil"></i> para
-                renegociar.
-              </div>
-            </div> -->
-
             <!-- Cabeçalho do Card -->
             <div class="request-card-header bg-light p-3">
               <div class="col-1 request-card-icon border-0">
@@ -165,7 +145,7 @@
       ></i>
       <p class="fs-3">Você ainda não possui pedidos</p>
       <button
-        class="btn-ui btn-primary mt-3 send-btn"
+        class="btn btn-outline-primary mt-3 send-btn"
         routerLink="/tudu-professional/home"
       >
         Buscar serviços

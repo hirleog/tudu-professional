@@ -11,6 +11,7 @@ import { CardDetailComponent } from './card-detail/card-detail.component';
 import { FlowEndComponent } from './flow-end/flow-end.component';
 import { ProgressDetailComponent } from './progress-detail/progress-detail.component';
 import { ProgressComponent } from './progress/progress.component';
+import { CardSkeletonModule } from '../template/card-skeleton/card-skeleton.module';
 
 const routes: Routes = [
   { path: 'home', component: AppHomeComponent },
@@ -35,6 +36,7 @@ const routes: Routes = [
     SharedModule,
     NavModule,
     TuduUiCalendarModule,
+    CardSkeletonModule,
     RouterModule.forChild(routes),
   ],
 })
