@@ -81,14 +81,16 @@ export class CardService {
 
     return this.http.get(`${this.url}/cards/${id}`, { headers });
   }
-  getCards(status_pedido: string) {
+  getCards(status_pedido: string, offset: number = 0, limit: number = 10) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'access-control-allow-origin': '*',
     });
 
-    const params = new HttpParams().set('status_pedido', status_pedido);
+    let params = new HttpParams()
+      .set('status_pedido', status_pedido)
+      .set('offset', offset.toString())
+      .set('limit', limit.toString());
 
     return this.http.get<{ cards: CardOrders[]; counts: any }>(
       `${this.url}/cards`,

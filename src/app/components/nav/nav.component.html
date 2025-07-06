@@ -2,27 +2,28 @@
 <div
   *ngIf="openClose"
   (click)="openClose = false"
-  class="fixed inset-0 bg-black bg-opacity-40 z-40"
+  class="fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden"
 ></div>
 
-<!-- Navbar -->
-<nav class="bg-white shadow-md w-full z-50 relative">
-  <div
-    class="max-w-screen-md mx-auto px-4 px-md-4 px-lg-1 h-16 flex items-center justify-between"
-  >
-    <!-- Slot esquerdo -->
-    <div class="flex items-center">
-      <ng-content select="[left-content]"></ng-content>
-    </div>
+<!-- Navbar Container -->
+<div class="fixed top-0 left-0 right-0 z-50">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md w-full">
+    <div class="mx-auto px-4 h-16 flex items-center justify-between">
+      <!-- Slot esquerdo -->
+      <div class="flex items-center">
+        <ng-content select="[left-content]"></ng-content>
+      </div>
 
-    <!-- Slot central -->
-    <div class="flex items-center justify-center">
-      <ng-content select="[central-content]"></ng-content>
-    </div>
+      <!-- Slot central -->
+      <div class="flex items-center justify-center">
+        <ng-content select="[central-content]"></ng-content>
+      </div>
 
-    <!-- Slot direito -->
-    <div class="flex items-center justify-end">
-      <ng-content select="[right-content]"></ng-content>
+      <!-- Slot direito -->
+      <div class="flex items-center justify-end">
+        <ng-content select="[right-content]"></ng-content>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
+</div>

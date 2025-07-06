@@ -18,13 +18,13 @@
   ></i>
 </app-nav>
 
-<div *ngIf="cards.length >= 1" class="mt-5 pt-5">
-  <app-calendar
+<div *ngIf="cards.length >= 1" class="mt-5 pt-1">
+  <!-- <app-calendar
     [hideCalendarInput]="true"
     [markedDates]="yourMarkedDatesArray"
     [showWeekView]="true"
   >
-  </app-calendar>
+  </app-calendar> -->
 </div>
 
 <div class="container" *ngIf="isLoading">

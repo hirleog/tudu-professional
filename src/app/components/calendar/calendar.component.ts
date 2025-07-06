@@ -197,11 +197,18 @@ export class CalendarComponent implements OnInit {
   }
 
   toggleCalendar() {
-  this.calendarActive = !this.calendarActive;
-  this.toggleBodyScroll(this.calendarActive);
-}
+    this.calendarActive = !this.calendarActive;
+    this.toggleBodyScroll(this.calendarActive);
+  }
 
   private toggleBodyScroll(disable: boolean): void {
     document.body.style.overflow = disable ? 'hidden' : '';
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.calendarActive = false;
+    }
   }
 }

@@ -26,6 +26,7 @@
     "aos": "^2.3.4",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
+    "highcharts": "^9.3.3",
     "http-server": "^14.1.1",
     "moment": "^2.30.1",
     "ngx-mask": "^14.3.3",

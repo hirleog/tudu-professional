@@ -5,15 +5,50 @@ import { CardOrders } from 'src/interfaces/card-orders';
   providedIn: 'root',
 })
 export class StateManagementService {
-  cards: CardOrders[] | null = null;
-  counts: any = null;
-  scrollY: number = 0;
+  private states: {
+    [status: string]: {
+      cards: CardOrders[];
+      counts: any;
+      scrollY: number;
+      pagina: number;
+      finalDaLista: boolean;
+    };
+  } = {};
 
-  constructor() {}
+  getState(status: string) {
+    if (!this.states[status]) {
+      this.clearState(status);
+    }
+    return this.states[status];
+  }
 
-  clearState() {
-    this.cards = null;
-    this.counts = null;
-    this.scrollY = 0;
+  setState(
+    status: string,
+    state: {
+      cards: CardOrders[];
+      counts: any;
+      scrollY: number;
+      pagina: number;
+      finalDaLista: boolean;
+    }
+  ) {
+    this.states[status] = state;
+  }
+
+  clearState(status: string) {
+    this.states[status] = {
+      cards: [],
+      counts: null,
+      scrollY: 0,
+      pagina: 0,
+      finalDaLista: false,
+    };
+  }
+  clearAllState() {
+    const statuses = ['andamento', 'finalizado', 'publicado', 'pendente'];
+
+    statuses.forEach((status) => {
+      this.clearState(status);
+    });
   }
 }

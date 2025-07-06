@@ -1,0 +1,247 @@
+<app-nav>
+  <div left-content class="d-flex align-items-center">
+    <a
+      (click)="back()"
+      class="text-decoration-none text-dark"
+      style="margin-right: 10px"
+    >
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <a class="logo" (click)="goHome()">
+      <img
+        src="../../../assets/logo-rosa.webp"
+        style="width: 4em"
+        alt="error"
+      />
+    </a>
+    <h3
+      style="margin-bottom: 0px; margin-top: 3px; font-size: 17px"
+      (click)="goHome()"
+    >
+      Professional
+    </h3>
+  </div>
+
+  <div central-content></div>
+  <!-- <div central-content></div> -->
+  <div right-content></div>
+</app-nav>
+
+<section class="max-w-4xl mx-auto p-3 p-md-0 mt-4 mb-4">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
+      Minhas Finanças
+    </h2>
+    <p class="text-gray-600 dark:text-gray-400">
+      Visão geral das suas finanças e previsão de repasses
+    </p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+    <ul class="flex flex-wrap -mb-px">
+      <li class="mr-2">
+        <button
+          (click)="setTab('overview')"
+          [class]="
+            isActive('overview')
+              ? 'text-primary border-primary'
+              : 'text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300'
+          "
+          class="inline-flex items-center p-4 border-b-2 rounded-t-lg group"
+        >
+          <i class="fas fa-chart-pie mr-2"></i>
+          Visão Geral
+        </button>
+      </li>
+      <!-- <li class="mr-2">
+        <button
+          (click)="setTab('forecast')"
+          [class]="
+            isActive('forecast')
+              ? 'text-primary border-primary'
+              : 'text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300'
+          "
+          class="inline-flex items-center p-4 border-b-2 rounded-t-lg group"
+        >
+          <i class="fas fa-calendar-alt mr-2"></i>
+          Previsão de Repasses
+        </button>
+      </li>
+      <li class="mr-2">
+        <button
+          (click)="setTab('history')"
+          [class]="
+            isActive('history')
+              ? 'text-primary border-primary'
+              : 'text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300'
+          "
+          class="inline-flex items-center p-4 border-b-2 rounded-t-lg group"
+        >
+          <i class="fas fa-history mr-2"></i>
+          Histórico
+        </button>
+      </li> -->
+    </ul>
+  </div>
+
+  <app-summary></app-summary>
+
+  <!-- Overview Tab -->
+  <div *ngIf="currentTab === 'overview'">
+    <!-- <app-summary-cards></app-summary-cards> -->
+
+    <!-- Charts Row -->
+    <!-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            Receita Mensal
+          </h3>
+          <div class="relative">
+            <select
+              class="appearance-none bg-gray-100 dark:bg-gray-700 border-0 text-gray-700 dark:text-gray-300 py-1 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option>Últimos 6 meses</option>
+              <option>Últimos 12 meses</option>
+              <option>Este ano</option>
+            </select>
+            <div
+              class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
+            >
+              <i class="fas fa-chevron-down text-gray-500"></i>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div
+            class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg"
+          >
+            <p class="text-gray-500 dark:text-gray-400">
+              Gráfico de receita mensal
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            Formas de Pagamento
+          </h3>
+          <div class="relative">
+            <select
+              class="appearance-none bg-gray-100 dark:bg-gray-700 border-0 text-gray-700 dark:text-gray-300 py-1 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option>Últimos 30 dias</option>
+              <option>Últimos 90 dias</option>
+              <option>Este ano</option>
+            </select>
+            <div
+              class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
+            >
+              <i class="fas fa-chevron-down text-gray-500"></i>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div
+            class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg"
+          >
+            <p class="text-gray-500 dark:text-gray-400">
+              Gráfico de formas de pagamento
+            </p>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Recent Transactions -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mt-6"
+    >
+      <div class="divide-y dark:divide-gray-700">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden"
+        >
+          <div class="px-6 py-4 border-b dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+              Transações Recentes
+            </h3>
+          </div>
+          <div class="divide-y dark:divide-gray-700">
+            <div
+              *ngFor="let transaction of transactions"
+              class="transaction-table gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <div
+                class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 flex items-center"
+              >
+                <div
+                  class="p-2 rounded-full mr-3"
+                  [ngClass]="transaction.iconClasses"
+                >
+                  <i class="fas {{ transaction.icon }}"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-gray-900 dark:text-white">
+                    {{ transaction.type }}
+                  </p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ transaction.transactionId }}
+                  </p>
+                </div>
+              </div>
+              <div
+                class="col-span-12 sm:col-span-6 md:col-span-3 lg:col-span-2"
+              >
+                <p class="text-gray-500 dark:text-gray-400">Cliente</p>
+                <p class="font-medium text-gray-900 dark:text-white">
+                  {{ transaction.client }}
+                </p>
+              </div>
+              <div class="col-span-6 sm:col-span-4 md:col-span-2 lg:col-span-2">
+                <p class="text-gray-500 dark:text-gray-400">Valor</p>
+                <p class="font-medium text-gray-900 dark:text-white">
+                  {{ transaction.amount }}
+                </p>
+              </div>
+              <div class="col-span-6 sm:col-span-4 md:col-span-2 lg:col-span-2">
+                <p class="text-gray-500 dark:text-gray-400">Data</p>
+                <p class="font-medium text-gray-900 dark:text-white">
+                  {{ transaction.date }}
+                </p>
+              </div>
+              <div
+                class="col-span-12 sm:col-span-4 md:col-span-3 lg:col-span-3 flex items-center justify-end"
+              >
+                <span
+                  class="px-2 py-1 text-xs rounded-full"
+                  [ngClass]="getStatusClass(transaction.status)"
+                >
+                  {{ transaction.statusText }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t dark:border-gray-700 text-center">
+            <a href="#" class="text-primary hover:text-indigo-500 font-medium"
+              >Ver todas as transações</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forecast Tab -->
+  <div *ngIf="currentTab === 'forecast'">
+    <!-- Similar structure for forecast tab -->
+  </div>
+
+  <!-- History Tab -->
+  <div *ngIf="currentTab === 'history'">
+    <!-- Similar structure for history tab -->
+  </div>
+</section>

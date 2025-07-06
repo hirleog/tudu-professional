@@ -24,32 +24,11 @@ export class ProgressComponent implements OnInit {
   counts: any;
   isLoading: boolean = false;
 
-  // cards: any[] = [
-  //   {
-  //     id: 102,
-  //     icon: 'fas fa-car', // Ícone FontAwesome
-  //     serviceName: 'Lavagem Automotiva',
-  //     description: 'Lavagem completa com polimento para meu carro...',
-  //     address: 'Rua doutor paulo de andrade arantes, 52',
-  //     price: '150,00',
-  //     editedPrice: '150,00',
-  //     renegotiateActive: true,
-  //     dateTime: '2021-08-10T10:00:00',
-  //     hasQuotes: false,
-  //   },
-  //   {
-  //     id: 103,
-  //     icon: 'fas fa-paint-roller',
-  //     serviceName: 'Pintura Residencial',
-  //     description: 'Preciso pintar a sala e os quartos do apartamento...',
-  //     address: 'Rua doutor antonio lobo sobrinho, 123',
-  //     price: '150,00',
-  //     editedPrice: '',
-  //     renegotiateActive: true,
-  //     dateTime: '2021-08-10T10:00:00',
-  //     hasQuotes: true,
-  //   },
-  // ];
+  // para paginação
+  paginaAtual = 0;
+  limitePorPagina = 10;
+  carregandoMais = false;
+  finalDaLista = false;
 
   constructor(
     public cardService: CardService,
@@ -86,43 +65,116 @@ export class ProgressComponent implements OnInit {
   // }
 
   listCards() {
-    if (this.stateManagement.cards && this.stateManagement.counts) {
-      this.cards = this.stateManagement.cards;
-      this.counts = this.stateManagement.counts;
-      this.isLoading = false;
+    if (this.carregandoMais || this.finalDaLista) {
+      return;
+    }
+    this.isLoading = true;
 
+    const offset = this.paginaAtual * this.limitePorPagina;
+    const currentState = this.stateManagement.getState('pendente');
+
+    // Restaurar do cache na primeira chamada
+    if (offset === 0 && currentState.cards.length > 0) {
+      this.cards = currentState.cards;
+      this.paginaAtual = currentState.pagina;
+      this.finalDaLista = currentState.finalDaLista;
+      this.counts = currentState.counts;
+
+      // Aplica scroll sem animação
       setTimeout(() => {
-        window.scrollTo({
-          top: this.stateManagement.scrollY,
-          behavior: 'auto',
-        });
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo(0, currentState.scrollY);
+        document.documentElement.style.scrollBehavior = '';
       }, 0);
+
+      this.isLoading = false;
+      return;
     }
 
-    this.isLoading = true;
+    this.carregandoMais = true;
 
     this.cardService.getCards('pendente').subscribe({
       next: (response: { cards: CardOrders[]; counts: any }) => {
-        this.cards = response.cards.map((card) => ({
-          ...card,
-          icon: this.cardService.getIconByLabel(card.categoria) || '',
-          renegotiateActive: true,
-          calendarActive: false,
-          horario_preferencial: card.horario_preferencial,
-          placeholderDataHora: '',
-        }));
+        const novosCards = response.cards.map((card) => {
+          return {
+            ...card,
+            icon: this.cardService.getIconByLabel(card.categoria) || '',
+            renegotiateActive: true,
+            calendarActive: false,
+            horario_preferencial: card.horario_preferencial,
+            placeholderDataHora: '',
+          };
+        });
 
-        this.stateManagement.cards = this.cards;
-        this.stateManagement.counts = this.counts;
+        if (
+          novosCards.length === 0 ||
+          novosCards.length < this.limitePorPagina
+        ) {
+          this.finalDaLista = true;
+          currentState.finalDaLista = true;
+          this.carregandoMais = false;
 
-        this.counts = response.counts; // Armazena os contadores recebidos
-        this.selectItem(0);
+          if (offset === 0) {
+            // Só limpa se realmente não vieram cards
+            if (novosCards.length === 0) {
+              this.cards = [];
+              currentState.cards = [];
+            } else {
+              // Se vieram alguns cards, adiciona eles
+              this.cards = novosCards;
+              currentState.cards = novosCards;
+            }
+
+            this.counts = response.counts;
+            currentState.counts = this.counts;
+            // this.updateHeaderCounts();
+          }
+          return;
+        }
+
+        this.cards = [...this.cards, ...novosCards];
+        this.paginaAtual++;
+
+        // Atualiza o estado específico do status
+        currentState.cards = this.cards;
+        currentState.pagina = this.paginaAtual;
+        currentState.finalDaLista = this.finalDaLista;
+        currentState.scrollY = window.scrollY;
+
+        this.counts = response.counts;
+        if (offset === 0) {
+          currentState.counts = this.counts;
+          // this.updateHeaderCounts();
+        }
+
         this.isLoading = false;
       },
+
+      // next: (response: { cards: CardOrders[]; counts: any }) => {
+      //   this.cards = response.cards.map((card) => ({
+      // ...card,
+      // icon: this.cardService.getIconByLabel(card.categoria) || '',
+      // renegotiateActive: true,
+      // calendarActive: false,
+      // horario_preferencial: card.horario_preferencial,
+      // placeholderDataHora: '',
+      //   }));
+
+      //   this.stateManagement.cards = this.cards;
+      //   this.stateManagement.counts = this.counts;
+
+      //   this.counts = response.counts; // Armazena os contadores recebidos
+      //   this.selectItem(0);
+      //   this.isLoading = false;
+      // },
+
       error: (error) => {
         console.error('Erro ao obter os cartões:', error);
+        this.isLoading = false;
       },
-      complete: () => {},
+      complete: () => {
+        this.isLoading = false;
+      },
     });
   }
 
