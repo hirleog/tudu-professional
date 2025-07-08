@@ -179,10 +179,14 @@ export class AppHomeComponent implements OnInit {
     const filterParams: any = {};
 
     if (this.filters.dataInicial) {
-      filterParams.dataInicial = this.filters.dataInicial;
+      filterParams.dataInicial = moment(this.filters.dataInicial).format(
+        'YYYY-MM-DD'
+      );
     }
     if (this.filters.dataFinal) {
-      filterParams.dataFinal = this.filters.dataFinal;
+      filterParams.dataFinal = moment(this.filters.dataFinal).format(
+        'YYYY-MM-DD'
+      );
     }
     if (this.filters.valorMin !== null) {
       filterParams.valorMin = this.filters.valorMin;

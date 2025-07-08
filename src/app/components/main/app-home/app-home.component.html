@@ -234,6 +234,7 @@
             >
               <p>
                 {{
+                  (card.candidaturas && card.candidaturas.length > 0) &&
                   card.candidaturas[0].status === "recusado"
                     ? "Meu lance atual"
                     : "Meu lance"
