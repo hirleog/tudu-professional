@@ -35,7 +35,27 @@ export class AppHomeComponent implements OnInit {
   limitePorPagina = 10;
   carregandoMais = false;
   finalDaLista = false;
-  
+
+  // Variáveis para os filtros
+  showFilters: boolean = false;
+  filters = {
+    dataInicial: '',
+    dataFinal: '',
+    valorMin: null,
+    valorMax: null,
+    categorias: [] as string[],
+  };
+
+  availableCategories: string[] = [
+    'Consultoria',
+    'Reformas e Reparos',
+    'Limpeza e Conservação',
+    'Pintura Residencial',
+    'Jardinagem',
+    'Serviços de Manutenção',
+  ];
+  offset: number = 0;
+
   constructor(
     private route: Router,
     public cardService: CardService,
@@ -85,24 +105,67 @@ export class AppHomeComponent implements OnInit {
     this.flowNavigate();
   }
 
-  listCards(status_pedido: string) {
+  applyFilter() {
+    this.cards = [];
+    this.offset = 0;
+    this.paginaAtual = 0;
+    this.finalDaLista = false;
+    this.showFilters = false;
+    this.listCards('publicado');
+  }
+  cleanFilter() {
+    this.cards = [];
+    this.offset = 0;
+    this.paginaAtual = 0;
+    this.finalDaLista = false;
+    this.showFilters = false;
+
+    this.filters.dataInicial = '';
+    this.filters.dataFinal = '';
+    this.filters.valorMin = null;
+    this.filters.valorMax = null;
+    this.filters.categorias = [] as string[];
+
+    this.stateManagement.clearAllState();
+    this.listCards('publicado');
+  }
+
+  listCards(status_pedido: any) {
     if (this.carregandoMais || this.finalDaLista) {
       return;
     }
+
     this.isLoading = true;
 
-    const offset = this.paginaAtual * this.limitePorPagina;
+    this.offset = this.paginaAtual * this.limitePorPagina;
     const currentState = this.stateManagement.getState(status_pedido);
 
-    // Restaurar do cache na primeira chamada
-    if (offset === 0 && currentState.cards.length > 0) {
+    const filtrosAtivos =
+      this.filters.dataInicial ||
+      this.filters.dataFinal ||
+      this.filters.valorMin !== null ||
+      this.filters.valorMax !== null ||
+      (this.filters.categorias && this.filters.categorias.length > 0);
+
+    // if (filtrosAtivos) {
+    //   offset = 0;
+    // }
+
+    // Se houver filtros ativos, resetar cards e paginação
+    if (this.offset === 0 && filtrosAtivos) {
+      this.cards = [];
+      this.paginaAtual = 0;
+      this.finalDaLista = false;
+    }
+
+    // Restaurar do cache na primeira chamada apenas se não houver filtros
+    if (this.offset === 0 && currentState.cards.length > 0 && !filtrosAtivos) {
       this.cards = currentState.cards;
       this.paginaAtual = currentState.pagina;
       this.finalDaLista = currentState.finalDaLista;
       this.counts = currentState.counts;
       this.updateHeaderCounts();
 
-      // Aplica scroll sem animação
       setTimeout(() => {
         document.documentElement.style.scrollBehavior = 'auto';
         window.scrollTo(0, currentState.scrollY);
@@ -113,10 +176,28 @@ export class AppHomeComponent implements OnInit {
       return;
     }
 
+    const filterParams: any = {};
+
+    if (this.filters.dataInicial) {
+      filterParams.dataInicial = this.filters.dataInicial;
+    }
+    if (this.filters.dataFinal) {
+      filterParams.dataFinal = this.filters.dataFinal;
+    }
+    if (this.filters.valorMin !== null) {
+      filterParams.valorMin = this.filters.valorMin;
+    }
+    if (this.filters.valorMax !== null) {
+      filterParams.valorMax = this.filters.valorMax;
+    }
+    if (this.filters.categorias.length > 0) {
+      filterParams.categoria = this.filters.categorias;
+    }
+
     this.carregandoMais = true;
 
     this.cardService
-      .getCards(status_pedido, offset, this.limitePorPagina)
+      .getCards(status_pedido, this.offset, this.limitePorPagina, filterParams)
       .subscribe({
         next: (response: { cards: CardOrders[]; counts: any }) => {
           const novosCards = response.cards.map((card) => {
@@ -157,43 +238,32 @@ export class AppHomeComponent implements OnInit {
             novosCards.length < this.limitePorPagina
           ) {
             this.finalDaLista = true;
-            currentState.finalDaLista = true;
-            this.carregandoMais = false;
-
-            if (offset === 0) {
-              // Só limpa se realmente não vieram cards
-              if (novosCards.length === 0) {
-                this.cards = [];
-                currentState.cards = [];
-              } else {
-                // Se vieram alguns cards, adiciona eles
-                this.cards = novosCards;
-                currentState.cards = novosCards;
-              }
-
-              this.counts = response.counts;
-              currentState.counts = this.counts;
-              this.updateHeaderCounts();
-            }
-            return;
+            if (!filtrosAtivos) currentState.finalDaLista = true;
+          } else {
+            this.finalDaLista = false;
           }
 
-          this.cards = [...this.cards, ...novosCards];
+          if (this.offset === 0) {
+            this.cards = novosCards;
+          } else {
+            this.cards = [...this.cards, ...novosCards];
+          }
+
           this.paginaAtual++;
 
-          // Atualiza o estado específico do status
-          currentState.cards = this.cards;
-          currentState.pagina = this.paginaAtual;
-          currentState.finalDaLista = this.finalDaLista;
-          currentState.scrollY = window.scrollY;
-
-          this.counts = response.counts;
-          if (offset === 0) {
-            currentState.counts = this.counts;
-            this.updateHeaderCounts();
+          if (filtrosAtivos) {
+            currentState.cards = this.cards;
+            currentState.pagina = this.paginaAtual;
+            currentState.finalDaLista = this.finalDaLista;
+            currentState.scrollY = window.scrollY;
+            currentState.counts = response.counts;
           }
 
+          this.counts = response.counts;
+          this.updateHeaderCounts();
+
           this.isLoading = false;
+          this.carregandoMais = false;
         },
         error: (error) => {
           this.carregandoMais = false;
@@ -204,6 +274,25 @@ export class AppHomeComponent implements OnInit {
           this.carregandoMais = false;
         },
       });
+  }
+
+  // Lógica para seleção de categorias
+  onCategoryChange(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    const category = checkbox.value;
+
+    if (checkbox.checked) {
+      this.filters.categorias.push(category);
+    } else {
+      this.filters.categorias = this.filters.categorias.filter(
+        (cat) => cat !== category
+      );
+    }
+    console.log('Categorias selecionadas:', this.filters.categorias);
+  }
+  // Função para alternar a visibilidade dos filtros
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 
   updateCard(card: CardOrders): Observable<CardOrders> {
@@ -217,7 +306,7 @@ export class AppHomeComponent implements OnInit {
       (c) => c.prestador_id === this.id_prestador
     );
 
-    const valorNegociado = !candidaturaAtual
+    const formatValorNegociado = !candidaturaAtual
       ? card.valor_negociado && card.valor_negociado !== card.valor
         ? card.valor_negociado
         : card.valor
@@ -225,6 +314,7 @@ export class AppHomeComponent implements OnInit {
       ? candidaturaAtual.valor_negociado
       : card.valor;
 
+    const valorNegociado = formatValorNegociado?.toString();
     // Determina o status com base nas negociações
     const statusPedido =
       valorNegociado !== card.valor ||
@@ -427,9 +517,9 @@ export class AppHomeComponent implements OnInit {
   selectItem(index: number): void {
     // Limpa os estados antes de trocar de aba, se necessário
     if (this.selectedIndex !== index) {
-      this.cards = []; // Limpa a lista atual
-      this.paginaAtual = 0; // Reseta a paginação
-      this.finalDaLista = false; // Reseta o flag de final da lista
+      this.cards = [];
+      this.paginaAtual = 0;
+      this.finalDaLista = false;
     }
     this.selectedIndex = index;
 

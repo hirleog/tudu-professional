@@ -81,7 +81,43 @@ export class CardService {
 
     return this.http.get(`${this.url}/cards/${id}`, { headers });
   }
-  getCards(status_pedido: string, offset: number = 0, limit: number = 10) {
+  // getCards(
+  //   status_pedido: string,
+  //   offset: number = 0,
+  //   limit: number = 10,
+  //   // valorMax?: any,
+  //   // valorMin?: any,
+  //   // dataInicial?: any,
+  //   // dataFinal?: any,
+  //   categoria?: any
+  // ) {
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     Accept: 'application/json',
+  //   });
+
+  //   let params = new HttpParams()
+  //     .set('status_pedido', status_pedido)
+  //     .set('offset', offset.toString())
+  //     .set('limit', limit.toString())
+  //     // .set('valorMax', valorMax || '')
+  //     // .set('valorMin', valorMin || '')
+  //     // .set('dataInicial', dataInicial || '')
+  //     // .set('dataFinal', dataFinal || '')
+  //     .set('categoria', categoria || '');
+
+  //   return this.http.get<{ cards: CardOrders[]; counts: any }>(
+  //     `${this.url}/cards`,
+  //     { headers, params }
+  //   );
+  // }
+
+  getCards(
+    status_pedido: string,
+    offset: number = 10,
+    limit: number = 10,
+    filterParams?: any // O objeto que conterá dataInicial, dataFinal, valorMax, valorMin, categoria
+  ): Observable<{ cards: CardOrders[]; counts: any }> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -91,6 +127,25 @@ export class CardService {
       .set('status_pedido', status_pedido)
       .set('offset', offset.toString())
       .set('limit', limit.toString());
+
+    // --- Nova lógica para adicionar os filterParams ---
+    if (filterParams) {
+      for (const key in filterParams) {
+        if (filterParams.hasOwnProperty(key)) {
+          const value = filterParams[key];
+          if (value !== null && value !== undefined && value !== '') {
+            if (Array.isArray(value)) {
+              value.forEach((item) => {
+                params = params.append(key, item);
+              });
+            } else {
+              params = params.set(key, value.toString());
+            }
+          }
+        }
+      }
+    }
+    // --- Fim da nova lógica ---
 
     return this.http.get<{ cards: CardOrders[]; counts: any }>(
       `${this.url}/cards`,
