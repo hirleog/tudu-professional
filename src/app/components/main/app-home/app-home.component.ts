@@ -526,6 +526,7 @@ export class AppHomeComponent implements OnInit {
       this.finalDaLista = false;
     }
     this.selectedIndex = index;
+    this.showFilters = false;
 
     switch (index) {
       case 0:
