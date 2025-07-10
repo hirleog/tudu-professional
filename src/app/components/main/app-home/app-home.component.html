@@ -227,6 +227,9 @@
             <p class="request-card-description">
               {{ card.subcategoria }}
             </p>
+            <p class="request-card-description">
+              {{ card.serviceDescription }}
+            </p>
           </div>
 
           <div class="custom-input-container container">
@@ -247,7 +250,7 @@
             <div class="input-group mb-3">
               <span class="input-group-text">$</span>
               <input
-                type="text"
+                type="number"
                 class="form-control"
                 aria-label="Amount (to the nearest dollar)"
                 [(ngModel)]="card.valor_negociado"
@@ -331,7 +334,7 @@
               class="request-quote-btn col-6"
               [ngClass]="{
                 'change-renegotiate-btn':
-                  (card.valor_negociado &&
+                  (!card.renegotiateActive &&
                     card.valor_negociado !== card.valor) ||
                   (card.calendarActive === true &&
                     dateTimeFormatted !== card.placeholderDataHora)
@@ -343,8 +346,8 @@
                 style="color: var(--light) !important"
               ></i>
               {{
-                (card.valor_negociado && card.valor_negociado !== card.valor) ||
-                (card.calendarActive === true &&
+                (!card.renegotiateActive && card.valor_negociado !== card.valor) ||
+                (card.calendarActive &&
                   dateTimeFormatted !== card.placeholderDataHora)
                   ? "Negociar"
                   : "Candidatar-se"
@@ -417,6 +420,9 @@
                 <p style="margin-bottom: -2px">Descrição</p>
                 <p class="request-card-description w-100">
                   {{ card.subcategoria }}
+                </p>
+                <p class="request-card-description">
+                  {{ card.serviceDescription }}
                 </p>
               </div>
 

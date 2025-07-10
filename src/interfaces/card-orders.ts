@@ -9,6 +9,8 @@ export interface CardOrders {
 
   categoria: string;
   subcategoria: string;
+  serviceDescription: string;
+
   valor: string;
   valor_negociado: string;
   horario_preferencial: string;

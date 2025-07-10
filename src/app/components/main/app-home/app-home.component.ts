@@ -6,6 +6,7 @@ import { CardOrders } from 'src/interfaces/card-orders';
 import { CardService } from '../../services/card.service';
 import { Location } from '@angular/common';
 import { StateManagementService } from '../../services/state-management.service';
+import { formatDecimal } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-home',
@@ -310,9 +311,12 @@ export class AppHomeComponent implements OnInit {
       (c) => c.prestador_id === this.id_prestador
     );
 
+    const valor = formatDecimal(Number(card.valor));
+    const valorNegociadoRaw = formatDecimal(Number(card.valor_negociado));
+
     const formatValorNegociado = !candidaturaAtual
-      ? card.valor_negociado && card.valor_negociado !== card.valor
-        ? card.valor_negociado
+      ? valorNegociadoRaw && valorNegociadoRaw !== valor
+        ? valorNegociadoRaw
         : card.valor
       : candidaturaAtual.valor_negociado !== card.valor
       ? candidaturaAtual.valor_negociado
@@ -396,14 +400,21 @@ export class AppHomeComponent implements OnInit {
     if (cardInfo) {
       cardInfo.renegotiateActive = !cardInfo.renegotiateActive; // Alterna o estado
 
-      if (cardInfo.renegotiateActive === true) {
+      if (cardInfo.renegotiateActive === false) {
         const minhaCandidatura = cardInfo.candidaturas?.find(
           (c) => c.prestador_id === this.id_prestador
         );
         if (minhaCandidatura) {
           minhaCandidatura.valor_negociado = cardInfo.valor;
         }
+      } else if (cardInfo.renegotiateActive === true) {
+        card.valorFormatted = cardInfo.valor_negociado.toString();
       }
+
+      // if (cardInfo.renegotiateActive === false) {
+      //   card.valorFormatted = cardInfo.valor;
+      //   card.valorNegociado = cardInfo.valor;
+      // }
     }
   }
 
