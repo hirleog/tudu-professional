@@ -7,6 +7,7 @@ import { CardService } from '../../services/card.service';
 import { Location } from '@angular/common';
 import { StateManagementService } from '../../services/state-management.service';
 import { formatDecimal } from 'src/app/utils/utils';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-home',
@@ -56,6 +57,7 @@ export class AppHomeComponent implements OnInit {
     'Serviços de Manutenção',
   ];
   offset: number = 0;
+  openModal: boolean = false;
 
   constructor(
     private route: Router,
@@ -324,12 +326,13 @@ export class AppHomeComponent implements OnInit {
 
     const valorNegociado = formatValorNegociado?.toString();
     // Determina o status com base nas negociações
-    const statusPedido =
-      valorNegociado !== card.valor ||
-      (horario_negociado_formatted &&
-        horario_negociado_formatted !== card.horario_preferencial)
-        ? 'publicado'
-        : 'pendente';
+    // const statusPedido =
+    //   valorNegociado !== card.valor ||
+    //   (horario_negociado_formatted &&
+    //     horario_negociado_formatted !== card.horario_preferencial)
+    //     ? 'publicado'
+    //     : 'pendente';
+    const statusPedido = 'publicado';
 
     const isAceito =
       valorNegociado === card.valor &&
@@ -358,30 +361,32 @@ export class AppHomeComponent implements OnInit {
           prestador_id: Number(this.id_prestador),
           valor_negociado: valorNegociado,
           horario_negociado: horario_negociado_formatted,
-          status:
-            statusPedido === 'pendente' || isAceito ? 'aceito' : 'negociacao',
+          status: 'negociacao',
+          // statusPedido === 'pendente' || isAceito ? 'aceito' : 'negociacao',
         },
       ],
     };
 
-    const flow =
-      payloadCard.candidaturas[0].valor_negociado !== payloadCard.valor ||
-      payloadCard.candidaturas[0].horario_negociado !==
-        payloadCard.horario_preferencial
-        ? 'emAndamento'
-        : 'pendente';
+    // const flow =
+    //   payloadCard.candidaturas[0].valor_negociado !== payloadCard.valor ||
+    //   payloadCard.candidaturas[0].horario_negociado !==
+    //     payloadCard.horario_preferencial
+    //     ? 'emAndamento'
+    //     : 'pendente';
 
-    const route: string = flow === 'pendente' ? 'progress' : '/home';
+    // const route: string = flow === 'pendente' ? 'progress' : '/home';
 
     this.cardService.updateCard(card.id_pedido!, payloadCard).subscribe({
       next: (response) => {
-        if (route === '/home') {
-          this.stateManagement.clearAllState(); // Limpa todos os estados antes de navegar
-          this.selectItem(1); // Atualiza a lista de cartões após a atualização
-        } else {
-          this.stateManagement.clearAllState(); // Limpa todos os estados antes de navegar
-          this.selectItem(3); // Atualiza a lista de cartões após a atualização
-        }
+        this.modalSentProposal(true);
+        // Limpa todos os estados antes de navegar
+        // if (route === '/home') {
+        //   this.stateManagement.clearAllState(); // Limpa todos os estados antes de navegar
+        //   this.selectItem(1); // Atualiza a lista de cartões após a atualização
+        // } else {
+        //   this.stateManagement.clearAllState(); // Limpa todos os estados antes de navegar
+        //   this.selectItem(3); // Atualiza a lista de cartões após a atualização
+        // }
       },
       error: (error) => {
         console.error('Erro ao atualizar o cartão:', error);
@@ -400,21 +405,17 @@ export class AppHomeComponent implements OnInit {
     if (cardInfo) {
       cardInfo.renegotiateActive = !cardInfo.renegotiateActive; // Alterna o estado
 
-      if (cardInfo.renegotiateActive === false) {
-        const minhaCandidatura = cardInfo.candidaturas?.find(
-          (c) => c.prestador_id === this.id_prestador
-        );
-        if (minhaCandidatura) {
-          minhaCandidatura.valor_negociado = cardInfo.valor;
-        }
-      } else if (cardInfo.renegotiateActive === true) {
+      if (cardInfo.renegotiateActive === true) {
+        // const minhaCandidatura = cardInfo.candidaturas?.find(
+        //   (c) => c.prestador_id.toString() === this.id_prestador
+        // );
+        // if (minhaCandidatura) {
+        //   card.valor_negociado = `R$${cardInfo.valor}`;
+        // }
+        card.valor_negociado = `R$${cardInfo.valor}`;
+      } else if (cardInfo.renegotiateActive === false) {
         card.valorFormatted = cardInfo.valor_negociado.toString();
       }
-
-      // if (cardInfo.renegotiateActive === false) {
-      //   card.valorFormatted = cardInfo.valor;
-      //   card.valorNegociado = cardInfo.valor;
-      // }
     }
   }
 
@@ -606,6 +607,55 @@ export class AppHomeComponent implements OnInit {
       queryParamsHandling: 'merge',
     });
   }
+
+  makeNewPorposal(card: CardOrders): void {
+    this.updateCard(card);
+  }
+
+  modalSentProposal(indicator: boolean): void {
+    if (indicator) {
+      const modalElement = document.getElementById('alertModal');
+      if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
+    }
+  }
+
+  closeModalAndUpdate(): void {
+    const modalElement = document.getElementById('alertModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+        this.stateManagement.clearAllState();
+        this.selectItem(0);
+      }
+    }
+  }
+  goToMyProposals() {
+    this.stateManagement.clearAllState();
+    this.selectItem(1);
+    
+  }
+
+  newPorposalBtnValidator(card: CardOrders): boolean {
+    // const valor = Number(card.valorFormatted);
+    // const negociado = Number(card.valor_negociado);
+
+    // if (isNaN(valor) || isNaN(negociado)) {
+    //     return true; // ou false
+    // }
+
+    if (card.placeholderDataHora !== card.horario_preferencial) {
+      return true; // Retorna true se forem diferentes
+    } else {
+      return false; // Retorna false se forem iguais
+    }
+
+    // return valor !== negociado; // Retorna true se forem diferentes
+  }
+
   @HostListener('window:scroll', [])
   onScroll(): void {
     const posicao = window.innerHeight + window.scrollY;

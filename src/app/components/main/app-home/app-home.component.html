@@ -165,9 +165,7 @@
       <div>
         <div
           *ngIf="
-            selectedIndex === 1 &&
-            card.valorFormatted !== card.valor &&
-            card.candidaturas[0].status === 'recusado'
+            selectedIndex === 1 && card.candidaturas[0].status === 'recusado'
           "
           class="toast show position-absolute top-0 end-0 m-1"
           style="z-index: 1000"
@@ -191,6 +189,8 @@
             >.<br />
             Você pode dar um novo lance clicando em
             <i class="fa fa-pencil"></i>
+            ou
+            <i class="fa fa-calendar-alt"></i>
           </div>
         </div>
 
@@ -258,7 +258,10 @@
                 [disabled]="!!card.renegotiateActive"
               />
               <button
-                *ngIf="selectedIndex === 0"
+                *ngIf="
+                  selectedIndex === 0 ||
+                  card.candidaturas[0].status === 'recusado'
+                "
                 [ngClass]="{
                   'change-renegotiate-btn': !card.renegotiateActive
                 }"
@@ -289,7 +292,10 @@
                   (click)="openCalendar(card)"
                 />
                 <button
-                  *ngIf="selectedIndex === 0"
+                  *ngIf="
+                    selectedIndex === 0 ||
+                    card.candidaturas[0].status === 'recusado'
+                  "
                   [ngClass]="{
                     'change-renegotiate-btn':
                       card.calendarActive && card.placeholderDataHora
@@ -328,6 +334,29 @@
             [ngClass]="selectedIndex === 0 ? 'ajust-space' : 'ajust-space2'"
             class="request-card-footer p-3 d-flex justify-content-center align-items-center gap-2 bg-light"
           >
+            <!-- botão exclusivo para novo lance -->
+            <button
+              *ngIf="card.candidaturas[0]?.status === 'recusado'"
+              (click)="makeNewPorposal(card)"
+              class="request-quote-btn col-6"
+              [ngClass]="
+                (!card.renegotiateActive &&
+                  card.valor_negociado !== card.valor) ||
+                (card.calendarActive === true &&
+                  dateTimeFormatted !== card.placeholderDataHora)
+                  ? 'change-renegotiate-btn'
+                  : 'disabled-card bg-secondary'
+              "
+              style="background-color: var(--primary); color: var(--light)"
+            >
+              <i
+                class="fas fa-paper-plane"
+                style="color: var(--light) !important"
+              ></i>
+              Enviar novo Lance
+            </button>
+            <!-- botão exclusivo para novo lance -->
+
             <button
               *ngIf="selectedIndex === 0"
               (click)="updateCard(card)"
@@ -346,7 +375,8 @@
                 style="color: var(--light) !important"
               ></i>
               {{
-                (!card.renegotiateActive && card.valor_negociado !== card.valor) ||
+                (!card.renegotiateActive &&
+                  card.valor_negociado !== card.valor) ||
                 (card.calendarActive &&
                   dateTimeFormatted !== card.placeholderDataHora)
                   ? "Negociar"
@@ -486,5 +516,36 @@
     </div>
   </div>
 </section>
+
+<!-- MODAL -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-4">
+        <i class="fas fa-check-circle text-success display-2"></i>
+
+        <h5>Proposta enviada com sucesso</h5>
+        <p class="text-muted" style="color: var(--tag-p-grey) !important">
+          Aguarde a confirmação do cliente. Você pode acompanhar o status do seu
+          serviço na aba "Andamento".
+        </p>
+        <button
+          (click)="closeModalAndUpdate()"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Fechar
+        </button>
+        <button
+          (click)="goToMyProposals()"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Ver pedidos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="mt-5 pt-3"></div>
