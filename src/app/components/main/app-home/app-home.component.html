@@ -1,4 +1,4 @@
-<app-nav>
+<app-nav class="pb-5">
   <div left-content class="d-flex align-items-center">
     <a routerLink="/tudu-professional/home" class="logo">
       <img
@@ -16,13 +16,9 @@
   <div central-content></div>
 
   <div right-content></div>
-</app-nav>
 
-<section class="max-w-4xl mx-auto lg:px-8">
-  <div class="container">
-    <div
-      class="tab-bar d-flex justify-content-between mt-2 mb-3 position-relative"
-    >
+  <div header-menu>
+    <div class="tab-bar d-flex justify-content-between position-relative">
       <a
         *ngFor="let item of headerPageOptions; let i = index"
         class="tab-link"
@@ -38,7 +34,9 @@
       ></div>
     </div>
   </div>
+</app-nav>
 
+<section class="max-w-4xl mx-auto lg:px-8">
   <div class="max-w-4xl mx-auto lg:px-8 px-2 mb-2">
     <div class="container">
       <button
