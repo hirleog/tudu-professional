@@ -196,26 +196,55 @@
         </div>
 
         <div class="request-card">
-          <div class="request-card-header card-header bg-light p-3">
-            <div class="col-1 request-card-icon border-0">
+          <!-- Header -->
+          <div
+            class="request-card-header bg-white p-3 border-b border-gray-200"
+          >
+            <div class="request-card-icon mr-3 flex-shrink-0">
               <i
                 [class]="card.icon"
-                style="color: var(--primary) !important"
+                class="text-2xl"
+                style="color: #f80e6e !important"
               ></i>
             </div>
-            <div class="col-11 request-card-title">
-              <div class="d-flex align-items-center">
-                <h5>{{ card.categoria }}</h5>
-                <!-- <div>&nbsp;•&nbsp;</div> -->
+            <div class="request-card-title flex-grow">
+              <div class="flex justify-between items-start">
+                <h5 class="text-lg font-semibold text-gray-800">
+                  {{ card.categoria }}
+                </h5>
               </div>
-              <p class="request-card-description truncate-text"></p>
-              <p class="request-card-description truncate-text">
-                {{ card.address.street }}, {{ card.address.number }} -
-                {{ card.address.city }} - {{ card.address.state }}
+              <p
+                class="request-card-description text-sm text-gray-600 mt-1 truncate-text"
+              >
+                {{ card.address.city }}, {{ card.address.state }} -
+                {{ card.address.neighborhood }}
+                <!-- {{ card.address.street }}, {{ card.address.number }} -
+                {{ card.address.city }} - {{ card.address.state }} -->
               </p>
+
+              <span
+                class="text-sm font-medium text-gray-500 bg-gray-100 rounded p-1"
+                style="margin: -30px 0px 30px 0px"
+              >
+                Pedido #{{ card.id_pedido }}
+              </span>
             </div>
           </div>
+
           <div class="request-card-body card-body p-3">
+            <!-- Filtros de subcategoria com destaque -->
+            <div class="mb-4" *ngIf="card.subcategoria">
+              <div class="flex flex-wrap gap-2">
+                <span
+                  *ngFor="let filtro of card.subcategoria.split(',')"
+                  class="px-3 py-1 rounded-full text-xs font-medium text-white"
+                  style="background-color: #f80e6e"
+                >
+                  {{ filtro.trim() }}
+                </span>
+              </div>
+            </div>
+
             <div *ngIf="selectedIndex === 1">
               <h5>
                 Valor orçamento:
@@ -224,10 +253,6 @@
                 }}</span>
               </h5>
             </div>
-            <p class="request-card-number">Pedido #{{ card.id_pedido }}</p>
-            <p class="request-card-description">
-              {{ card.subcategoria }}
-            </p>
             <p class="request-card-description">
               {{ card.serviceDescription }}
             </p>
