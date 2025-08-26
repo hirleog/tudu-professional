@@ -16,6 +16,24 @@
     style="font-size: 1.5em; color: var(--primary)"
     title="Clique para mais informações"
   ></i>
+
+  <div header-menu>
+    <div class="tab-bar d-flex justify-content-between position-relative">
+      <a
+        *ngFor="let item of headerPageOptions; let i = index"
+        class="tab-link"
+        [class.active]="selectedIndex === i"
+        (click)="selectItem(i)"
+        [attr.aria-current]="selectedIndex === i ? 'page' : null"
+      >
+        {{ item }}
+      </a>
+      <div
+        class="tab-indicator"
+        [ngStyle]="{ transform: 'translateX(' + selectedIndex * 100 + '%)' }"
+      ></div>
+    </div>
+  </div>
 </app-nav>
 
 <div *ngIf="cards.length >= 1" class="mt-5 pt-1">
@@ -32,7 +50,7 @@
 </div>
 
 <section
-  class="max-w-4xl mx-auto lg:px-8 d-flex flex-column justify-content-center align-items-center"
+  class="max-w-4xl mx-auto lg:px-8 d-flex flex-column justify-content-center align-items-center mt-1"
 >
   <!-- SERVIÇOS EM ANDAMENTO -->
   <div id="in-progress" class="container">
@@ -104,6 +122,7 @@
             <!-- Botões de ação -->
             <div class="request-card-footer bg-light d-flex gap-2 p-3">
               <button
+                *ngIf="card.status_pedido !== 'cancelado'"
                 (click)="startCard(card)"
                 class="request-quote-btn col-6"
                 [ngClass]="{

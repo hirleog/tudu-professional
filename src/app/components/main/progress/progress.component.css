@@ -45,6 +45,41 @@ p {
   border-radius: 50%;
   padding: 5px;
 }
+
+.tab-bar {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #eee;
+}
+
+.tab-link {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #999;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab-link.active {
+  color: #e6007e;
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: calc(100% / 2); /* Altere se tiver mais ou menos itens */
+  height: 3px;
+  background-color: #e6007e;
+  transition: transform 0.3s ease;
+  border-radius: 4px 4px 0 0;
+}
+
 @media (max-width: 350px) {
   .request-card h3 {
     font-size: 20px;

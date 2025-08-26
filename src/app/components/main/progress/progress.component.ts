@@ -4,7 +4,7 @@ import * as moment from 'moment'; // Importando o Moment.js
 import { CardOrders } from 'src/interfaces/card-orders';
 import { CardService } from '../../services/card.service';
 import { Observable, of } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StateManagementService } from '../../services/state-management.service';
 
 @Component({
@@ -13,7 +13,6 @@ import { StateManagementService } from '../../services/state-management.service'
   styleUrls: ['./progress.component.css'],
 })
 export class ProgressComponent implements OnInit {
-  budgets: string[] = ['Em andamento(23)', 'Finalizados(5)']; // Lista dinâmica
   selectedIndex: number = 0; // Inicia a primeira opção já selecionada
 
   yourMarkedDatesArray = ['2025-03-24', '2025-03-25', '2025-03-27'];
@@ -29,17 +28,25 @@ export class ProgressComponent implements OnInit {
   limitePorPagina = 10;
   carregandoMais = false;
   finalDaLista = false;
+  headerPageOptions: string[] = [];
+  homeFlow: string = '';
+  flow: string = '';
 
   constructor(
     public cardService: CardService,
     public route: Router,
-    private stateManagement: StateManagementService
+    private stateManagement: StateManagementService,
+    private activeRoute: ActivatedRoute
   ) {
     this.id_prestador = localStorage.getItem('prestador_id');
+
+    this.activeRoute.queryParams.subscribe((params) => {
+      this.homeFlow = params['homeFlow'];
+    });
   }
 
   ngOnInit() {
-    this.listCards(); // Chama a função para listar os cartões ao iniciar o componente
+    this.listCards('pendente'); // Chama a função para listar os cartões ao iniciar o componente
   }
 
   // listCards() {
@@ -64,14 +71,14 @@ export class ProgressComponent implements OnInit {
   //   });
   // }
 
-  listCards() {
+  listCards(flow: string) {
     if (this.carregandoMais || this.finalDaLista) {
       return;
     }
     this.isLoading = true;
 
     const offset = this.paginaAtual * this.limitePorPagina;
-    const currentState = this.stateManagement.getState('pendente');
+    const currentState = this.stateManagement.getState(flow);
 
     // Restaurar do cache na primeira chamada
     if (offset === 0 && currentState.cards.length > 0) {
@@ -93,7 +100,7 @@ export class ProgressComponent implements OnInit {
 
     this.carregandoMais = true;
 
-    this.cardService.getCards('pendente').subscribe({
+    this.cardService.getCards(flow).subscribe({
       next: (response: { cards: CardOrders[]; counts: any }) => {
         const novosCards = response.cards.map((card) => {
           return {
@@ -127,7 +134,7 @@ export class ProgressComponent implements OnInit {
 
             this.counts = response.counts;
             currentState.counts = this.counts;
-            // this.updateHeaderCounts();
+            this.updateHeaderCounts();
           }
           return;
         }
@@ -144,29 +151,11 @@ export class ProgressComponent implements OnInit {
         this.counts = response.counts;
         if (offset === 0) {
           currentState.counts = this.counts;
-          // this.updateHeaderCounts();
+          this.updateHeaderCounts();
         }
 
         this.isLoading = false;
       },
-
-      // next: (response: { cards: CardOrders[]; counts: any }) => {
-      //   this.cards = response.cards.map((card) => ({
-      // ...card,
-      // icon: this.cardService.getIconByLabel(card.categoria) || '',
-      // renegotiateActive: true,
-      // calendarActive: false,
-      // horario_preferencial: card.horario_preferencial,
-      // placeholderDataHora: '',
-      //   }));
-
-      //   this.stateManagement.cards = this.cards;
-      //   this.stateManagement.counts = this.counts;
-
-      //   this.counts = response.counts; // Armazena os contadores recebidos
-      //   this.selectItem(0);
-      //   this.isLoading = false;
-      // },
 
       error: (error) => {
         console.error('Erro ao obter os cartões:', error);
@@ -176,6 +165,13 @@ export class ProgressComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  updateHeaderCounts() {
+    this.headerPageOptions = [
+      `Pendentes(${this.counts.pendente})`,
+      `Cancelados(${this.counts.cancelado})`,
+    ];
   }
 
   getMinhaCandidatura(card: CardOrders) {
@@ -199,6 +195,48 @@ export class ProgressComponent implements OnInit {
   }
 
   selectItem(index: number): void {
-    this.selectedIndex = index; // Atualiza o item selecionado
+    // Limpa os estados antes de trocar de aba, se necessário
+    if (this.selectedIndex !== index) {
+      this.cards = [];
+      this.paginaAtual = 0;
+      this.finalDaLista = false;
+    }
+    this.selectedIndex = index;
+    // this.showFilters = false;
+
+    switch (index) {
+      case 0:
+        this.listCards('pendente');
+        this.flow = 'pendente';
+        this.cleanActualRoute();
+
+        // this.homeFlow === 'publicado' ? this.selectedIndex === 0 : '';
+        break;
+      case 1:
+        this.listCards('cancelado');
+        this.flow = 'cancelado';
+        this.cleanActualRoute();
+
+        // this.homeFlow === 'andamento' ? this.selectedIndex === 0 : '';
+        break;
+      case 2:
+        // Salva o estado atual antes de navegar
+        if (this.flow === 'pendente' || this.flow === 'cancelado') {
+          const currentState = this.stateManagement.getState(this.flow);
+          currentState.scrollY = window.scrollY;
+        }
+        this.route.navigate(['/tudu-professional/progress']);
+        break;
+    }
+  }
+
+  cleanActualRoute(): void {
+    this.route.navigate([], {
+      relativeTo: this.activeRoute,
+      queryParams: {
+        homeFlow: null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 }
