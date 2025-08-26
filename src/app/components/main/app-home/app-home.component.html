@@ -204,7 +204,7 @@
               <i
                 [class]="card.icon"
                 class="text-2xl"
-                style="color: #f80e6e !important"
+                style="color: var(--primary) !important"
               ></i>
             </div>
             <div class="request-card-title flex-grow">
@@ -238,7 +238,10 @@
                 <span
                   *ngFor="let filtro of card.subcategoria.split(',')"
                   class="px-3 py-1 rounded-full text-xs font-medium text-white"
-                  style="background-color: #f80e6e"
+                  style="
+                    border: 1px solid var(--primary);
+                    color: var(--primary) !important;
+                  "
                 >
                   {{ filtro.trim() }}
                 </span>
