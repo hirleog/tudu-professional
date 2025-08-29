@@ -413,9 +413,10 @@ export class AppHomeComponent implements OnInit {
         //   card.valor_negociado = `R$${cardInfo.valor}`;
         // }
         card.valor_negociado = `R$${cardInfo.valor}`;
-      } else if (cardInfo.renegotiateActive === false) {
-        card.valorFormatted = cardInfo.valor_negociado.toString();
       }
+      // else if (cardInfo.renegotiateActive === false) {
+      //   card.valorFormatted = cardInfo.valor_negociado.toString();
+      // }
     }
   }
 
@@ -532,7 +533,7 @@ export class AppHomeComponent implements OnInit {
   }
   selectItem(index: number): void {
     // Limpa os estados antes de trocar de aba, se necessário
-    if (this.selectedIndex !== index) {
+    if (this.selectedIndex !== index || this.selectedIndex === index) {
       this.cards = [];
       this.paginaAtual = 0;
       this.finalDaLista = false;
@@ -636,7 +637,6 @@ export class AppHomeComponent implements OnInit {
   goToMyProposals() {
     this.stateManagement.clearAllState();
     this.selectItem(1);
-    
   }
 
   newPorposalBtnValidator(card: CardOrders): boolean {
