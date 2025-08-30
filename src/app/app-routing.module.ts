@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: 'tudu-professional',
     loadChildren: () =>
-      import('./components/main/main-app.module').then((m) => m.MainAppModule),
+      import('./components/main/tudu-professional.module').then((m) => m.TuduProfessionalModule),
   },
 ];
 

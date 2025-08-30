@@ -6,7 +6,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppMenuComponent } from './components/main/app-menu/app-menu.component';
-import { MainAppModule } from './components/main/main-app.module';
+import { TuduProfessionalModule } from './components/main/tudu-professional.module';
 
 @NgModule({
   declarations: [AppComponent, AppMenuComponent],
@@ -14,7 +14,7 @@ import { MainAppModule } from './components/main/main-app.module';
     BrowserModule,
     AppRoutingModule,
     SharedModule,
-    MainAppModule,
+    TuduProfessionalModule,
     NgxMaskModule.forRoot(), // Importando o NgxMaskModule
   ],
 

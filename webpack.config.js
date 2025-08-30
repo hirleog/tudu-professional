@@ -33,7 +33,8 @@ module.exports = {
       name: "mfeApp",
       filename: "remoteEntry.js",
       exposes: {
-        "./MainAppModule": "./src/app/components/main/main-app.module.ts",
+        "./TuduProfessionalModule":
+          "./src/app/components/main/tudu-professional.module.ts",
       },
 
       // For hosts (please adjust)

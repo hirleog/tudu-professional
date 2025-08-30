@@ -11,10 +11,9 @@ import { BudgetsComponent } from './budgets/budgets.component';
 import { CardDetailComponent } from './card-detail/card-detail.component';
 import { FlowEndComponent } from './flow-end/flow-end.component';
 import { MyFinancesComponent } from './my-finances/my-finances/my-finances.component';
+import { MyFinancesModule } from './my-finances/my-finances/my-finances.module';
 import { ProgressDetailComponent } from './progress-detail/progress-detail.component';
 import { ProgressComponent } from './progress/progress.component';
-import { SummaryComponent } from './my-finances/summary/summary.component';
-import { MyFinancesModule } from './my-finances/my-finances/my-finances.module';
 
 const routes: Routes = [
   { path: 'home', component: AppHomeComponent },
@@ -47,4 +46,4 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
 })
-export class MainAppModule {}
+export class TuduProfessionalModule {}
