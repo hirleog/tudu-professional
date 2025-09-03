@@ -14,6 +14,7 @@ import { MyFinancesComponent } from './my-finances/my-finances/my-finances.compo
 import { MyFinancesModule } from './my-finances/my-finances/my-finances.module';
 import { ProgressDetailComponent } from './progress-detail/progress-detail.component';
 import { ProgressComponent } from './progress/progress.component';
+import { CustomModalModule } from 'src/shared/components/custom-modal/custom-modal.module';
 
 const routes: Routes = [
   { path: 'home', component: AppHomeComponent },
@@ -34,7 +35,6 @@ const routes: Routes = [
     ProgressDetailComponent,
     FlowEndComponent,
     CalendarComponent,
-
   ],
   imports: [
     SharedModule,
@@ -42,7 +42,7 @@ const routes: Routes = [
     TuduUiCalendarModule,
     CardSkeletonModule,
     MyFinancesModule,
-    
+    CustomModalModule,
     RouterModule.forChild(routes),
   ],
 })

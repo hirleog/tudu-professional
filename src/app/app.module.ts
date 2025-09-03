@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppMenuComponent } from './components/main/app-menu/app-menu.component';
 import { TuduProfessionalModule } from './components/main/tudu-professional.module';
+import { CustomModalModule } from 'src/shared/components/custom-modal/custom-modal.module';
 
 @NgModule({
   declarations: [AppComponent, AppMenuComponent],
@@ -15,6 +16,7 @@ import { TuduProfessionalModule } from './components/main/tudu-professional.modu
     AppRoutingModule,
     SharedModule,
     TuduProfessionalModule,
+    CustomModalModule,
     NgxMaskModule.forRoot(), // Importando o NgxMaskModule
   ],
 
