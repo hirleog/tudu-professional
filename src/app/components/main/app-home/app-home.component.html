@@ -158,11 +158,12 @@
   </div>
 
   <!-- Item 0 - Meus Pedidos -->
+  <!-- data-aos="fade-down" -->
   <div
     class="container"
     *ngIf="(selectedIndex === 0 || selectedIndex === 1) && !showFilters"
   >
-    <div class="col-12 m-0 p-2" *ngFor="let card of cards" data-aos="fade-down">
+    <div class="col-12 m-0 p-2" *ngFor="let card of cards">
       <div>
         <div
           *ngIf="
@@ -435,9 +436,10 @@
   </div>
 
   <!-- Item 2 - Histórico -->
+    <!-- data-aos="fade-down -->
   <div class="container" *ngIf="selectedIndex === 2 && !showFilters">
     <div class="row g-3 m-0 p-0">
-      <div class="col-12" *ngFor="let card of cards" data-aos="fade-down">
+      <div class="col-12" *ngFor="let card of cards">
         <div class="request-card" *ngFor="let candidatura of card.candidaturas">
           <div class="request-card-header bg-light card-header p-3">
             <div class="request-card-icon border-0">

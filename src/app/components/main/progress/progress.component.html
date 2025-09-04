@@ -53,9 +53,10 @@
   class="max-w-4xl mx-auto lg:px-8 d-flex flex-column justify-content-center align-items-center mt-1"
 >
   <!-- SERVIÇOS EM ANDAMENTO -->
+  <!-- data-aos="fade-down" -->
   <div id="in-progress" class="container">
     <div class="row g-3 m-0 p-0">
-      <div class="col-12" *ngFor="let card of cards" data-aos="fade-down">
+      <div class="col-12" *ngFor="let card of cards">
         <div class="request-card position-relative">
           <!-- Pega a candidatura do prestador logado -->
           <ng-container *ngFor="let candidatura of card.candidaturas">
