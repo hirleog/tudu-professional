@@ -8,6 +8,7 @@ import { Location } from '@angular/common';
 import { StateManagementService } from '../../services/state-management.service';
 import { formatDecimal } from 'src/app/utils/utils';
 import * as bootstrap from 'bootstrap';
+import { CurrencyMaskConfig } from 'ngx-currency';
 
 @Component({
   selector: 'app-home',
@@ -59,6 +60,18 @@ export class AppHomeComponent implements OnInit {
   offset: number = 0;
   openModal: boolean = false;
   isLoadingBtn: boolean = false;
+
+  public currencyOptions: CurrencyMaskConfig = {
+    prefix: 'R$',
+    thousands: '.',
+    decimal: ',',
+    precision: 2,
+    align: 'left',
+    allowNegative: false,
+    allowZero: false,
+    suffix: '',
+    nullable: false,
+  };
 
   constructor(
     private route: Router,
@@ -646,6 +659,12 @@ export class AppHomeComponent implements OnInit {
   }
   goToMyProposals() {
     this.stateManagement.clearAllState();
+
+    // Limpar o array local
+    this.cards = [];
+    this.paginaAtual = 0;
+    this.finalDaLista = false;
+    
     this.selectItem(1);
   }
 
