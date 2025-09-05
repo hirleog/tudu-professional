@@ -169,7 +169,7 @@
           *ngIf="
             selectedIndex === 1 && card.candidaturas[0].status === 'recusado'
           "
-          class="toast show position-absolute top-0 end-0 m-1"
+          class="toast show top-0 end-0 m-1"
           style="z-index: 1000"
           role="alert"
           aria-live="assertive"
@@ -379,11 +379,20 @@
               "
               style="background-color: var(--primary); color: var(--light)"
             >
-              <i
-                class="fas fa-paper-plane"
-                style="color: var(--light) !important"
-              ></i>
-              Enviar novo Lance
+              <span *ngIf="!isLoadingBtn"
+                ><i
+                  class="fas fa-paper-plane"
+                  style="color: var(--light) !important"
+                ></i>
+                Novo Lance</span
+              >
+              <span
+                *ngIf="isLoadingBtn"
+                class="flex items-center justify-center"
+              >
+                <i class="fas fa-circle-notch fa-spin mr-2"></i>
+                Processando...
+              </span>
             </button>
             <!-- botão exclusivo para novo lance -->
 
@@ -400,18 +409,28 @@
               }"
               style="background-color: var(--primary); color: var(--light)"
             >
-              <i
-                class="fas fa-paper-plane"
-                style="color: var(--light) !important"
-              ></i>
-              {{
-                (!card.renegotiateActive &&
-                  card.valor_negociado !== card.valor) ||
-                (card.calendarActive &&
-                  dateTimeFormatted !== card.placeholderDataHora)
-                  ? "Negociar"
-                  : "Candidatar-se"
-              }}
+              <span *ngIf="!isLoadingBtn">
+                <i
+                  class="fas fa-paper-plane"
+                  style="color: var(--light) !important"
+                ></i>
+                {{
+                  (!card.renegotiateActive &&
+                    card.valor_negociado !== card.valor) ||
+                  (card.calendarActive &&
+                    dateTimeFormatted !== card.placeholderDataHora)
+                    ? "Negociar"
+                    : "Candidatar-se"
+                }}
+              </span>
+
+              <span
+                *ngIf="isLoadingBtn"
+                class="flex items-center justify-center"
+              >
+                <i class="fas fa-circle-notch fa-spin mr-2"></i>
+                Processando...
+              </span>
             </button>
 
             <button
@@ -436,7 +455,7 @@
   </div>
 
   <!-- Item 2 - Histórico -->
-    <!-- data-aos="fade-down -->
+  <!-- data-aos="fade-down -->
   <div class="container" *ngIf="selectedIndex === 2 && !showFilters">
     <div class="row g-3 m-0 p-0">
       <div class="col-12" *ngFor="let card of cards">
@@ -578,6 +597,37 @@
             data-bs-dismiss="modal"
           >
             Ver pedidos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-4 flex flex-column gap-3">
+        <i
+          class="fas fa-exclamation-circle display-2"
+          style="color: #e53935 !important"
+        ></i>
+
+        <h5>Erro ao enviar a proposta</h5>
+        <p class="text-muted" style="color: var(--tag-p-grey) !important">
+          Ocorreu um problema ao tentar enviar sua proposta. Tente novamente
+          mais tarde.
+        </p>
+
+        <div
+          class="container flex align-items-center justify-content-center gap-1 mt-2"
+        >
+          <button
+            (click)="modalSentProposal(false)"
+            class="btn btn-outline-danger col-12"
+            data-bs-dismiss="modal"
+          >
+            Fechar
           </button>
         </div>
       </div>

@@ -58,6 +58,7 @@ export class AppHomeComponent implements OnInit {
   ];
   offset: number = 0;
   openModal: boolean = false;
+  isLoadingBtn: boolean = false;
 
   constructor(
     private route: Router,
@@ -303,6 +304,8 @@ export class AppHomeComponent implements OnInit {
   }
 
   updateCard(card: CardOrders): Observable<CardOrders> {
+    this.isLoadingBtn = true;
+
     const horario_negociado_formatted = moment(
       card.placeholderDataHora,
       'DD/MM/YYYY - HH:mm'
@@ -379,6 +382,8 @@ export class AppHomeComponent implements OnInit {
     this.cardService.updateCard(card.id_pedido!, payloadCard).subscribe({
       next: (response) => {
         this.modalSentProposal(true);
+        this.isLoadingBtn = false;
+
         // Limpa todos os estados antes de navegar
         // if (route === '/home') {
         //   this.stateManagement.clearAllState(); // Limpa todos os estados antes de navegar
@@ -389,11 +394,10 @@ export class AppHomeComponent implements OnInit {
         // }
       },
       error: (error) => {
-        console.error('Erro ao atualizar o cartão:', error);
+        this.isLoadingBtn = false;
+        this.modalSentProposal(false);
       },
-      complete: () => {
-        console.log('Requisição concluída');
-      },
+      complete: () => {},
     });
 
     return of();
@@ -414,7 +418,7 @@ export class AppHomeComponent implements OnInit {
         // }
         card.valor_negociado = `R$${cardInfo.valor}`;
       } else if (cardInfo.renegotiateActive === false) {
-        card.valorFormatted = cardInfo.valor_negociado.toString();
+        // card.valorFormatted = cardInfo.valor_negociado.toString();
       }
     }
   }
@@ -619,6 +623,13 @@ export class AppHomeComponent implements OnInit {
         const modal = new bootstrap.Modal(modalElement);
         modal.show();
       }
+    } else {
+      // Caso queira fechar o modal via código
+      const modalElement = document.getElementById('errorModal');
+      if (modalElement) {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance?.hide();
+      }
     }
   }
 
@@ -636,7 +647,6 @@ export class AppHomeComponent implements OnInit {
   goToMyProposals() {
     this.stateManagement.clearAllState();
     this.selectItem(1);
-    
   }
 
   newPorposalBtnValidator(card: CardOrders): boolean {
