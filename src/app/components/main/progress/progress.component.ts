@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ProgressCard } from 'src/interfaces/progress-card';
-import * as moment from 'moment'; // Importando o Moment.js
+import { Component, HostListener, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { CardService } from '../../services/card.service';
-import { Observable, of } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
 import { StateManagementService } from '../../services/state-management.service';
 
 @Component({
@@ -31,7 +28,15 @@ export class ProgressComponent implements OnInit {
   headerPageOptions: string[] = [];
   homeFlow: string = '';
   flow: string = '';
+  offset: number = 0;
 
+  filters = {
+    dataInicial: '',
+    dataFinal: '',
+    valorMin: null,
+    valorMax: null,
+    categorias: [] as string[],
+  };
   constructor(
     public cardService: CardService,
     public route: Router,
@@ -75,19 +80,37 @@ export class ProgressComponent implements OnInit {
     if (this.carregandoMais || this.finalDaLista) {
       return;
     }
+
     this.isLoading = true;
 
-    const offset = this.paginaAtual * this.limitePorPagina;
+    this.offset = this.paginaAtual * this.limitePorPagina;
     const currentState = this.stateManagement.getState(flow);
 
-    // Restaurar do cache na primeira chamada
-    if (offset === 0 && currentState.cards.length > 0) {
+    // Verificar se há filtros ativos
+    const filtrosAtivos =
+      this.filters.dataInicial ||
+      this.filters.dataFinal ||
+      this.filters.valorMin !== null ||
+      this.filters.valorMax !== null ||
+      (this.filters.categorias && this.filters.categorias.length > 0);
+
+    // Se houver filtros ativos, resetar cards e paginação
+    if (this.offset === 0 && filtrosAtivos) {
+      this.cards = [];
+      this.paginaAtual = 0;
+      this.finalDaLista = false;
+      currentState.cards = []; // Limpa o cache para filtros
+      currentState.finalDaLista = false;
+    }
+
+    // Restaurar do cache na primeira chamada apenas se não houver filtros
+    if (this.offset === 0 && currentState.cards.length > 0 && !filtrosAtivos) {
       this.cards = currentState.cards;
       this.paginaAtual = currentState.pagina;
       this.finalDaLista = currentState.finalDaLista;
       this.counts = currentState.counts;
+      this.updateHeaderCounts();
 
-      // Aplica scroll sem animação
       setTimeout(() => {
         document.documentElement.style.scrollBehavior = 'auto';
         window.scrollTo(0, currentState.scrollY);
@@ -98,18 +121,56 @@ export class ProgressComponent implements OnInit {
       return;
     }
 
+    // Preparar parâmetros de filtro
+    const filterParams: any = {};
+
+    // if (this.filters.dataInicial) {
+    //   filterParams.dataInicial = moment(this.filters.dataInicial).format(
+    //     'YYYY-MM-DD'
+    //   );
+    // }
+    // if (this.filters.dataFinal) {
+    //   filterParams.dataFinal = moment(this.filters.dataFinal).format(
+    //     'YYYY-MM-DD'
+    //   );
+    // }
+    if (this.filters.valorMin !== null) {
+      filterParams.valorMin = this.filters.valorMin;
+    }
+    if (this.filters.valorMax !== null) {
+      filterParams.valorMax = this.filters.valorMax;
+    }
+    if (this.filters.categorias.length > 0) {
+      filterParams.categoria = this.filters.categorias;
+    }
+
+    // Adicionar parâmetros de paginação
+    filterParams.offset = this.offset;
+    filterParams.limit = this.limitePorPagina;
+
     this.carregandoMais = true;
 
-    this.cardService.getCards(flow).subscribe({
+    this.cardService.getCards(flow, filterParams).subscribe({
       next: (response: { cards: CardOrders[]; counts: any }) => {
         const novosCards = response.cards.map((card) => {
+          const valorFormatted =
+            card.candidaturas?.[0]?.valor_negociado ?? card.valor;
+
+          const candidaturas =
+            card.candidaturas?.map((candidatura) => ({
+              ...candidatura,
+              valor_negociado: candidatura.valor_negociado
+                ? card.valor
+                : candidatura.valor_negociado,
+            })) ?? [];
+
           return {
             ...card,
             icon: this.cardService.getIconByLabel(card.categoria) || '',
-            renegotiateActive: true,
+            renegotiateActive: !card.valor_negociado,
             calendarActive: false,
-            horario_preferencial: card.horario_preferencial,
-            placeholderDataHora: '',
+            valorFormatted,
+            candidaturas,
           };
         });
 
@@ -118,56 +179,49 @@ export class ProgressComponent implements OnInit {
           novosCards.length < this.limitePorPagina
         ) {
           this.finalDaLista = true;
-          currentState.finalDaLista = true;
-          this.carregandoMais = false;
-
-          if (offset === 0) {
-            // Só limpa se realmente não vieram cards
-            if (novosCards.length === 0) {
-              this.cards = [];
-              currentState.cards = [];
-            } else {
-              // Se vieram alguns cards, adiciona eles
-              this.cards = novosCards;
-              currentState.cards = novosCards;
-            }
-
-            this.counts = response.counts;
-            currentState.counts = this.counts;
-            this.updateHeaderCounts();
-          }
-          return;
+          if (!filtrosAtivos) currentState.finalDaLista = true;
+        } else {
+          this.finalDaLista = false;
         }
 
-        this.cards = [...this.cards, ...novosCards];
+        if (this.offset === 0) {
+          this.cards = novosCards;
+        } else {
+          this.cards = [...this.cards, ...novosCards];
+        }
+
         this.paginaAtual++;
 
-        // Atualiza o estado específico do status
-        currentState.cards = this.cards;
-        currentState.pagina = this.paginaAtual;
-        currentState.finalDaLista = this.finalDaLista;
-        currentState.scrollY = window.scrollY;
-
-        this.counts = response.counts;
-        if (offset === 0) {
-          currentState.counts = this.counts;
-          this.updateHeaderCounts();
+        // Atualizar cache apenas se não houver filtros ativos
+        if (!filtrosAtivos) {
+          currentState.cards = this.cards;
+          currentState.pagina = this.paginaAtual;
+          currentState.finalDaLista = this.finalDaLista;
+          currentState.scrollY = window.scrollY;
+          currentState.counts = response.counts;
         }
 
-        this.isLoading = false;
-      },
+        this.counts = response.counts;
+        this.updateHeaderCounts();
 
+        this.isLoading = false;
+        this.carregandoMais = false;
+      },
       error: (error) => {
         console.error('Erro ao obter os cartões:', error);
         this.isLoading = false;
+        this.carregandoMais = false;
       },
       complete: () => {
         this.isLoading = false;
+        this.carregandoMais = false;
       },
     });
   }
 
   updateHeaderCounts() {
+    this.stateManagement.clearAllState();
+
     this.headerPageOptions = [
       `Pendentes(${this.counts.pendente})`,
       `Cancelados(${this.counts.cancelado})`,
@@ -238,5 +292,15 @@ export class ProgressComponent implements OnInit {
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const posicao = window.innerHeight + window.scrollY;
+    const alturaMaxima = document.body.offsetHeight;
+
+    if (posicao >= alturaMaxima - 200) {
+      this.listCards(this.flow); // ou o status atual selecionado
+    }
   }
 }

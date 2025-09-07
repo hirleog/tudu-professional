@@ -21,6 +21,7 @@ export class CardDetailComponent implements OnInit {
   id_pedido: string = '';
   cards: CardOrders[] = [];
   flow: string = '';
+  activeAccordion: string | null = null;
 
   constructor(
     public cardService: CardService,
@@ -97,6 +98,20 @@ export class CardDetailComponent implements OnInit {
         queryParams: { homeFlow: this.flow },
       });
     }
+  }
+
+  toggleAccordion(section: string) {
+    this.activeAccordion = this.activeAccordion === section ? null : section;
+  }
+  handleOption(option: string, card?: CardOrders) {
+    this.route.navigate(['/home/order-help'], {
+      queryParams: {
+        id: this.id_pedido,
+        questionTitle: option,
+        card: JSON.stringify(card),
+        flow: this.flow,
+      },
+    });
   }
 
   openModal() {
