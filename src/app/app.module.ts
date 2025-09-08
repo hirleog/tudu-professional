@@ -2,15 +2,14 @@ import { CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgxMaskModule } from 'ngx-mask';
+import { CustomModalModule } from 'src/shared/components/custom-modal/custom-modal.module';
 import { SharedModule } from 'src/shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AppMenuComponent } from './components/main/app-menu/app-menu.component';
 import { TuduProfessionalModule } from './components/main/tudu-professional.module';
-import { CustomModalModule } from 'src/shared/components/custom-modal/custom-modal.module';
 
 @NgModule({
-  declarations: [AppComponent, AppMenuComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

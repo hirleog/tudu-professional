@@ -460,8 +460,6 @@ export class AppHomeComponent implements OnInit {
       const formattedTime = moment(card.horario_preferencial).format('HH:mm');
       dateTimeFormatted = `${formattedDate} - ${formattedTime}`;
 
-      card.placeholderDataHora = dateTimeFormatted;
-
       if (card.calendarActive === false) {
         card.placeholderDataHora = dateTimeFormatted;
       }
@@ -522,8 +520,8 @@ export class AppHomeComponent implements OnInit {
     currentState.scrollY = window.scrollY;
     currentState.counts = this.counts;
 
-    this.route.navigate(['/tudu-professional/detail'], {
-      queryParams: { id: id_pedido, flow: this.flow },
+    this.route.navigate(['/home/detail'], {
+      queryParams: { param: 'professional', id: id_pedido, flow: this.flow },
     });
   }
 
@@ -664,7 +662,7 @@ export class AppHomeComponent implements OnInit {
     this.cards = [];
     this.paginaAtual = 0;
     this.finalDaLista = false;
-    
+
     this.selectItem(1);
   }
 
