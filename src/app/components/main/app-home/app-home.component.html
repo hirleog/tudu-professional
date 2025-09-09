@@ -370,6 +370,7 @@
                 [initialDateTime]="card.placeholderDataHora"
                 [calendarActive]="card.calendarActive || false"
                 [hideCalendarInput]="true"
+                [hideCalendarDays]="hideCalendarDays"
                 (closeCalendar)="onCalendarClose(card)"
                 (dateSelectedChange)="onDateSelected(card.id_pedido, $event)"
                 (timeSelectedChange)="onTimeSelected(card.id_pedido, $event)"

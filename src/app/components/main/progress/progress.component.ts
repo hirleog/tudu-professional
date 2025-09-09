@@ -150,7 +150,7 @@ export class ProgressComponent implements OnInit {
 
     this.carregandoMais = true;
 
-    this.cardService.getCards(flow, filterParams).subscribe({
+    this.cardService.getCards(flow).subscribe({
       next: (response: { cards: CardOrders[]; counts: any }) => {
         const novosCards = response.cards.map((card) => {
           const valorFormatted =

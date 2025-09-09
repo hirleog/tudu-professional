@@ -60,6 +60,7 @@ export class AppHomeComponent implements OnInit {
   offset: number = 0;
   openModal: boolean = false;
   isLoadingBtn: boolean = false;
+  hideCalendarDays: boolean = false;
 
   public currencyOptions: CurrencyMaskConfig = {
     prefix: 'R$',
@@ -468,7 +469,7 @@ export class AppHomeComponent implements OnInit {
 
   // Adicione este handler para quando o calendário emitir o evento de fechar
   onCalendarClose(card: any) {
-    // this.clickOutside = true
+    this.hideCalendarDays = false;
 
     if (card.placeholderDataHora !== this.dateTimeFormatted) {
       card.calendarActive = true;

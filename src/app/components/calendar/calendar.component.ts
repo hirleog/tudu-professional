@@ -31,6 +31,7 @@ export class CalendarComponent implements OnInit {
   @Input() showChangeDateBtn: boolean = true; // Array de datas no formato 'YYYY-MM-DD'
   @Input() hasTime: boolean = false; // Array de datas no formato 'YYYY-MM-DD'
   @Input() markedDates: string[] = []; // Array de datas no formato 'YYYY-MM-DD'
+  @Input() hideCalendarDays: boolean = false;
 
   @Input() initialDate: string = ''; // Nova entrada para definir a data inicial
   @Input() initialTime: string = ''; // Adicione isso junto com os outros @Input()
@@ -160,11 +161,16 @@ export class CalendarComponent implements OnInit {
     const selectedDate = moment(this.currentDate).date(day);
     this.dateSelected = selectedDate.format('DD/MM/YYYY');
     this.dateSelectedChange.emit(this.dateSelected);
+
+    this.hideCalendarDays = true;
     this.updateDateTime();
   }
   selectTime(time: string): void {
     this.timeSelected = time;
     this.timeSelectedChange.emit(this.timeSelected); // Emite o horário selecionado
+
+    this.hideCalendarDays = false;
+    this.calendarActive = false;
     this.updateDateTime();
   }
 
@@ -198,6 +204,7 @@ export class CalendarComponent implements OnInit {
 
   toggleCalendar() {
     this.calendarActive = !this.calendarActive;
+    this.hideCalendarDays = false;
     this.toggleBodyScroll(this.calendarActive);
   }
 
@@ -205,10 +212,10 @@ export class CalendarComponent implements OnInit {
     document.body.style.overflow = disable ? 'hidden' : '';
   }
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.calendarActive = false;
-    }
-  }
+  // @HostListener('document:click', ['$event'])
+  // onClickOutside(event: MouseEvent) {
+  //   if (!this.elementRef.nativeElement.contains(event.target)) {
+  //     this.calendarActive = false;
+  //   }
+  // }
 }
