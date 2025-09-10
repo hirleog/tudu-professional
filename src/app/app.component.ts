@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import * as AOS from 'aos';
 
 @Component({
@@ -10,7 +11,7 @@ import * as AOS from 'aos';
 export class AppComponent {
   title = 'tudu-professional';
 
-  constructor() {}
+  constructor(private route: Router) {}
 
   ngOnInit() {
     AOS.init();

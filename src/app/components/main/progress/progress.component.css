@@ -66,7 +66,7 @@ p {
 }
 
 .tab-link.active {
-  color: #e6007e;
+  color: var(--primary);
 }
 
 .tab-indicator {
@@ -75,7 +75,7 @@ p {
   left: 0;
   width: calc(100% / 2); /* Altere se tiver mais ou menos itens */
   height: 3px;
-  background-color: #e6007e;
+  background-color: var(--primary);
   transition: transform 0.3s ease;
   border-radius: 4px 4px 0 0;
 }

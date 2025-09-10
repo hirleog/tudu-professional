@@ -233,10 +233,27 @@ export class ProgressComponent implements OnInit {
   }
 
   goToDetails(card: any): void {
-    this.route.navigate(['tudu-professional/detail'], {
+    const currentStatus = 'publicado'; // Ou obtenha o status atual de alguma forma
+    const currentState = this.stateManagement.getState(currentStatus);
+    currentState.scrollY = window.scrollY;
+    currentState.counts = this.counts;
+
+    this.route.navigate(['/home/detail'], {
       queryParams: { id: card.id_pedido, flow: 'progress' },
     });
   }
+
+  // goToDetails(id_pedido: any): void {
+  //   const currentStatus = 'publicado'; // Ou obtenha o status atual de alguma forma
+  //   const currentState = this.stateManagement.getState(currentStatus);
+  //   currentState.scrollY = window.scrollY;
+  //   currentState.counts = this.counts;
+
+  //   this.route.navigate(['/home/detail'], {
+  //     queryParams: { param: 'professional', id: id_pedido, flow: this.flow },
+  //   });
+  // }
+
   startCard(card: any): void {
     this.route.navigate(['tudu-professional/progress-detail'], {
       queryParams: { id: card.id_pedido },

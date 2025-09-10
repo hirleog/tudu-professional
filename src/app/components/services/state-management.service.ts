@@ -45,7 +45,7 @@ export class StateManagementService {
     };
   }
   clearAllState() {
-    const statuses = ['andamento', 'finalizado', 'publicado', 'pendente'];
+    const statuses = ['andamento', 'finalizado', 'publicado', 'pendente', 'cancelado'];
 
     statuses.forEach((status) => {
       this.clearState(status);

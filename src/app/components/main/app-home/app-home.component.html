@@ -1,6 +1,6 @@
 <app-nav class="pb-5 mb-4">
   <div left-content class="d-flex align-items-center">
-    <a routerLink="/tudu-professional/home" class="logo">
+    <a routerLink="/tudu/home" class="logo">
       <img
         src="../../../assets/logo-rosa.webp"
         class="img-fluid"
@@ -210,9 +210,7 @@
 
         <div class="request-card">
           <!-- Header -->
-          <div
-            class="request-card-header bg-white p-3 border-b border-gray-200"
-          >
+          <div class="request-card-header p-3 border-b border-gray-200">
             <div class="request-card-icon mr-3 flex-shrink-0">
               <i
                 [class]="card.icon"
@@ -381,7 +379,7 @@
 
           <div
             [ngClass]="selectedIndex === 0 ? 'ajust-space' : 'ajust-space2'"
-            class="request-card-footer p-3 d-flex justify-content-center align-items-center gap-2 bg-light"
+            class="request-card-footer p-3 d-flex justify-content-center align-items-center gap-2"
           >
             <!-- botão exclusivo para novo lance -->
             <button
@@ -550,8 +548,6 @@
                 color: var(--primary);
                 background-color: var(--light);
               "
-              routerLink="/tudu-professional/detail"
-              routerLinkActive="active"
             >
               <i
                 class="fas fa-search"
