@@ -1,7 +1,7 @@
 <app-nav>
   <a
     left-content
-    routerLink="/tudu-professional/home"
+    routerLink="/tudu-professional/historic"
     class="text-decoration-none text-dark"
     style="margin-right: 10px"
   >
@@ -17,7 +17,7 @@
     title="Clique para mais informações"
   ></i>
 
-  <!-- <div header-menu>
+  <div header-menu>
     <div class="tab-bar d-flex justify-content-between position-relative">
       <a
         *ngFor="let item of headerPageOptions; let i = index"
@@ -33,7 +33,7 @@
         [ngStyle]="{ transform: 'translateX(' + selectedIndex * 100 + '%)' }"
       ></div>
     </div>
-  </div> -->
+  </div>
 </app-nav>
 
 <div *ngIf="cards.length >= 1" class="mt-5 pt-1">

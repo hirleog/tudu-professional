@@ -5,11 +5,11 @@ import { CardService } from '../../services/card.service';
 import { StateManagementService } from '../../services/state-management.service';
 
 @Component({
-  selector: 'app-progress',
-  templateUrl: './progress.component.html',
-  styleUrls: ['./progress.component.css'],
+  selector: 'app-historic',
+  templateUrl: './historic.component.html',
+  styleUrls: ['./historic.component.scss'],
 })
-export class ProgressComponent implements OnInit {
+export class HistoricComponent implements OnInit {
   selectedIndex: number = 0; // Inicia a primeira opção já selecionada
 
   yourMarkedDatesArray = ['2025-03-24', '2025-03-25', '2025-03-27'];
@@ -51,7 +51,7 @@ export class ProgressComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.listCards('pendente'); // Chama a função para listar os cartões ao iniciar o componente
+    this.listCards('finalizado'); // Chama a função para listar os cartões ao iniciar o componente
   }
 
   // listCards() {
@@ -109,7 +109,7 @@ export class ProgressComponent implements OnInit {
       this.paginaAtual = currentState.pagina;
       this.finalDaLista = currentState.finalDaLista;
       this.counts = currentState.counts;
-      // this.updateHeaderCounts();
+      this.updateHeaderCounts();
 
       setTimeout(() => {
         document.documentElement.style.scrollBehavior = 'auto';
@@ -202,7 +202,7 @@ export class ProgressComponent implements OnInit {
         }
 
         this.counts = response.counts;
-        // this.updateHeaderCounts();
+        this.updateHeaderCounts();
 
         this.isLoading = false;
         this.carregandoMais = false;
@@ -219,14 +219,14 @@ export class ProgressComponent implements OnInit {
     });
   }
 
-  // updateHeaderCounts() {
-  //   this.stateManagement.clearAllState();
+  updateHeaderCounts() {
+    this.stateManagement.clearAllState();
 
-  //   this.headerPageOptions = [
-  //     `Pendentes(${this.counts.pendente})`,
-  //     `Cancelados(${this.counts.cancelado})`,
-  //   ];
-  // }
+    this.headerPageOptions = [
+      `finalizados(${this.counts.finalizado})`,
+      `Cancelados(${this.counts.cancelado})`,
+    ];
+  }
 
   getMinhaCandidatura(card: CardOrders) {
     return card.candidaturas?.find((c) => c.prestador_id === this.id_prestador);
@@ -239,7 +239,7 @@ export class ProgressComponent implements OnInit {
     currentState.counts = this.counts;
 
     this.route.navigate(['/home/detail'], {
-      queryParams: { id: card.id_pedido, flow: 'progress' },
+      queryParams: { id: card.id_pedido, flow: 'historic' },
     });
   }
 
@@ -277,8 +277,8 @@ export class ProgressComponent implements OnInit {
 
     switch (index) {
       case 0:
-        this.listCards('pendente');
-        this.flow = 'pendente';
+        this.listCards('finalizado');
+        this.flow = 'finalizado';
         this.cleanActualRoute();
 
         // this.homeFlow === 'publicado' ? this.selectedIndex === 0 : '';
@@ -292,7 +292,7 @@ export class ProgressComponent implements OnInit {
         break;
       case 2:
         // Salva o estado atual antes de navegar
-        if (this.flow === 'pendente' || this.flow === 'cancelado') {
+        if (this.flow === 'finalizado' || this.flow === 'cancelado') {
           const currentState = this.stateManagement.getState(this.flow);
           currentState.scrollY = window.scrollY;
         }

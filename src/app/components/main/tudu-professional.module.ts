@@ -15,12 +15,14 @@ import { MyFinancesComponent } from './my-finances/my-finances/my-finances.compo
 import { MyFinancesModule } from './my-finances/my-finances/my-finances.module';
 import { ProgressDetailComponent } from './progress-detail/progress-detail.component';
 import { ProgressComponent } from './progress/progress.component';
+import { HistoricComponent } from './historic/historic.component';
 
 const routes: Routes = [
   { path: 'home', component: AppHomeComponent },
   { path: 'budgets', component: BudgetsComponent },
   { path: 'progress', component: ProgressComponent },
   { path: 'progress-detail', component: ProgressDetailComponent },
+  { path: 'historic', component: HistoricComponent },
   { path: 'end', component: FlowEndComponent },
   { path: 'finances', component: MyFinancesComponent },
 ];
@@ -33,6 +35,7 @@ const routes: Routes = [
     ProgressDetailComponent,
     FlowEndComponent,
     CalendarComponent,
+    HistoricComponent,
   ],
   imports: [
     SharedModule,

@@ -511,7 +511,7 @@ export class AppHomeComponent implements OnInit {
     this.headerPageOptions = [
       `Serviços(${this.counts.publicado})`,
       `Em andamento(${this.counts.andamento})`,
-      `Finalizados(${this.counts.finalizado})`,
+      // `Finalizados(${this.counts.finalizado})`,
     ];
   }
 

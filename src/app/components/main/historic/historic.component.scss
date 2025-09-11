@@ -1,0 +1,93 @@
+section {
+  margin-top: -3em;
+}
+
+h5,
+p {
+  font-size: 16px !important;
+}
+
+.card-footer {
+  background-color: transparent;
+}
+.calendar-container {
+  display: flex;
+  overflow-x: auto;
+}
+
+.day-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.day-box.today {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.day-box.has-event {
+  background: #f8f9fa;
+  color: black;
+  font-weight: bold;
+  border: 2px solid var(--primary);
+}
+
+.has-event {
+  background-color: blue;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.tab-bar {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #eee;
+}
+
+.tab-link {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #999;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab-link.active {
+  color: var(--primary);
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: calc(100% / 2); /* Altere se tiver mais ou menos itens */
+  height: 3px;
+  background-color: var(--primary);
+  transition: transform 0.3s ease;
+  border-radius: 4px 4px 0 0;
+}
+
+@media (max-width: 350px) {
+  .request-card h3 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 998px) {
+  .request-card h3 {
+    font-size: 21px;
+  }
+}

@@ -78,7 +78,7 @@ i {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: calc(100% / 3); /* Altere se tiver mais ou menos itens */
+  width: calc(100% / 2); /* Altere se tiver mais ou menos itens */
   height: 3px;
   background-color: var(--primary);
   transition: transform 0.3s ease;
