@@ -593,27 +593,6 @@ export class AppHomeComponent implements OnInit {
     }
   }
 
-  formatarHorario(pedido: any): string {
-    const candidatura = pedido.candidaturas?.[0];
-    let horario = pedido.horario_preferencial;
-
-    if (
-      candidatura &&
-      candidatura.horario_negociado !== pedido.horario_preferencial
-    ) {
-      horario = candidatura.horario_negociado;
-    }
-
-    const data = moment(horario);
-    const hoje = moment();
-
-    if (data.isSame(hoje, 'day')) {
-      return `Hoje, ${data.format('HH:mm')}`;
-    }
-
-    return data.format('DD/MM/YYYY - HH:mm');
-  }
-
   cleanActualRoute(): void {
     this.route.navigate([], {
       relativeTo: this.activeRoute,
