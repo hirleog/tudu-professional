@@ -224,7 +224,7 @@ export class HistoricComponent implements OnInit {
     this.stateManagement.clearAllState();
 
     this.headerPageOptions = [
-      `finalizados(${this.counts.finalizado})`,
+      `Finalizados(${this.counts.finalizado})`,
       `Cancelados(${this.counts.cancelado})`,
     ];
   }
@@ -233,14 +233,14 @@ export class HistoricComponent implements OnInit {
     return card.candidaturas?.find((c) => c.prestador_id === this.id_prestador);
   }
 
-  goToDetails(card: any): void {
-    const currentStatus = 'publicado'; // Ou obtenha o status atual de alguma forma
+  goToDetails(idPedido: any): void {
+    const currentStatus = 'finalizado'; // Ou obtenha o status atual de alguma forma
     const currentState = this.stateManagement.getState(currentStatus);
     currentState.scrollY = window.scrollY;
     currentState.counts = this.counts;
 
     this.route.navigate(['/home/detail'], {
-      queryParams: { id: card.id_pedido, flow: 'historic' },
+      queryParams: { id: idPedido, flow: 'historic' },
     });
   }
 
