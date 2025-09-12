@@ -18,7 +18,7 @@
   <div right-content></div>
 
   <div header-menu>
-    <div class="tab-bar d-flex justify-content-between position-relative">
+    <div class="tab-bar d-flex justify-content-between position-relative hr-nav-bottom">
       <a
         *ngFor="let item of headerPageOptions; let i = index"
         class="tab-link"
@@ -267,6 +267,8 @@
                 }}</span>
               </h5>
             </div>
+
+            <h5>📌 Detalhes:</h5><br>
             <p class="request-card-description">
               {{ card.serviceDescription }}
             </p>

@@ -70,6 +70,7 @@ i {
   font-weight: 500;
 }
 
+
 .tab-link.active {
   color: var(--primary);
 }
@@ -83,6 +84,7 @@ i {
   background-color: var(--primary);
   transition: transform 0.3s ease;
   border-radius: 4px 4px 0 0;
+  
 }
 
 .ajust-space {

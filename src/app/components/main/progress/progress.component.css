@@ -49,7 +49,7 @@ p {
 .tab-bar {
   display: flex;
   position: relative;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
 }
 
 .tab-link {
