@@ -7,9 +7,6 @@ p {
   font-size: 16px !important;
 }
 
-.card-footer {
-  background-color: transparent;
-}
 .calendar-container {
   display: flex;
   overflow-x: auto;
@@ -50,7 +47,7 @@ p {
   display: flex;
   position: relative;
   // border-bottom: 1px solid #eee;
-    // border-top: 1px solid var(--secondary);
+  // border-top: 1px solid var(--secondary);
 }
 
 .tab-link {

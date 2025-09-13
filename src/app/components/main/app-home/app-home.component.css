@@ -2,32 +2,9 @@ i {
   color: var(--tag-p-grey) !important;
 }
 
-.request-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--light);
-  border-radius: 10px;
-  /* padding: 20px; */
-  margin: 15px 0;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
 .request-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-}
-
-.request-card-body {
-  margin-bottom: 20px;
-}
-
-.card-header {
-  background-color: transparent;
-}
-
-.card-footer {
-  background-color: transparent;
 }
 
 .request-card-link {
@@ -70,7 +47,6 @@ i {
   font-weight: 500;
 }
 
-
 .tab-link.active {
   color: var(--primary);
 }
@@ -84,7 +60,6 @@ i {
   background-color: var(--primary);
   transition: transform 0.3s ease;
   border-radius: 4px 4px 0 0;
-  
 }
 
 .ajust-space {

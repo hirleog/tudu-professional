@@ -18,7 +18,9 @@
   <div right-content></div>
 
   <div header-menu>
-    <div class="tab-bar d-flex justify-content-between position-relative hr-nav-bottom">
+    <div
+      class="tab-bar d-flex justify-content-between position-relative hr-nav-bottom"
+    >
       <a
         *ngFor="let item of headerPageOptions; let i = index"
         class="tab-link"
@@ -234,6 +236,7 @@
               </p>
 
               <span
+              
                 class="text-sm font-medium text-gray-500 bg-gray-100 rounded p-1"
                 style="margin: -30px 0px 30px 0px"
               >
@@ -268,7 +271,8 @@
               </h5>
             </div>
 
-            <h5>📌 Detalhes:</h5><br>
+            <h5>📌 Detalhes:</h5>
+            <br />
             <p class="request-card-description">
               {{ card.serviceDescription }}
             </p>
@@ -320,6 +324,7 @@
               >
                 <i
                   class="fa"
+                  style="color: white !important"
                   [ngClass]="card.renegotiateActive ? 'fa-pencil' : 'fa-undo'"
                 ></i>
               </button>
@@ -355,6 +360,7 @@
                 >
                   <i
                     class="fas"
+                    style="color: white !important"
                     [ngClass]="
                       !card.calendarActive ? 'fa-calendar-alt' : 'fa-undo'
                     "
@@ -426,12 +432,12 @@
                   (card.calendarActive === true &&
                     dateTimeFormatted !== card.placeholderDataHora)
               }"
-              style="background-color: var(--primary); color: var(--light)"
+              style="background-color: var(--primary); color: white !important"
             >
-              <span *ngIf="!isLoadingBtn">
+              <span *ngIf="!isLoadingBtn" style="color: white !important">
                 <i
                   class="fas fa-paper-plane"
-                  style="color: var(--light) !important"
+                  style="color: white !important"
                 ></i>
                 {{
                   (!card.renegotiateActive &&
