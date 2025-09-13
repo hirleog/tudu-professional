@@ -82,7 +82,7 @@
     </ul>
   </div>
 
-  <app-summary></app-summary>
+  <!-- <app-summary></app-summary> -->
 
   <!-- Overview Tab -->
   <div *ngIf="currentTab === 'overview'">
@@ -170,7 +170,7 @@
               >
                 <div
                   class="p-2 rounded-full mr-3"
-                  [ngClass]="transaction.iconClasses"
+                  [ngClass]="getStatusClass(transaction.status)"
                 >
                   <i class="fas {{ transaction.icon }}"></i>
                 </div>
@@ -179,28 +179,32 @@
                     {{ transaction.type }}
                   </p>
                   <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ transaction.transactionId }}
+                    {{ transaction.id_pagamento }}
                   </p>
                 </div>
               </div>
-              <div
+              <!-- <div
                 class="col-span-12 sm:col-span-6 md:col-span-3 lg:col-span-2"
               >
                 <p class="text-gray-500 dark:text-gray-400">Cliente</p>
                 <p class="font-medium text-gray-900 dark:text-white">
                   {{ transaction.client }}
                 </p>
-              </div>
+              </div> -->
               <div class="col-span-6 sm:col-span-4 md:col-span-2 lg:col-span-2">
                 <p class="text-gray-500 dark:text-gray-400">Valor</p>
                 <p class="font-medium text-gray-900 dark:text-white">
-                  {{ transaction.amount }}
+                  R{{ transaction.total_amount | currency }}
                 </p>
               </div>
               <div class="col-span-6 sm:col-span-4 md:col-span-2 lg:col-span-2">
                 <p class="text-gray-500 dark:text-gray-400">Data</p>
                 <p class="font-medium text-gray-900 dark:text-white">
-                  {{ transaction.date }}
+                  {{
+                    transaction.status === "APPROVED"
+                      ? (transaction.authorization_date | date : "dd/MM/yyyy")
+                      : (transaction.updated_at | date : "dd/MM/yyyy")
+                  }}
                 </p>
               </div>
               <div
@@ -210,7 +214,7 @@
                   class="px-2 py-1 text-xs rounded-full"
                   [ngClass]="getStatusClass(transaction.status)"
                 >
-                  {{ transaction.statusText }}
+                  {{ transaction.status }}
                 </span>
               </div>
             </div>
