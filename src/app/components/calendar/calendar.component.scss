@@ -13,6 +13,10 @@
   font-family: "Roboto", sans-serif;
 }
 
+label {
+  color: var(--secondary);
+}
+
 .check-button {
   background-color: var(--blue);
   border-radius: 5;

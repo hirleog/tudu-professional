@@ -55,19 +55,22 @@ export class MyFinancesComponent implements OnInit {
 
   transactions: TransactionModel[] = [];
   paginacao: any;
+  id_prestador: any;
 
   constructor(
     private route: Router,
     private FinancialService: FinancialService
-  ) {}
-
-  ngOnInit(): void {
-    this.buscarPagamentos(14, 1, 10); // exemplo com id_cliente = 14
+  ) {
+    this.id_prestador = localStorage.getItem('prestador_id');
   }
 
-  buscarPagamentos(id_cliente: number, page: number, limit: number) {
+  ngOnInit(): void {
+    this.buscarPagamentos(this.id_prestador, 1, 10); // exemplo com id_cliente = 14
+  }
+
+  buscarPagamentos(id_prestador: any, page: number, limit: number) {
     this.FinancialService.buscarPagamentosPorClientePaginado(
-      id_cliente,
+      id_prestador,
       page,
       limit
     ).subscribe((res) => {

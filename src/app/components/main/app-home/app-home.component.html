@@ -212,7 +212,7 @@
 
         <div class="request-card">
           <!-- Header -->
-          <div class="request-card-header p-3 border-b border-gray-200">
+          <div class="request-card-header p-3">
             <div class="request-card-icon mr-3 flex-shrink-0">
               <i
                 [class]="card.icon"
@@ -222,13 +222,15 @@
             </div>
             <div class="request-card-title flex-grow">
               <div class="flex justify-between items-start">
-                <div class="d-flex align-items-center">
-                  <h5>{{ card.categoria }}</h5>
-                </div>
+                <h5>
+                  {{ card.categoria }}
+                </h5>
               </div>
               <p
                 class="request-card-description text-sm text-gray-600 mt-1 truncate-text"
               >
+                <i class="fas fa-map-marker-alt"></i>
+
                 {{ card.address.city }}, {{ card.address.state }} -
                 {{ card.address.neighborhood }}
                 <!-- {{ card.address.street }}, {{ card.address.number }} -
@@ -236,7 +238,6 @@
               </p>
 
               <span
-              
                 class="text-sm font-medium text-gray-500 bg-gray-100 rounded p-1"
                 style="margin: -30px 0px 30px 0px"
               >
@@ -257,6 +258,11 @@
                     color: var(--primary) !important;
                   "
                 >
+                  <i
+                    class="fas fa-tag"
+                    style="color: var(--primary) !important"
+                  ></i>
+
                   {{ filtro.trim() }}
                 </span>
               </div>

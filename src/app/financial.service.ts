@@ -10,17 +10,17 @@ export class FinancialService {
   constructor(private http: HttpClient) {}
 
   buscarPagamentosPorClientePaginado(
-    id_cliente: number,
+    id_prestador: number,
     page: number = 1,
     limit: number = 10
   ): Observable<any> {
     let params = new HttpParams()
-      .set('id_cliente', id_cliente)
+      .set('id_prestador', id_prestador)
       .set('page', page)
       .set('limit', limit);
 
     return this.http.get<any>(
-      `${environment.apiUrl}/payments/cliente/${id_cliente}/dashboard`,
+      `${environment.apiUrl}/payments/cliente/${id_prestador}/dashboard`,
       {
         params,
       }
