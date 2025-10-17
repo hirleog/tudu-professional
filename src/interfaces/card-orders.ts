@@ -39,6 +39,10 @@ export interface CardOrders {
   hasQuotes: boolean; // Se há orçamentos disponíveis
 
   candidaturas: Candidatura[]; // ✅ Agora com tipo correto
+  chargeInfos?: {
+    charge_id?: string;
+    total_amount?: string;
+  };
   valorFormatted?: string; // Valor formatado
   currentImageIndex: any;
 

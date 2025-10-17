@@ -59,7 +59,7 @@
     <div class="row g-3 m-0 p-0">
       <div class="col-12" *ngFor="let card of cards">
         <div class="request-card" *ngFor="let candidatura of card.candidaturas">
-          <div class="request-card-header  p-3">
+          <div class="request-card-header p-3">
             <div class="request-card-icon">
               <i
                 [class]="card.icon"
@@ -131,11 +131,12 @@
               style="padding-left: 0px"
             >
               <h2>
-                {{
+                <!-- {{
                   candidatura.valor_negociado !== card.valor
                     ? (candidatura.valor_negociado | currency : "BRL")
                     : (card.valor | currency : "BRL")
-                }}
+                }} -->
+                {{ card.chargeInfos?.total_amount | currency : "BRL" }}
               </h2>
             </div>
             <button
