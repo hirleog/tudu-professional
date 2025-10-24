@@ -169,8 +169,7 @@
                 class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 flex items-center"
               >
                 <div
-                  class="p-2 rounded-full mr-3"
-                  [ngClass]="getStatusClass(transaction.status)"
+                  class="p-2 rounded-full mr-3 bg-success-subtle dark:bg-green-900 text-green-800 dark:text-green-200"
                 >
                   <i class="fas {{ transaction.icon }}"></i>
                 </div>
@@ -209,13 +208,10 @@
                 </p>
               </div>
               <div
-                class="col-span-12 sm:col-span-4 md:col-span-3 lg:col-span-3 flex items-center justify-end"
+                class="col-span-12 sm:col-span-4 md:col-span-3 lg:col-span-3 flex items-center justify-end bg-success-subtle dark:bg-green-900 text-green-800 dark:text-green-200"
               >
-                <span
-                  class="px-2 py-1 text-xs rounded-full"
-                  [ngClass]="getStatusClass(transaction.status)"
-                >
-                  {{ transaction.status }}
+                <span class="px-2 py-1 text-xs rounded-full">
+                  {{ transaction.status === "authorized" ? "Aprovado" : "" }}
                 </span>
               </div>
             </div>

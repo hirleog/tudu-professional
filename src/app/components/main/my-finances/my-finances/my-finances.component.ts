@@ -35,8 +35,13 @@ export class MyFinancesComponent implements OnInit {
     ).subscribe((res) => {
       this.paginacao = res.data.paginacao;
 
-      const allTransactions = res.data.pagamentos.map(
-        (transaction: TransactionModel) => {
+      const allTransactions = res.data.pagamentos
+        // Filtra apenas os pagamentos com status 'authorized'
+        .filter(
+          (transaction: TransactionModel) => transaction.status === 'authorized'
+        )
+        // Aplica o map apenas nos autorizados
+        .map((transaction: TransactionModel) => {
           return {
             ...transaction,
             // Aplica a formatação customizada nos valores monetários
@@ -59,8 +64,8 @@ export class MyFinancesComponent implements OnInit {
                 ? 'fa-times-circle'
                 : 'fa-question-circle',
           };
-        }
-      );
+        });
+
       this.transactions = allTransactions;
     });
   }
@@ -73,24 +78,24 @@ export class MyFinancesComponent implements OnInit {
     return this.currentTab === tab;
   }
 
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'APPROVED':
-        return 'bg-success-subtle dark:bg-green-900 text-green-800 dark:text-green-200';
-      case 'processing':
-        return 'bg-info-subtle dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200';
-      case 'CANCELLED':
-        return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
-      case 'NOT APPROVED':
-        return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
-      case 'DENIED':
-        return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
-      case 'ERROR':
-        return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
-      default:
-        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
-    }
-  }
+  // getStatusClass(status: string): string {
+  //   switch (status) {
+  //     case 'APPROVED':
+  //       return 'bg-success-subtle dark:bg-green-900 text-green-800 dark:text-green-200';
+  //     case 'processing':
+  //       return 'bg-info-subtle dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200';
+  //     case 'CANCELLED':
+  //       return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
+  //     case 'NOT APPROVED':
+  //       return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
+  //     case 'DENIED':
+  //       return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
+  //     case 'ERROR':
+  //       return 'bg-danger-subtle dark:bg-red-900 text-red-800 dark:text-red-200';
+  //     default:
+  //       return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
+  //   }
+  // }
 
   goHome(): void {
     this.route.navigate(['/tudu-professional/home']);
