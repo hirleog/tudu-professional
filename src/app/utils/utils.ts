@@ -24,3 +24,15 @@ export function calculateDistance(
 export function formatDecimal(value: number): number {
   return parseFloat(value.toFixed(2)); // Garante 2 casas decimais
 }
+
+export function formatCurrencyCustom(value: number): string {
+  if (!value && value !== 0) return 'R$ 0,00';
+  
+  // ✅ CORRETO: Divide por 100 para converter centavos em reais
+  const valorEmReais = value / 100;
+  
+  return valorEmReais.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+}

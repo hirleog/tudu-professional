@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FinancialService } from 'src/app/financial.service';
+import { formatCurrencyCustom } from 'src/app/utils/utils';
 import { TransactionModel } from 'src/interfaces/transaction-model';
 
 @Component({
@@ -11,52 +12,10 @@ import { TransactionModel } from 'src/interfaces/transaction-model';
 export class MyFinancesComponent implements OnInit {
   currentTab: string = 'overview';
 
-  // transactions = [
-  //   {
-  //     id: '1',
-  //     type: 'Pagamento recebido',
-  //     transactionId: '#TRX-78945',
-  //     client: 'Empresa ABC',
-  //     amount: 'R$ 2.345,67',
-  //     date: '28/05/2023',
-  //     status: 'completed',
-  //     statusText: 'Concluído',
-  //     icon: 'fa-check-circle',
-  //     iconClasses:
-  //       'bg-success-subtle dark:bg-green-900 text-green-600 dark:text-green-300',
-  //   },
-  //   {
-  //     id: '2',
-  //     type: 'Pagamento pendente',
-  //     transactionId: '#TRX-78944',
-  //     client: 'Empresa XYZ',
-  //     amount: 'R$ 1.234,56',
-  //     date: '27/05/2023',
-  //     status: 'processing',
-  //     statusText: 'Processando',
-  //     icon: 'fa-clock',
-  //     iconClasses:
-  //       'bg-info-subtle dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300',
-  //   },
-  //   {
-  //     id: '3',
-  //     type: 'Pagamento cancelado',
-  //     transactionId: '#TRX-78943',
-  //     client: 'Cliente A',
-  //     amount: 'R$ 890,12',
-  //     date: '25/05/2023',
-  //     status: 'cancelled',
-  //     statusText: 'Cancelado',
-  //     icon: 'fa-times-circle',
-  //     iconClasses:
-  //       'bg-danger-subtle dark:bg-red-900 text-red-600 dark:text-red-300',
-  //   },
-  // ];
-
   transactions: TransactionModel[] = [];
   paginacao: any;
   id_prestador: any;
-
+  value!: any;
   constructor(
     private route: Router,
     private FinancialService: FinancialService
@@ -80,6 +39,11 @@ export class MyFinancesComponent implements OnInit {
         (transaction: TransactionModel) => {
           return {
             ...transaction,
+            // Aplica a formatação customizada nos valores monetários
+            origin_amount: transaction.origin_amount
+              ? formatCurrencyCustom(transaction.origin_amount)
+              : null,
+
             icon:
               transaction.status === 'APPROVED'
                 ? 'fa-check-circle'
@@ -98,7 +62,6 @@ export class MyFinancesComponent implements OnInit {
         }
       );
       this.transactions = allTransactions;
-      // return {};
     });
   }
 

@@ -160,6 +160,11 @@
           <div class="px-6 py-4 border-b dark:border-gray-700">
             <h3 class="text-lg font-medium">Transações Recentes</h3>
           </div>
+
+           <p>
+                dhaksdkasjhd
+              </p>
+              {{ value }}
           <div class="divide-y">
             <div
               *ngFor="let transaction of transactions"
@@ -183,6 +188,7 @@
                   </p>
                 </div>
               </div>
+
               <!-- <div
                 class="col-span-12 sm:col-span-6 md:col-span-3 lg:col-span-2"
               >
@@ -194,7 +200,7 @@
               <div class="col-span-6 sm:col-span-4 md:col-span-2 lg:col-span-2">
                 <p class="text-gray-500 dark:text-gray-400">Valor</p>
                 <p class="font-medium text-gray-900 dark:text-white">
-                  R{{ transaction.total_amount | currency }}
+                  R{{ transaction.origin_amount | currency : "BRL" }}
                 </p>
               </div>
               <div class="col-span-6 sm:col-span-4 md:col-span-2 lg:col-span-2">

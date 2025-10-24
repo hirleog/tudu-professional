@@ -55,11 +55,13 @@
   <!-- SERVIÇOS EM ANDAMENTO -->
   <!-- data-aos="fade-down" -->
   <div id="in-progress" class="container">
-    <div class="row g-3 m-0 p-0">
-      <div class="col-12" *ngFor="let card of cards">
-        <div class="request-card position-relative">
-          <!-- Pega a candidatura do prestador logado -->
-          <ng-container *ngFor="let candidatura of card.candidaturas">
+    <div class="col-12 m-0 p-2">
+      <div class="col-12" *ngFor="let card of cards; let i = index">
+        <ng-container *ngIf="card.candidaturas && card.candidaturas.length > 0">
+          <div
+            class="position-relative"
+            *ngFor="let candidatura of card.candidaturas; let j = index"
+          >
             <!-- Cabeçalho do Card -->
             <div class="request-card-header bg-light p-3">
               <div class="col-1 request-card-icon border-0">
@@ -94,11 +96,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  [placeholder]="
-                    candidatura.valor_negociado !== card.valor
-                      ? (candidatura.valor_negociado | currency : 'BRL')
-                      : (card.valor | currency : 'BRL')
-                  "
+                  [placeholder]="card.valorFormatted | currency : 'BRL'"
                   [disabled]="true"
                 />
               </div>
@@ -147,8 +145,8 @@
                 Detalhes
               </button>
             </div>
-          </ng-container>
-        </div>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

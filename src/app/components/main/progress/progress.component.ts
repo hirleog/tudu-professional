@@ -239,7 +239,11 @@ export class ProgressComponent implements OnInit {
     currentState.counts = this.counts;
 
     this.route.navigate(['/home/detail'], {
-      queryParams: { id: card.id_pedido, flow: 'progress' },
+      queryParams: {
+        param: 'professional',
+        id: card.id_pedido,
+        flow: 'progress',
+      },
     });
   }
 
