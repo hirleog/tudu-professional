@@ -1,19 +1,21 @@
-<app-nav>
+<lib-nav>
   <a
     left-content
     routerLink="/tudu-professional/historic"
     class="text-decoration-none text-dark"
     style="margin-right: 10px"
   >
-    <i class="fas fa-arrow-left"></i>
+    <i class="fas fa-arrow-left" style="color: var(--light) !important"></i>
   </a>
 
-  <h3 central-content class="title-page m-0">PENDENTES</h3>
+  <h3 central-content class="title-page m-0" style="color: var(--light)">
+    HISTÓRICO
+  </h3>
 
   <i
     right-content
     class="fas fa-question-circle"
-    style="font-size: 1.5em; color: var(--primary)"
+    style="font-size: 1.5em; color: var(--primary); color: var(--light)"
     title="Clique para mais informações"
   ></i>
 
@@ -32,11 +34,14 @@
       </a>
       <div
         class="tab-indicator"
-        [ngStyle]="{ transform: 'translateX(' + selectedIndex * 100 + '%)' }"
+        [ngStyle]="{
+          transform: 'translateX(' + selectedIndex * 100 + '%)',
+          width: 100 / headerPageOptions.length + '%'
+        }"
       ></div>
     </div>
   </div>
-</app-nav>
+</lib-nav>
 
 <div *ngIf="cards.length >= 1" class="mt-5 pt-1">
   <!-- <app-calendar
@@ -47,121 +52,120 @@
   </app-calendar> -->
 </div>
 
-<div class="container" *ngIf="isLoading">
-  <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
-</div>
+<section class="max-w-4xl mx-auto lg:px-8 pt-5">
+  <div class="container" *ngIf="isLoading">
+    <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
+  </div>
 
-<section
-  class="max-w-4xl mx-auto lg:px-8 d-flex flex-column justify-content-center align-items-center mt-1"
->
-  <!-- Template único para ambos os status -->
-  <div class="container" *ngIf="selectedIndex === 0 || selectedIndex === 1">
+  <!-- Template Unificado -->
+  <div class="container mx-auto" *ngIf="cards.length > 0 || isLoading">
     <div class="row g-3 m-0 p-0">
-      <div class="col-12" *ngFor="let card of cards">
-        <div class="request-card" *ngFor="let candidatura of card.candidaturas">
-          <div class="request-card-header p-3">
-            <div class="request-card-icon">
-              <i
-                [class]="card.icon"
-                style="color: var(--primary) !important"
-              ></i>
-            </div>
-            <div class="col-11 request-card-title">
-              <div class="d-flex align-items-center">
-                <h5>{{ card.categoria }}</h5>
+      <!-- Template único para ambos os status -->
+      <ng-container *ngIf="selectedIndex === 0 || selectedIndex === 1">
+        <div class="col-12 m-0 p-2" *ngFor="let card of cards">
+          <ng-container *ngFor="let candidatura of card.candidaturas">
+            <lib-card-layout
+              [statusPedido]="card.status_pedido"
+              [cardTemplateIndicator]="1"
+            >
+              <!-- Header -->
+              <div
+                service-icon
+                class="cursor-pointer"
+                (click)="goToDetails(card.id_pedido)"
+              >
+                <i
+                  [class]="card.icon"
+                  class="text-2xl"
+                  style="color: var(--light) !important"
+                ></i>
               </div>
-              <p
-                class="request-card-description truncate-text mb-0 text-break"
-              ></p>
-              <p class="request-card-description truncate-text text-break">
+
+              <div
+                service-title
+                (click)="goToDetails(card.id_pedido)"
+                class="cursor-pointer"
+              >
+                <div>{{ card.categoria }}</div>
+              </div>
+
+              <div service-address>
+                <i
+                  class="fas fa-map-marker-alt text-xs mr-1"
+                  style="font-size: 12px; color: var(--primary) !important"
+                ></i>
                 {{ card.address.street }}, {{ card.address.number }} -
                 {{ card.address.city }} - {{ card.address.state }}
-              </p>
-            </div>
-          </div>
-
-          <div class="d-flex justify-content-around align-items-center">
-            <div
-              class="request-card-body card-body d-flex flex-column gap-4 p-3 mb-0"
-            >
-              <div
-                class="d-flex justify-content-between align-items-center mb-2"
-                style="margin-top: -15px"
-              >
-                <p>
-                  <!-- Exibe status com ícone e cor correspondente -->
-                  <span
-                    [style.color]="selectedIndex === 0 ? 'green' : 'red'"
-                    [style.fontWeight]="'bold'"
-                  >
-                    {{ selectedIndex === 0 ? " CONCLUÍDO" : " CANCELADO" }}
-                    <i
-                      [class]="
-                        selectedIndex === 0
-                          ? 'fas fa-check-circle'
-                          : 'fas fa-times-circle'
-                      "
-                    ></i>
-                  </span>
-                  <br />{{ formatarHorario(card) }}
-                </p>
-                <p class="text-end">Pedido <br />#{{ card.id_pedido }}</p>
               </div>
 
-              <hr />
-
-              <div>
-                <p style="margin-bottom: -2px">Descrição</p>
-                <p class="request-card-description w-100">
-                  {{ card.subcategoria }}
-                </p>
-                <p class="request-card-description">
-                  {{ card.serviceDescription }}
-                </p>
-              </div>
-
-              <hr />
-            </div>
-          </div>
-          <div
-            class="d-flex justify-content-between align-items-center card-footer request-card-footer p-3"
-          >
-            <div
-              class="container d-flex justify-content-start"
-              style="padding-left: 0px"
-            >
-              <h2>
-                <!-- {{
-                  candidatura.valor_negociado !== card.valor
-                    ? (candidatura.valor_negociado | currency : "BRL")
-                    : (card.valor | currency : "BRL")
-                }} -->
-                {{ card.chargeInfos?.total_amount | currency : "BRL" }}
-              </h2>
-            </div>
-            <button
-              (click)="goToDetails(card.id_pedido)"
-              class="request-quote-btn d-flex align-items-center gap-2"
-              style="
-                border: 1px solid var(--tag-p-grey);
-                color: var(--primary);
-                background-color: var(--light);
-              "
-            >
               <i
-                class="fas fa-search"
-                style="color: var(--secondary) !important"
+                details-btn
+                (click)="goToDetails(card.id_pedido)"
+                class="fa-solid fa-magnifying-glass cursor-pointer"
+                style="color: var(--primary) !important"
               ></i>
-              Detalhes
-            </button>
-          </div>
+
+              <div order-number>#{{ card.id_pedido }}</div>
+
+              <!-- Status -->
+              <div status-badge class="status-badge">
+                <i
+                  [class]="
+                    selectedIndex === 0
+                      ? 'fas fa-check-circle'
+                      : 'fas fa-times-circle'
+                  "
+                  class="text-xs mr-1"
+                  [style.color]="selectedIndex === 0 ? 'green' : 'red'"
+                ></i>
+                {{ selectedIndex === 0 ? "CONCLUÍDO" : "CANCELADO" }}
+              </div>
+
+              <div conclusion-date>
+                <span class="info-value">{{ formatarHorario(card) }}</span>
+              </div>
+
+              <!-- Descrição -->
+              <div description class="description text-gray-700">
+                <p style="margin-bottom: 8px" class="font-semibold">
+                  Descrição
+                </p>
+                <p>{{ card.subcategoria }}</p>
+                <p>{{ card.serviceDescription }}</p>
+              </div>
+
+              <!-- Footer -->
+              <button
+                main-btn
+                class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
+                (click)="goToDetails(card.id_pedido)"
+                style="
+                  border: 1px solid var(--tag-p-grey);
+                  color: var(--primary);
+                  background-color: var(--light);
+                  width: 100%;
+                "
+              >
+                <i
+                  class="fas fa-search"
+                  style="color: var(--secondary) !important"
+                ></i>
+                Detalhes
+              </button>
+
+              <div price>
+                {{ card.chargeInfos?.total_amount | currency : "BRL" }}
+              </div>
+            </lib-card-layout>
+          </ng-container>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 
+  <!-- Mensagem quando não há cards -->
   <div
-    *ngIf="cards.length === 0"
+    *ngIf="cards.length === 0 && !isLoading"
     class="d-flex align-items-center justify-content-center mt-5 pt-5"
     style="height: 68vh"
   >
@@ -171,7 +175,11 @@
         style="font-size: 5em; color: var(--tag-p-grey)"
       ></i>
       <p class="fs-3">Você ainda não possui pedidos</p>
-      <button class="btn btn-primary mt-3" routerLink="/tudu-professional/home">
+      <button
+        *ngIf="selectedIndex === 0"
+        class="btn btn-primary mt-3"
+        routerLink="/tudu-professional/home"
+      >
         Buscar serviços
       </button>
     </div>

@@ -25,3 +25,6 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Instalar a LIB: 
+npm install C:\Users\user\Documents\Frontend\tudü\tudu-workspace\dist\tudu-components\tudu-components-0.0.0-watch+1763035954718.tgz --force

@@ -232,7 +232,7 @@ export class ProgressComponent implements OnInit {
     return card.candidaturas?.find((c) => c.prestador_id === this.id_prestador);
   }
 
-  goToDetails(card: any): void {
+  goToDetails(idPedido: any): void {
     const currentStatus = 'publicado'; // Ou obtenha o status atual de alguma forma
     const currentState = this.stateManagement.getState(currentStatus);
     currentState.scrollY = window.scrollY;
@@ -241,7 +241,7 @@ export class ProgressComponent implements OnInit {
     this.route.navigate(['/home/detail'], {
       queryParams: {
         param: 'professional',
-        id: card.id_pedido,
+        id: idPedido,
         flow: 'progress',
       },
     });
