@@ -6,7 +6,12 @@ import { TuduComponentsModule } from 'tudu-components';
 @NgModule({
   declarations: [],
   imports: [TuduComponentsModule],
-  exports: [CommonModule, FormsModule, ReactiveFormsModule, TuduComponentsModule],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TuduComponentsModule,
+  ],
   providers: [DatePipe],
 })
 export class SharedModule {}
