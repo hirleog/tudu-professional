@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { CardOrders } from 'src/interfaces/card-orders';
 import { CardService } from '../../services/card.service';
-import { Location } from '@angular/common';
+import { Location, TitleCasePipe } from '@angular/common';
 import { StateManagementService } from '../../services/state-management.service';
 import { formatDecimal } from 'src/app/utils/utils';
 import * as bootstrap from 'bootstrap';
@@ -79,7 +79,8 @@ export class AppHomeComponent implements OnInit {
     public cardService: CardService,
     private activeRoute: ActivatedRoute,
     private location: Location,
-    private stateManagement: StateManagementService
+    private stateManagement: StateManagementService,
+    private titleCasePipe: TitleCasePipe
   ) {
     moment.locale('pt-br');
     this.placeholderDataHora =
@@ -515,14 +516,25 @@ export class AppHomeComponent implements OnInit {
     ];
   }
 
-  goToDetails(id_pedido: any): void {
+  goToDetails(card: any): void {
     const currentStatus = 'publicado'; // Ou obtenha o status atual de alguma forma
     const currentState = this.stateManagement.getState(currentStatus);
     currentState.scrollY = window.scrollY;
     currentState.counts = this.counts;
 
+    if (
+      card.candidaturas.length > 0 &&
+      card.candidaturas[0].status === 'recusado'
+    ) {
+      this.flow = 'recusado';
+    }
+
     this.route.navigate(['/home/detail'], {
-      queryParams: { param: 'professional', id: id_pedido, flow: this.flow },
+      queryParams: {
+        param: 'professional',
+        id: card.id_pedido,
+        flow: this.flow,
+      },
     });
   }
 
@@ -534,6 +546,9 @@ export class AppHomeComponent implements OnInit {
           routeSelected = 0;
           break;
         case 'finalizado':
+          routeSelected = 1;
+          break;
+        case 'seeProposal':
           routeSelected = 1;
           break;
         default:
@@ -661,6 +676,22 @@ export class AppHomeComponent implements OnInit {
     }
 
     // return valor !== negociado; // Retorna true se forem diferentes
+  }
+  getStatusText(card: any): string {
+    if (!card.candidaturas || card.candidaturas.length === 0) {
+      return this.titleCasePipe.transform(card.status_pedido);
+    }
+
+    const primeiraCandidatura = card.candidaturas[0];
+
+    switch (primeiraCandidatura.status) {
+      case 'recusado':
+        return this.titleCasePipe.transform(primeiraCandidatura.status);
+      case 'negociacao':
+        return 'Em Negociação';
+      default:
+        return this.titleCasePipe.transform(card.status_pedido);
+    }
   }
 
   @HostListener('window:scroll', [])

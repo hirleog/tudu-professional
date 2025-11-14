@@ -1,14 +1,21 @@
-<app-nav class="pb-5 mb-4">
+<lib-nav class="pb-5 mb-4">
   <div left-content class="d-flex align-items-center">
-    <a routerLink="/tudu/home" class="logo">
+    <a routerLink="/tudu-professional/home" class="block">
       <img
-        src="../../../assets/logo-roxoo.webp"
-        class="img-fluid"
-        style="width: 4em"
-        alt="error"
+        src="../../../assets/logo-branco.webp"
+        style="width: 4em; min-width: 4em"
+        class="logo-image"
+        alt="Tudü"
       />
     </a>
-    <h3 style="margin-bottom: 0px; margin-top: 3px; font-size: 17px">
+    <h3
+      style="
+        margin-bottom: 0px;
+        margin-top: 3px;
+        font-size: 17px;
+        color: var(--light);
+      "
+    >
       Professional
     </h3>
   </div>
@@ -32,13 +39,17 @@
       </a>
       <div
         class="tab-indicator"
-        [ngStyle]="{ transform: 'translateX(' + selectedIndex * 100 + '%)' }"
+        [ngStyle]="{
+          transform: 'translateX(' + selectedIndex * 100 + '%)',
+          width: 100 / headerPageOptions.length + '%'
+        }"
       ></div>
     </div>
   </div>
-</app-nav>
+</lib-nav>
 
-<section class="max-w-4xl mx-auto lg:px-8">
+<section class="max-w-4xl mx-auto lg:px-8 mt-12">
+  <!-- Filtros (mantido igual) -->
   <div class="max-w-4xl mx-auto lg:px-8 px-2 mb-2">
     <div class="container">
       <button
@@ -53,6 +64,7 @@
       </button>
 
       <div *ngIf="showFilters" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- ... conteúdo dos filtros mantido igual ... -->
         <div class="p-4 bg-white rounded-lg shadow-md">
           <h4 class="font-bold mb-2">Período</h4>
           <div class="grid grid-cols-2 gap-2">
@@ -167,18 +179,16 @@
     </div>
   </div>
 
+  <!-- Loading Skeleton -->
   <div class="container" *ngIf="isLoading">
     <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
   </div>
 
-  <!-- Item 0 - Meus Pedidos -->
-  <!-- data-aos="fade-down" -->
-  <div
-    class="container"
-    *ngIf="(selectedIndex === 0 || selectedIndex === 1) && !showFilters"
-  >
-    <div class="col-12 m-0 p-2" *ngFor="let card of cards">
-      <div>
+  <!-- Template Unificado com app-card-layout -->
+  <div class="container mx-auto" *ngIf="cards.length > 0 && !isLoading">
+    <div class="row g-3 m-0 p-0">
+      <div class="col-12 m-0 p-2" *ngFor="let card of cards">
+        <!-- Toast para status recusado -->
         <div
           *ngIf="
             selectedIndex === 1 && card.candidaturas[0].status === 'recusado'
@@ -210,296 +220,174 @@
           </div>
         </div>
 
-        <div class="request-card">
+        <lib-card-layout
+          [statusPedido]="
+            card.candidaturas &&
+            card.candidaturas.length > 0 &&
+            card.candidaturas[0].status === 'recusado'
+              ? 'recusado'
+              : card.candidaturas &&
+                card.candidaturas.length > 0 &&
+                card.candidaturas[0].status === 'negociacao'
+              ? 'em negociacao'
+              : card.status_pedido
+          "
+          [cardTemplateIndicator]="1"
+        >
           <!-- Header -->
-          <div class="request-card-header p-3">
-            <div class="request-card-icon mr-3 flex-shrink-0">
-              <i
-                [class]="card.icon"
-                class="text-2xl"
-                style="color: var(--primary) !important"
-              ></i>
-            </div>
-            <div class="request-card-title flex-grow">
-              <div class="flex justify-between items-start">
-                <h5>
-                  {{ card.categoria }}
-                </h5>
-              </div>
-              <p
-                class="request-card-description text-sm text-gray-600 mt-1 truncate-text"
-              >
-                <i class="fas fa-map-marker-alt"></i>
-
-                {{ card.address.city }}, {{ card.address.state }} -
-                {{ card.address.neighborhood }}
-                <!-- {{ card.address.street }}, {{ card.address.number }} -
-                {{ card.address.city }} - {{ card.address.state }} -->
-              </p>
-
-              <span
-                class="text-sm font-medium text-gray-500 bg-gray-100 rounded p-1"
-                style="margin: -30px 0px 30px 0px"
-              >
-                Pedido #{{ card.id_pedido }}
-              </span>
-            </div>
-          </div>
-
-          <div class="request-card-body card-body p-3">
-            <!-- Filtros de subcategoria com destaque -->
-            <div class="mb-4" *ngIf="card.subcategoria">
-              <div class="flex flex-wrap gap-2">
-                <span
-                  *ngFor="let filtro of card.subcategoria.split(',')"
-                  class="px-3 py-1 rounded-full text-xs font-medium text-white"
-                  style="
-                    border: 1px solid var(--primary);
-                    color: var(--primary) !important;
-                  "
-                >
-                  <i
-                    class="fas fa-tag"
-                    style="color: var(--primary) !important"
-                  ></i>
-
-                  {{ filtro.trim() }}
-                </span>
-              </div>
-            </div>
-
-            <div *ngIf="selectedIndex === 1">
-              <h5>
-                Valor orçamento:
-                <span style="color: var(--blue)">{{
-                  card.valor | currency : "BRL"
-                }}</span>
-              </h5>
-            </div>
-
-            <h5>📌 Detalhes:</h5>
-            <br />
-            <p class="request-card-description">
-              {{ card.serviceDescription }}
-            </p>
-          </div>
-
-          <div class="custom-input-container container">
-            <div
-              *ngIf="selectedIndex === 1"
-              class="d-flex justify-content-start"
-            >
-              <p>
-                {{
-                  card.candidaturas &&
-                  card.candidaturas.length > 0 &&
-                  card.candidaturas[0].status === "recusado"
-                    ? "Meu lance atual"
-                    : "Meu lance"
-                }}
-              </p>
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text">$</span>
-              <input
-                type="text"
-                class="form-control"
-                aria-label="Amount (to the nearest dollar)"
-                [(ngModel)]="card.valor_negociado"
-                [placeholder]="card.valorFormatted | currency : 'BRL'"
-                [disabled]="!!card.renegotiateActive"
-                currencyMask
-                inputmode="numeric"
-                [options]="currencyOptions"
-                placeholder="0,00"
-                min="0"
-                step="0.01"
-              />
-              <button
-                *ngIf="
-                  selectedIndex === 0 ||
-                  card.candidaturas[0].status === 'recusado'
-                "
-                [ngClass]="{
-                  'change-renegotiate-btn': !card.renegotiateActive
-                }"
-                class="btn btn-outline-secondary"
-                type="button"
-                id="btn-renegotiate"
-                (click)="renegotiateActive(card)"
-              >
-                <i
-                  class="fa"
-                  style="color: white !important"
-                  [ngClass]="card.renegotiateActive ? 'fa-pencil' : 'fa-undo'"
-                ></i>
-              </button>
-            </div>
-          </div>
-
-          <div #calendarContainer>
-            <div class="custom-input-container container">
-              <div class="input-group mb-3">
-                <span class="input-group-text">#</span>
-                <input
-                  [readonly]="true"
-                  type="text"
-                  class="form-control"
-                  aria-label="Amount (to the nearest dollar)"
-                  [placeholder]="card.placeholderDataHora"
-                  [disabled]="!card.calendarActive"
-                  (click)="openCalendar(card)"
-                />
-                <button
-                  *ngIf="
-                    selectedIndex === 0 ||
-                    card.candidaturas[0].status === 'recusado'
-                  "
-                  [ngClass]="{
-                    'change-renegotiate-btn':
-                      card.calendarActive && card.placeholderDataHora
-                  }"
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  id="btn-renegotiate"
-                  (click)="toggleCalendar(card, $event)"
-                >
-                  <i
-                    class="fas"
-                    style="color: white !important"
-                    [ngClass]="
-                      !card.calendarActive ? 'fa-calendar-alt' : 'fa-undo'
-                    "
-                  ></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="container" style="z-index: 1001">
-              <app-calendar
-                [hasTime]="true"
-                [showWeekView]="false"
-                [initialDateTime]="card.placeholderDataHora"
-                [calendarActive]="card.calendarActive || false"
-                [hideCalendarInput]="true"
-                [hideCalendarDays]="hideCalendarDays"
-                (closeCalendar)="onCalendarClose(card)"
-                (dateSelectedChange)="onDateSelected(card.id_pedido, $event)"
-                (timeSelectedChange)="onTimeSelected(card.id_pedido, $event)"
-              >
-              </app-calendar>
-            </div>
+          <div
+            service-icon
+            class="cursor-pointer"
+            (click)="goToDetails(card.id_pedido)"
+          >
+            <i
+              [class]="card.icon"
+              class="text-2xl"
+              style="color: var(--light) !important"
+            ></i>
           </div>
 
           <div
-            [ngClass]="selectedIndex === 0 ? 'ajust-space' : 'ajust-space2'"
-            class="request-card-footer p-3 d-flex justify-content-center align-items-center gap-2"
+            service-title
+            (click)="goToDetails(card.id_pedido)"
+            class="cursor-pointer"
           >
-            <!-- botão exclusivo para novo lance -->
-            <button
-              *ngIf="card.candidaturas[0]?.status === 'recusado'"
-              (click)="makeNewPorposal(card)"
-              class="request-quote-btn col-6"
-              [ngClass]="
-                (!card.renegotiateActive &&
-                  card.valor_negociado !== card.valor) ||
-                (card.calendarActive === true &&
-                  dateTimeFormatted !== card.placeholderDataHora)
-                  ? 'change-renegotiate-btn'
-                  : 'disabled-card bg-secondary'
-              "
-              style="background-color: var(--primary); color: var(--light)"
-            >
-              <span *ngIf="!isLoadingBtn"
-                ><i
-                  class="fas fa-paper-plane"
-                  style="color: var(--light) !important"
-                ></i>
-                Novo Lance</span
-              >
-              <span
-                *ngIf="isLoadingBtn"
-                class="flex items-center justify-center"
-              >
-                <i class="fas fa-circle-notch fa-spin mr-2"></i>
-                Processando...
-              </span>
-            </button>
-            <!-- botão exclusivo para novo lance -->
+            <div>{{ card.categoria }}</div>
+          </div>
 
-            <button
-              *ngIf="selectedIndex === 0"
-              (click)="updateCard(card)"
-              class="request-quote-btn col-6"
+          <div service-address>
+            <i
+              class="fas fa-map-marker-alt text-xs mr-1"
+              style="font-size: 12px; color: var(--primary) !important"
+            ></i>
+            {{ card.address.city }}, {{ card.address.state }} -
+            {{ card.address.neighborhood }}
+          </div>
+
+          <i
+            details-btn
+            (click)="goToDetails(card.id_pedido)"
+            class="fa-solid fa-magnifying-glass cursor-pointer"
+            style="color: var(--primary) !important"
+          ></i>
+
+          <div order-number>#{{ card.id_pedido }}</div>
+
+          <!-- Status e Tags -->
+          <div status-badge class="status-badge">
+            <i
+              class="fas fa-circle text-xs mr-1"
               [ngClass]="{
-                'change-renegotiate-btn':
-                  (!card.renegotiateActive &&
-                    card.valor_negociado !== card.valor) ||
-                  (card.calendarActive === true &&
-                    dateTimeFormatted !== card.placeholderDataHora)
+                'notification-pulse':
+                  card.status_pedido === 'publicado' &&
+                  (card.candidaturas.length > 0 &&
+                    card.candidaturas[0].status) !== 'recusado'
               }"
-              style="background-color: var(--primary); color: white !important"
+            ></i>
+            {{ getStatusText(card) }}
+          </div>
+
+          <div
+            *ngFor="let filtro of card.subcategoria.split(',')"
+            filter-tag
+            class="filter-tag"
+          >
+            {{ filtro.trim() }}
+          </div>
+
+          <!-- Info e Descrição -->
+          <div
+            *ngIf="selectedIndex === 1"
+            info-row
+            class="info-row flex justify-between"
+          >
+            <span class="info-label" style="color: var(--tab-link)"
+              >Valor orçamento:</span
             >
-              <span *ngIf="!isLoadingBtn" style="color: white !important">
-                <i
-                  class="fas fa-paper-plane"
-                  style="color: white !important"
-                ></i>
-                {{
-                  (!card.renegotiateActive &&
-                    card.valor_negociado !== card.valor) ||
-                  (card.calendarActive &&
-                    dateTimeFormatted !== card.placeholderDataHora)
-                    ? "Negociar"
-                    : "Candidatar-se"
-                }}
-              </span>
+            <span class="info-value fw-semibold" style="color: var(--blue)">{{
+              card.valor | currency : "BRL"
+            }}</span>
+          </div>
 
-              <span
-                *ngIf="isLoadingBtn"
-                class="flex items-center justify-center"
-              >
-                <i class="fas fa-circle-notch fa-spin mr-2"></i>
-                Processando...
-              </span>
-            </button>
+          <div description class="description text-gray-700">
+            <p style="margin-bottom: 8px" class="font-semibold">📌 Detalhes:</p>
+            {{ card.serviceDescription }}
+          </div>
 
+          <!-- Footer -->
+          <div
+            class="request-card-footer d-flex justify-content-center align-items-center gap-2"
+          >
             <button
+              details-btn
               (click)="goToDetails(card.id_pedido)"
-              class="request-quote-btn d-flex align-items-center gap-2 col-6 text-center justify-content-center"
+              class="details-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
               style="
                 border: 1px solid var(--tag-p-grey);
                 color: var(--primary);
                 background-color: var(--light);
+                width: 100%;
               "
             >
               <i
-                class="fas fa-search"
+                class="fas fa-search mr-1"
                 style="color: var(--primary) !important"
               ></i>
               Detalhes
             </button>
           </div>
-        </div>
+
+          <button
+            main-btn
+            style="width: 100%"
+            class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
+            routerLinkActive="active"
+            (click)="goToDetails(card)"
+          >
+            {{
+              card.candidaturas.length > 0 &&
+              card.candidaturas[0].status === "recusado"
+                ? "Novo Lance"
+                : "Ver Detalhes"
+            }}
+          </button>
+
+          <div price>{{ card.valor | currency : "BRL" }}</div>
+        </lib-card-layout>
       </div>
     </div>
   </div>
 
+  <!-- Calendar (mantido fora do card-layout) -->
+  <!-- <div #calendarContainer>
+    <div class="container" style="z-index: 1001">
+      <app-calendar
+        [hasTime]="true"
+        [showWeekView]="false"
+        [initialDateTime]="card?.placeholderDataHora"
+        [calendarActive]="card?.calendarActive || false"
+        [hideCalendarInput]="true"
+        [hideCalendarDays]="hideCalendarDays"
+        (closeCalendar)="onCalendarClose(card)"
+        (dateSelectedChange)="onDateSelected(card?.id_pedido, $event)"
+        (timeSelectedChange)="onTimeSelected(card?.id_pedido, $event)"
+      >
+      </app-calendar>
+    </div>
+  </div> -->
+
+  <!-- Mensagem quando não há cards -->
   <div
-    *ngIf="
-      cards.length === 0 ||
-      (selectedIndex === 0 && counts.publicado === 0) ||
-      (selectedIndex === 1 && counts.andamento === 0)
-    "
-    class="d-flex align-items-center justify-content-center"
+    *ngIf="cards.length === 0 && !isLoading"
+    class="d-flex align-items-center justify-content-center mt-5 pt-5"
     style="height: 68vh"
   >
     <div class="d-flex flex-column align-items-center gap-3">
-      <i class="fas fa-file-lines" style="font-size: 5em"></i>
+      <i
+        class="fas fa-file-lines"
+        style="font-size: 5em; color: var(--tag-p-grey)"
+      ></i>
       <p class="fs-3">Ainda não há serviços disponíveis</p>
-      <!-- <button class="btn-ui btn-primary mt-3 send-btn" (click)="goToShowcase()">
-        Anúnciar Gratís
-      </button> -->
     </div>
   </div>
 </section>

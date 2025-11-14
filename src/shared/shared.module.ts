@@ -1,12 +1,12 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NavModule } from 'src/app/components/nav/nav.module';
+import { TuduComponentsModule } from 'tudu-components';
 
 @NgModule({
   declarations: [],
-  imports: [],
-  exports: [CommonModule, FormsModule, ReactiveFormsModule, NavModule],
-  providers: [DatePipe]
+  imports: [TuduComponentsModule],
+  exports: [CommonModule, FormsModule, ReactiveFormsModule, TuduComponentsModule],
+  providers: [DatePipe],
 })
 export class SharedModule {}
