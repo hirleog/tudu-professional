@@ -34,8 +34,9 @@
     "rxjs": "^7.5.0",
     "socket.io-client": "^4.5.4",
     "tslib": "^2.3.0",
-    "tudu-components": "^0.0.2",
+    "tudu-components": "^0.2.0",
     "tudu-ui-calendar": "^0.0.2",
+    "tudu-workspace": "^0.2.1",
     "webpack": "^5.76.1",
     "zone.js": "~0.11.4"
   },

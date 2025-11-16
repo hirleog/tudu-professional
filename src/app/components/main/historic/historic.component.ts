@@ -84,7 +84,7 @@ export class HistoricComponent implements OnInit {
 
     this.isLoading = true;
 
-    this.offset = this.paginaAtual * this.limitePorPagina;
+    const offset = this.paginaAtual * this.limitePorPagina;
     const currentState = this.stateManagement.getState(flow);
 
     // Verificar se há filtros ativos
@@ -95,17 +95,18 @@ export class HistoricComponent implements OnInit {
       this.filters.valorMax !== null ||
       (this.filters.categorias && this.filters.categorias.length > 0);
 
-    // Se houver filtros ativos, resetar cards e paginação
-    if (this.offset === 0 && filtrosAtivos) {
+    // Se houver filtros ativos, resetar cards e paginação E NÃO USAR CACHE
+    if (filtrosAtivos && offset === 0) {
       this.cards = [];
       this.paginaAtual = 0;
       this.finalDaLista = false;
-      currentState.cards = []; // Limpa o cache para filtros
+      currentState.cards = [];
       currentState.finalDaLista = false;
+      currentState.pagina = 0;
     }
 
     // Restaurar do cache na primeira chamada apenas se não houver filtros
-    if (this.offset === 0 && currentState.cards.length > 0 && !filtrosAtivos) {
+    if (offset === 0 && currentState.cards.length > 0 && !filtrosAtivos) {
       this.cards = currentState.cards;
       this.paginaAtual = currentState.pagina;
       this.finalDaLista = currentState.finalDaLista;
@@ -122,102 +123,97 @@ export class HistoricComponent implements OnInit {
       return;
     }
 
-    // Preparar parâmetros de filtro
-    const filterParams: any = {};
-
-    // if (this.filters.dataInicial) {
-    //   filterParams.dataInicial = moment(this.filters.dataInicial).format(
-    //     'YYYY-MM-DD'
-    //   );
-    // }
-    // if (this.filters.dataFinal) {
-    //   filterParams.dataFinal = moment(this.filters.dataFinal).format(
-    //     'YYYY-MM-DD'
-    //   );
-    // }
-    if (this.filters.valorMin !== null) {
-      filterParams.valorMin = this.filters.valorMin;
-    }
-    if (this.filters.valorMax !== null) {
-      filterParams.valorMax = this.filters.valorMax;
-    }
-    if (this.filters.categorias.length > 0) {
-      filterParams.categoria = this.filters.categorias;
-    }
-
-    // Adicionar parâmetros de paginação
-    filterParams.offset = this.offset;
-    filterParams.limit = this.limitePorPagina;
-
     this.carregandoMais = true;
 
-    this.cardService.getCards(flow).subscribe({
-      next: (response: { cards: CardOrders[]; counts: any }) => {
-        const novosCards = response.cards.map((card) => {
-          const valorFormatted =
-            card.candidaturas?.[0]?.valor_negociado ?? card.valor;
+    // CORREÇÃO: Passar parâmetros individuais como no exemplo que funciona
+    this.cardService
+      .getCards(flow, offset, this.limitePorPagina, this.filters)
+      .subscribe({
+        next: (response: { cards: CardOrders[]; counts: any }) => {
+          const novosCards = response.cards.map((card) => {
+            const valorFormatted =
+              card.candidaturas?.[0]?.valor_negociado ?? card.valor;
 
-          const candidaturas =
-            card.candidaturas?.map((candidatura) => ({
-              ...candidatura,
-              valor_negociado: candidatura.valor_negociado
-                ? card.valor
-                : candidatura.valor_negociado,
-            })) ?? [];
+            const candidaturas =
+              card.candidaturas?.map((candidatura) => ({
+                ...candidatura,
+                valor_negociado: candidatura.valor_negociado
+                  ? card.valor
+                  : candidatura.valor_negociado,
+              })) ?? [];
 
-          return {
-            ...card,
-            icon: this.cardService.getIconByLabel(card.categoria) || '',
-            renegotiateActive: !card.valor_negociado,
-            calendarActive: false,
-            valorFormatted,
-            candidaturas,
-          };
-        });
+            return {
+              ...card,
+              icon: this.cardService.getIconByLabel(card.categoria) || '',
+              renegotiateActive: !card.valor_negociado,
+              calendarActive: false,
+              valorFormatted,
+              candidaturas,
+            };
+          });
 
-        if (
-          novosCards.length === 0 ||
-          novosCards.length < this.limitePorPagina
-        ) {
-          this.finalDaLista = true;
-          if (!filtrosAtivos) currentState.finalDaLista = true;
-        } else {
-          this.finalDaLista = false;
-        }
+          // CORREÇÃO: Seguir exatamente a mesma lógica do exemplo que funciona
+          if (
+            novosCards.length === 0 ||
+            novosCards.length < this.limitePorPagina
+          ) {
+            this.finalDaLista = true;
+            currentState.finalDaLista = true;
+            this.carregandoMais = false;
 
-        if (this.offset === 0) {
-          this.cards = novosCards;
-        } else {
+            if (offset === 0) {
+              // Só limpa se realmente não vieram cards
+              if (novosCards.length === 0) {
+                this.cards = [];
+                currentState.cards = [];
+              } else {
+                // Se vieram alguns cards, adiciona eles
+                this.cards = novosCards;
+                currentState.cards = novosCards;
+              }
+
+              this.counts = response.counts;
+              currentState.counts = this.counts;
+              this.updateHeaderCounts();
+            }
+
+            this.isLoading = false;
+            return;
+          }
+
+          // CORREÇÃO: Adicionar cards e incrementar página (igual ao exemplo)
           this.cards = [...this.cards, ...novosCards];
-        }
+          this.paginaAtual++;
 
-        this.paginaAtual++;
+          // Atualiza o estado específico do flow
+          // CORREÇÃO: Sempre atualizar o cache, mas apenas se não houver filtros
+          if (!filtrosAtivos) {
+            currentState.cards = this.cards;
+            currentState.pagina = this.paginaAtual;
+            currentState.finalDaLista = this.finalDaLista;
+            currentState.scrollY = window.scrollY;
+          }
 
-        // Atualizar cache apenas se não houver filtros ativos
-        if (!filtrosAtivos) {
-          currentState.cards = this.cards;
-          currentState.pagina = this.paginaAtual;
-          currentState.finalDaLista = this.finalDaLista;
-          currentState.scrollY = window.scrollY;
-          currentState.counts = response.counts;
-        }
+          this.counts = response.counts;
+          // CORREÇÃO: Atualizar counts no cache apenas na primeira página
+          if (offset === 0 && !filtrosAtivos) {
+            currentState.counts = this.counts;
+          }
 
-        this.counts = response.counts;
-        this.updateHeaderCounts();
-
-        this.isLoading = false;
-        this.carregandoMais = false;
-      },
-      error: (error) => {
-        console.error('Erro ao obter os cartões:', error);
-        this.isLoading = false;
-        this.carregandoMais = false;
-      },
-      complete: () => {
-        this.isLoading = false;
-        this.carregandoMais = false;
-      },
-    });
+          this.updateHeaderCounts();
+          this.isLoading = false;
+          this.carregandoMais = false;
+        },
+        error: (error) => {
+          console.error('Erro ao obter os cartões:', error);
+          this.carregandoMais = false;
+          this.isLoading = false;
+        },
+        complete: () => {
+          this.isLoading = false;
+          this.carregandoMais = false;
+        },
+      });
   }
 
   updateHeaderCounts() {
