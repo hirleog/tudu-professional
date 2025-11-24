@@ -23,7 +23,17 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
+              "src/custom-sw.js",
+              {
+                "glob": "service-worker.js",
+                "input": "src",
+                "output": "/"
+              }
+            ],
             "styles": ["src/styles.scss", "node_modules/aos/dist/aos.css"],
             "scripts": [],
             "aot": true,
@@ -38,6 +48,8 @@
             "deployUrl": "http://localhost:4201/",
             "extraWebpackConfig": "webpack.config.js",
             "commonChunk": false,
+            "serviceWorker": true,
+            "ngswConfigPath": "src/ngsw-config.json",
             "allowedCommonJsDependencies": ["aos", "outros-pacotes-commonjs"]
           },
           "configurations": {
@@ -75,7 +87,8 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "serviceWorker": false
             }
           },
           "defaultConfiguration": "production"
@@ -113,7 +126,11 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest"
+            ],
             "styles": [
               "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"

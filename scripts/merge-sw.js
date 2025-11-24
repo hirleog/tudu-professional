@@ -1,0 +1,53 @@
+const fs = require("fs");
+const path = require("path");
+
+console.log("➡️ [MFE] Procurando ngsw-worker.js...");
+
+const possiblePaths = [
+  path.join(__dirname, "..", "dist", "tudu-professional", "browser"), // build padrão Angular >17
+  path.join(__dirname, "..", "dist", "tudu-professional"), // build do ngx-build-plus
+  path.join(__dirname, "..", "dist"), // fallback
+];
+
+let distPath = null;
+let swPath = null;
+
+// encontra automaticamente o ngsw-worker.js
+for (const p of possiblePaths) {
+  const candidate = path.join(p, "ngsw-worker.js");
+  if (fs.existsSync(candidate)) {
+    distPath = p;
+    swPath = candidate;
+    break;
+  }
+}
+
+if (!swPath) {
+  console.error(
+    "❌ [MFE] ngsw-worker.js NÃO encontrado em nenhum path conhecido."
+  );
+  console.error("[MFE] Paths verificados:", possiblePaths);
+  process.exit(1);
+}
+
+console.log("✅ [MFE] ngsw-worker.js encontrado em:", swPath);
+
+const customSwPath = path.join(__dirname, "..", "src", "custom-sw.js");
+
+// Valida custom-sw.js
+if (!fs.existsSync(customSwPath)) {
+  console.error("❌ [MFE] custom-sw.js não encontrado em:", customSwPath);
+  process.exit(1);
+}
+
+console.log("➡️ [MFE] Lendo arquivos...");
+const angularSw = fs.readFileSync(swPath, "utf8");
+const customSw = fs.readFileSync(customSwPath, "utf8");
+
+console.log("➡️ [MFE] Mesclando...");
+
+const merged = `${angularSw}\n\n/* ===== CUSTOM PUSH HANDLER (MFE) ===== */\n${customSw}`;
+
+fs.writeFileSync(swPath, merged);
+
+console.log("✅ [MFE] Service Worker mesclado com sucesso!");

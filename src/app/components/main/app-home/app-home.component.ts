@@ -9,6 +9,8 @@ import { StateManagementService } from '../../services/state-management.service'
 import { formatDecimal } from 'src/app/utils/utils';
 import * as bootstrap from 'bootstrap';
 import { CurrencyMaskConfig } from 'ngx-currency';
+import { NotificationService } from '../../services/notification.service';
+import { SwPush } from '@angular/service-worker';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +18,9 @@ import { CurrencyMaskConfig } from 'ngx-currency';
   styleUrls: ['./app-home.component.css'],
 })
 export class AppHomeComponent implements OnInit {
+  readonly VAPID_PUBLIC_KEY =
+    'BETOn-pGBaW59qF-RFin_fUGfJmZshZFIg2KynwJUDfCEg5mon6iRE6hdPTxplYV5lCKWuupLAGz56V9OSecgA4';
+
   headerPageOptions: string[] = [];
   overlay: boolean = false;
   dateTimeFormatted: string = '';
@@ -80,8 +85,12 @@ export class AppHomeComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private location: Location,
     private stateManagement: StateManagementService,
-    private titleCasePipe: TitleCasePipe
+    private swPush: SwPush,
+    private titleCasePipe: TitleCasePipe,
+    private notificationService: NotificationService
   ) {
+    this.askNotificationPermission();
+
     moment.locale('pt-br');
     this.placeholderDataHora =
       moment().add(1, 'days').format('DD/MM/YYYY') + ' - 12:00'; // Data de amanhã às 12:00
@@ -122,6 +131,49 @@ export class AppHomeComponent implements OnInit {
       this.flowNavigate(); // chama seu método back() quando clicar em voltar do navegador
     });
     this.flowNavigate();
+  }
+
+  async askNotificationPermission() {
+    const permission = await Notification.requestPermission();
+
+    if (permission === 'granted') {
+      console.log('Permissão OK, agora o usuário pode ativar o Push.');
+      this.activatePush();
+    } else {
+      console.log('Usuário negou.');
+    }
+  }
+
+  async activatePush() {
+    let clienteId: any = null;
+    let prestadorId: any = this.id_prestador;
+
+    console.warn('SwPush step');
+    if (!this.swPush.isEnabled) {
+      console.warn('SwPush não habilitado');
+      return;
+    }
+    console.warn('passou  do SwPush step');
+
+    try {
+      console.log('INICIO Subscription:');
+
+      this.swPush
+        .requestSubscription({
+          serverPublicKey: this.VAPID_PUBLIC_KEY,
+        })
+        .then((sub) => {
+          console.log('Subscription criada:', sub);
+
+          this.notificationService
+            .sendSubscriptionToServer(clienteId, prestadorId, sub.toJSON())
+            .subscribe(() => {
+              console.log('Subscription salva!');
+            });
+        });
+    } catch (err) {
+      console.error('Erro ao criar subscription:', err);
+    }
   }
 
   applyFilter() {
