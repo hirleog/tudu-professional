@@ -15,6 +15,9 @@ import { MyFinancesComponent } from './my-finances/my-finances/my-finances.compo
 import { MyFinancesModule } from './my-finances/my-finances/my-finances.module';
 import { ProgressDetailComponent } from './progress-detail/progress-detail.component';
 import { ProgressComponent } from './progress/progress.component';
+import { SwPush } from '@angular/service-worker';
+import { environment } from 'src/environments/environment';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 const routes: Routes = [
   { path: 'home', component: AppHomeComponent },
@@ -44,6 +47,10 @@ const routes: Routes = [
     NgxCurrencyModule,
 
     RouterModule.forChild(routes),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
   providers: [TitleCasePipe],
 })

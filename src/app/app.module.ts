@@ -7,6 +7,8 @@ import { SharedModule } from 'src/shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TuduProfessionalModule } from './components/main/tudu-professional.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +19,10 @@ import { TuduProfessionalModule } from './components/main/tudu-professional.modu
     TuduProfessionalModule,
     CustomModalModule,
     NgxMaskModule.forRoot(), // Importando o NgxMaskModule
+
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+    }),
   ],
 
   providers: [],
