@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import * as AOS from 'aos';
+import { PurpleThemeService } from './components/services/purple-theme.service';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +12,9 @@ import * as AOS from 'aos';
 export class AppComponent {
   title = 'tudu-professional';
 
-  constructor(private route: Router) {}
+  constructor(private route: Router, private purpleTheme: PurpleThemeService) {}
 
   ngOnInit() {
     AOS.init();
   }
-
-
 }
