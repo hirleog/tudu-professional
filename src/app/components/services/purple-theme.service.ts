@@ -8,14 +8,14 @@ export class PurpleThemeService {
   }
 
   private applyPurpleTheme() {
+    console.log('🎨 Aplicando tema roxo no MFE...');
+
     // Método mais agressivo - recriar as meta tags
     this.removeExistingThemeTags();
     this.createPurpleThemeTags();
 
-    // Forçar redraw em alguns navegadores
-    setTimeout(() => {
-      this.forceBrowserUpdate();
-    }, 100);
+    // Forçar atualização do PWA
+    this.forcePWAUpdate();
   }
 
   private removeExistingThemeTags() {
@@ -26,10 +26,8 @@ export class PurpleThemeService {
     ];
 
     selectors.forEach((selector) => {
-      const element = document.querySelector(selector);
-      if (element) {
-        element.remove();
-      }
+      const elements = document.querySelectorAll(selector);
+      elements.forEach((element) => element.remove());
     });
   }
 
@@ -48,17 +46,41 @@ export class PurpleThemeService {
       meta.name = tag.name;
       meta.content = tag.content;
       document.head.appendChild(meta);
+      console.log(`✅ ${tag.name}: ${tag.content}`);
     });
   }
 
-  private forceBrowserUpdate() {
-    // Truque para forçar atualização em alguns navegadores
-    if (navigator.userAgent.includes('Chrome')) {
-      const temp = document.body.style.zoom;
-      document.body.style.zoom = '1';
-      setTimeout(() => {
-        document.body.style.zoom = temp;
-      }, 10);
+  private forcePWAUpdate() {
+    // Métodos alternativos para forçar atualização
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          registration.update();
+        });
+      });
     }
+
+    // Forçar recarregamento do manifest
+    const manifestLink = document.querySelector(
+      'link[rel="manifest"]'
+    ) as HTMLLinkElement;
+    if (manifestLink) {
+      const originalHref = manifestLink.href.split('?')[0];
+      manifestLink.href = originalHref + '?v=' + Date.now();
+    }
+  }
+
+  // Método para verificar se está funcionando
+  debugTheme() {
+    const themeMeta = document.querySelector(
+      'meta[name="theme-color"]'
+    ) as HTMLMetaElement;
+    console.log('🔍 DEBUG - Theme-color atual:', themeMeta?.content);
+    console.log('🔍 DEBUG - Todas as meta tags theme-color:');
+
+    const allThemeMetas = document.querySelectorAll('meta[name="theme-color"]');
+    allThemeMetas.forEach((meta, index) => {
+      console.log(`  ${index}: ${(meta as HTMLMetaElement).content}`);
+    });
   }
 }
