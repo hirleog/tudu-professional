@@ -21,6 +21,8 @@ export class AppHomeComponent implements OnInit {
   readonly VAPID_PUBLIC_KEY =
     'BETOn-pGBaW59qF-RFin_fUGfJmZshZFIg2KynwJUDfCEg5mon6iRE6hdPTxplYV5lCKWuupLAGz56V9OSecgA4';
 
+  unreadCount$ = this.notificationService.unreadCount$;
+
   headerPageOptions: string[] = [];
   overlay: boolean = false;
   dateTimeFormatted: string = '';
@@ -126,6 +128,13 @@ export class AppHomeComponent implements OnInit {
   ngAfterViewInit() {}
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola suavemente para o topo
+
+    const prestadorId = localStorage.getItem('prestador_id');
+    this.notificationService.setCurrentUser(undefined, prestadorId);
+
+    this.notificationService.unreadCount$.subscribe((count) => {
+      console.log('Contador no componente:', count);
+    });
 
     this.location.subscribe(() => {
       this.flowNavigate(); // chama seu método back() quando clicar em voltar do navegador
@@ -586,6 +595,14 @@ export class AppHomeComponent implements OnInit {
         param: 'professional',
         id: card.id_pedido,
         flow: this.flow,
+      },
+    });
+  }
+
+  openNotifications(): void {
+    this.route.navigate(['/home/notifications'], {
+      queryParams: {
+        param: 'professional',
       },
     });
   }
