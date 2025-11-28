@@ -220,7 +220,7 @@ export class HistoricComponent implements OnInit {
     this.stateManagement.clearAllState();
 
     this.headerPageOptions = [
-      `Finalizados(${this.counts.finalizado})`,
+      `Concluídos(${this.counts.finalizado})`,
       `Cancelados(${this.counts.cancelado})`,
     ];
   }
