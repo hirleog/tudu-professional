@@ -1,9 +1,9 @@
 {
   "name": "tudu-professional",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --live-reload=false",
     "start:dev": "ng serve --watch --port 4201",
     "build": "ng build --configuration production && node scripts/merge-sw.js",
     "watch": "ng build --watch --configuration development",

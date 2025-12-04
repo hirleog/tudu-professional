@@ -140,6 +140,7 @@ export class AppHomeComponent implements OnInit {
       this.flowNavigate(); // chama seu método back() quando clicar em voltar do navegador
     });
     this.flowNavigate();
+    this.activatePushIfNeeded();
   }
 
   async askNotificationPermission() {
@@ -182,6 +183,46 @@ export class AppHomeComponent implements OnInit {
         });
     } catch (err) {
       console.error('Erro ao criar subscription:', err);
+    }
+  }
+
+  // Adicione um controle por sessionStorage
+  private async shouldActivatePush(): Promise<boolean> {
+    // Verifica se já ativou push nesta sessão
+    const hasActivated = sessionStorage.getItem('push_activated');
+
+    if (hasActivated) {
+      console.log('✅ Push já foi ativado nesta sessão');
+      return false;
+    }
+
+    // Verifica se usuário está logado
+    const isLoggedIn = this.id_prestador ? this.id_prestador : false;
+
+    if (!isLoggedIn) {
+      console.log('⏭️ Usuário não está logado, pulando ativação de push');
+      return false;
+    }
+
+    // Verifica permissão
+    if (Notification.permission === 'denied') {
+      console.log('⏭️ Permissão para notificações foi negada');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Método público para ativar (com controle)
+  async activatePushIfNeeded() {
+    if (await this.shouldActivatePush()) {
+      await this.activatePush();
+      sessionStorage.setItem('push_activated', 'true');
+
+      // Limpa ao fechar a aba (opcional)
+      window.addEventListener('beforeunload', () => {
+        sessionStorage.removeItem('push_activated');
+      });
     }
   }
 
