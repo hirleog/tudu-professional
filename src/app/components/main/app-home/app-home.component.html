@@ -79,7 +79,10 @@
 </lib-nav>
 
 <section class="max-w-4xl mx-auto lg:px-8 mt-12">
-  <div class="max-w-4xl mx-auto lg:px-8 px-2 mb-2">
+  <div
+    *ngIf="cards.length !== 0 && isLoading"
+    class="max-w-4xl mx-auto lg:px-8 px-2 mb-2"
+  >
     <div class="container">
       <button
         (click)="toggleFilters()"
@@ -400,19 +403,26 @@
     </div>
   </div>
 
-  <!-- Mensagem quando não há cards -->
-  <div
-    *ngIf="cards.length === 0 && !isLoading"
-    class="d-flex align-items-center justify-content-center mt-5 pt-5"
-    style="height: 68vh"
-  >
-    <div class="d-flex flex-column align-items-center gap-3">
-      <i
-        class="fas fa-file-lines"
-        style="font-size: 5em; color: var(--tag-p-grey)"
-      ></i>
-      <p class="fs-3">Ainda não há serviços disponíveis</p>
+  <div *ngIf="cards.length === 0 && !isLoading" class="empty-state-container">
+    <div class="empty-state-card shadow-sm rounded-4 p-5">
+      <div class="empty-state-icon mb-4">
+        <i
+          class="fas fa-file-search"
+          style="font-size: 4rem; color: #6c757d"
+        ></i>
+      </div>
+
+      <div class="empty-state-content text-center">
+        <h3 class="fw-bold mb-3 text-gray-800">Sem serviços</h3>
+
+        <p class="text-muted mb-4 fs-5">Ainda não há serviços disponíveis</p>
+      </div>
     </div>
+    <!-- <div class="d-flex justify-center">
+      <button class="btn btn-outline-primary mt-3" routerLink="/">
+        Anúnciar Grátis
+      </button>
+    </div> -->
   </div>
 </section>
 

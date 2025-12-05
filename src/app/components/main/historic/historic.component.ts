@@ -4,6 +4,7 @@ import { CardOrders } from 'src/interfaces/card-orders';
 import { CardService } from '../../services/card.service';
 import { StateManagementService } from '../../services/state-management.service';
 import * as moment from 'moment';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-historic',
@@ -42,7 +43,8 @@ export class HistoricComponent implements OnInit {
     public cardService: CardService,
     public route: Router,
     private stateManagement: StateManagementService,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
+    private location: Location
   ) {
     this.id_prestador = localStorage.getItem('prestador_id');
 
@@ -327,6 +329,10 @@ export class HistoricComponent implements OnInit {
     }
 
     return data.format('DD/MM/YYYY - HH:mm');
+  }
+
+  back() {
+    this.location.back();
   }
 
   @HostListener('window:scroll', [])
