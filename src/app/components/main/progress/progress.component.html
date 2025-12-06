@@ -68,7 +68,7 @@
                 <div
                   service-icon
                   class="cursor-pointer"
-                  (click)="goToDetails(card)"
+                  (click)="goToDetails(card.id_pedido)"
                 >
                   <i
                     [class]="card.icon"
@@ -79,7 +79,7 @@
 
                 <div
                   service-title
-                  (click)="goToDetails(card)"
+                  (click)="goToDetails(card.id_pedido)"
                   class="cursor-pointer"
                 >
                   <div>{{ card.categoria }}</div>
