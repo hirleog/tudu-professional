@@ -1,17 +1,18 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgxMaskModule } from 'ngx-mask';
+import { environment } from 'src/environments/environment';
 import { CustomModalModule } from 'src/shared/components/custom-modal/custom-modal.module';
 import { SharedModule } from 'src/shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TuduProfessionalModule } from './components/main/tudu-professional.module';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from 'src/environments/environment';
+import { TruncatePipe } from './components/helpers/truncate.pipe';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, TruncatePipe],
   imports: [
     BrowserModule,
     AppRoutingModule,

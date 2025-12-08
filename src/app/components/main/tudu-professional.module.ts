@@ -2,10 +2,14 @@ import { NgModule } from '@angular/core';
 
 import { TitleCasePipe } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { environment } from 'src/environments/environment';
 import { CustomModalModule } from 'src/shared/components/custom-modal/custom-modal.module';
 import { SharedModule } from 'src/shared/shared.module';
 import { TuduUiCalendarModule } from 'tudu-ui-calendar/src/lib/tudu-ui-calendar.module';
+import { AgendaCalendarHeaderComponent } from '../agenda/agenda-calendar-header/agenda-calendar-header.component';
+import { AgendaServiceListComponent } from '../agenda/agenda-service-list/agenda-service-list.component';
 import { CardSkeletonModule } from '../template/card-skeleton/card-skeleton.module';
 import { AppHomeComponent } from './app-home/app-home.component';
 import { BudgetsComponent } from './budgets/budgets.component';
@@ -15,9 +19,6 @@ import { MyFinancesComponent } from './my-finances/my-finances/my-finances.compo
 import { MyFinancesModule } from './my-finances/my-finances/my-finances.module';
 import { ProgressDetailComponent } from './progress-detail/progress-detail.component';
 import { ProgressComponent } from './progress/progress.component';
-import { SwPush } from '@angular/service-worker';
-import { environment } from 'src/environments/environment';
-import { ServiceWorkerModule } from '@angular/service-worker';
 
 const routes: Routes = [
   { path: 'home', component: AppHomeComponent },
@@ -37,6 +38,8 @@ const routes: Routes = [
     ProgressDetailComponent,
     FlowEndComponent,
     HistoricComponent,
+    AgendaCalendarHeaderComponent,
+    AgendaServiceListComponent,
   ],
   imports: [
     SharedModule,

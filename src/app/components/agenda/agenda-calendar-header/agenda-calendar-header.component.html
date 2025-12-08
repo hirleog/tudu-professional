@@ -1,0 +1,88 @@
+<div class="calendar-header max-w-4xl mx-auto lg:px-8 p-4 bg-white">
+  <div class="week-calendar">
+    <div class="days-container grid grid-cols-7 gap-1">
+      <div
+        *ngFor="let day of weekDays"
+        class="day-item cursor-pointer text-center p-2 rounded-lg transition duration-200 ease-in-out hover:bg-indigo-50 hover:shadow-md relative"
+        [ngClass]="{
+          'primary-color text-white shadow-lg': isSameDay(
+            day.date,
+            selectedDate
+          ),
+          'bg-white text-gray-700': !isSameDay(day.date, selectedDate),
+          'border-primary': isSameDay(day.date, selectedDate),
+          'border border-gray-200': !isSameDay(day.date, selectedDate),
+          'font-bold text-indigo-700':
+            isSameDay(day.date, today) && !isSameDay(day.date, selectedDate)
+        }"
+        (click)="selectDate(day.date)"
+      >
+        <span
+          *ngIf="getServicesCountForDate(day.date) > 0"
+          class="absolute -top-1 -right-1 inline-flex items-center justify-center h-5 w-5 rounded-full text-xs font-bold leading-none text-white bg-red-500 ring-2 ring-white"
+        >
+          {{ getServicesCountForDate(day.date) }}
+        </span>
+
+        <div class="day-name text-xs font-semibold uppercase opacity-75">
+          {{ day.name | slice : 0 : 3 }}
+        </div>
+
+        <div class="day-number text-2xl font-extrabold mt-1">
+          {{ day.number }}
+        </div>
+
+        <div
+          *ngIf="hasServicesOnDate(day.date)"
+          class="service-indicator-dot absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white opacity-0"
+        ></div>
+      </div>
+    </div>
+
+    <hr class="my-2 border-gray-200" />
+
+    <div class="calendar-nav flex justify-between items-center px-4">
+      <button
+        class="flex items-center text-indigo-600 hover:text-indigo-800 transition duration-150"
+        (click)="previousWeek()"
+        title="Semana anterior"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <span class="current-week text-lg font-semibold text-gray-800">
+        {{ getWeekRange() }}
+      </span>
+
+      <button
+        class="flex items-center primary-font-color transition duration-150"
+        (click)="nextWeek()"
+        title="Próxima semana"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="d-flex items-center justify-center gap-5 mt-3">
+      <div class="services-count text-center text-sm text-gray-500">
+        <i class="fas fa-tasks mr-1"></i>
+        <span class="font-medium text-gray-700">
+          {{ getTotalServicesCount() }}
+        </span>
+        serviços esta semana
+        <span
+          *ngIf="getTodaysServicesCount() > 0"
+          class="ml-2 text-red-500 font-semibold"
+        >
+          • {{ getTodaysServicesCount() }} hoje
+        </span>
+      </div>
+      <button
+        class="text-sm font-medium primary-font-color hover:text-indigo-600 transition duration-150"
+        (click)="goToToday()"
+      >
+        Ver Hoje
+      </button>
+    </div>
+  </div>
+</div>

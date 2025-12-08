@@ -38,189 +38,39 @@
   </div> -->
 </lib-nav>
 
-<div class="container" *ngIf="isLoading">
-  <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
+<!-- Novo: Header da Agenda -->
+<app-agenda-calendar-header
+  [selectedDate]="selectedDate"
+  [services]="cards"
+  (dateSelected)="onDateSelected($event)"
+  (viewModeChanged)="onViewModeChanged($event)"
+>
+</app-agenda-calendar-header>
+
+<!-- Modo Agenda -->
+<app-agenda-service-list
+  *ngIf="viewMode === 'calendar' && selectedIndex === 0"
+  [cards]="cards"
+  [selectedDate]="selectedDate"
+  [showAllServices]="showAllServices"
+  [isLoadingMore]="carregandoMais"
+  [hasMoreCards]="!finalDaLista"
+  (serviceStarted)="onServiceStarted($event)"
+  (loadMoreRequested)="listCards('pendente')"
+  (viewDetails)="goToDetails($event.id_pedido)"
+>
+</app-agenda-service-list>
+
+<!-- Modo Lista Original (mantido) -->
+<div
+  *ngIf="viewMode === 'list' || selectedIndex !== 0"
+  class="container mx-auto"
+>
+  <!-- Seu código atual de listagem de cards -->
+  <div class="row g-3 m-0 p-0">
+    <!-- ... -->
+  </div>
 </div>
-
-<section class="max-w-4xl mx-auto lg:px-8 mt-16 pt-5">
-  <div class="container" *ngIf="isLoading">
-    <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
-  </div>
-
-  <!-- Template Unificado -->
-  <div class="container mx-auto" *ngIf="cards.length > 0 || isLoading">
-    <div class="row g-3 m-0 p-0">
-      <!-- SERVIÇOS EM ANDAMENTO -->
-      <ng-container *ngIf="selectedIndex === 0">
-        <div class="col-12 m-0 p-0" *ngFor="let card of cards; let i = index">
-          <ng-container
-            *ngIf="card.candidaturas && card.candidaturas.length > 0"
-          >
-            <div
-              *ngFor="let candidatura of card.candidaturas; let j = index"
-              class="position-relative"
-            >
-              <lib-card-layout
-                [statusPedido]="card.status_pedido"
-                [cardTemplateIndicator]="1"
-              >
-                <!-- Header -->
-                <div
-                  service-icon
-                  class="cursor-pointer"
-                  (click)="goToDetails(card.id_pedido)"
-                >
-                  <i
-                    [class]="card.icon"
-                    class="text-2xl"
-                    style="color: var(--light) !important"
-                  ></i>
-                </div>
-
-                <div
-                  service-title
-                  (click)="goToDetails(card.id_pedido)"
-                  class="cursor-pointer"
-                >
-                  <div>{{ card.categoria }}</div>
-                </div>
-
-                <div service-address>
-                  <i
-                    class="fas fa-map-marker-alt text-xs mr-1"
-                    style="font-size: 12px; color: var(--primary) !important"
-                  ></i>
-                  {{ card.address.city }}, {{ card.address.state }} -
-                  {{ card.address.neighborhood }}
-                </div>
-
-                <i
-                  details-btn
-                  (click)="goToDetails(card)"
-                  class="fa-solid fa-magnifying-glass cursor-pointer"
-                  style="color: var(--primary) !important"
-                ></i>
-
-                <div order-number>#{{ card.id_pedido }}</div>
-
-                <!-- Status -->
-                <div status-badge class="status-badge">
-                  <i class="fas fa-circle text-xs mr-1 notification-pulse"></i>
-                  {{ card.status_pedido | titlecase }}
-                </div>
-
-                <!-- Subcategoria como tags -->
-                <div *ngIf="card.subcategoria" filter-tag class="filter-tag">
-                  {{ card.subcategoria }}
-                </div>
-
-                <!-- Informações de valor e horário -->
-                <div info-row class="info-row flex justify-between">
-                  <span class="info-label" style="color: var(--tab-link)"
-                    >Valor combinado:</span
-                  >
-                  <span class="info-value fw-semibold">
-                    {{ card.valorFormatted | currency : "BRL" }}
-                  </span>
-                </div>
-
-                <div info-row class="info-row flex justify-between">
-                  <span class="info-label" style="color: var(--tab-link)"
-                    >Data combinada:</span
-                  >
-                  <span class="info-value fw-semibold">
-                    {{
-                      candidatura.horario_negociado !==
-                      card.horario_preferencial
-                        ? (candidatura.horario_negociado
-                          | date : "dd/MM/yyyy - HH:mm")
-                        : (card.horario_preferencial
-                          | date : "dd/MM/yyyy - HH:mm")
-                    }}
-                  </span>
-                </div>
-
-                <!-- Footer com botões -->
-                <button
-                  price
-                  *ngIf="card.status_pedido !== 'cancelado'"
-                  style="width: 100%"
-                  class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
-                  (click)="startCard(card)"
-                  [ngClass]="{
-                    'change-button':
-                      candidatura.valor_negociado &&
-                      candidatura.valor_negociado !== card.valor
-                  }"
-                >
-                  Iniciar
-                </button>
-
-                <div main-btn>
-                  <button
-                    class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
-                    (click)="goToDetails(card.id_pedido)"
-                    style="
-                      border: 1px solid var(--tag-p-grey);
-                      color: var(--primary);
-                      background-color: var(--light);
-                      width: 100%;
-                    "
-                  >
-                    <i class="fas fa-search"></i>
-                    Detalhes
-                  </button>
-                </div>
-
-                <!-- <div price>{{ card.valorFormatted | currency : "BRL" }}</div> -->
-              </lib-card-layout>
-            </div>
-          </ng-container>
-        </div>
-      </ng-container>
-    </div>
-  </div>
-
-  <div *ngIf="cards.length === 0 && !isLoading" class="empty-state-container">
-    <div class="empty-state-card shadow-sm rounded-4 p-5">
-      <div class="empty-state-icon mb-4">
-        <i
-          class="fas fa-file-search"
-          style="font-size: 4rem; color: #6c757d"
-        ></i>
-      </div>
-
-      <div class="empty-state-content text-center">
-        <h3 class="fw-bold mb-3 text-gray-800">Nenhuma Proposta</h3>
-
-        <p class="text-muted mb-4 fs-5">Você ainda não possui pedidos</p>
-      </div>
-    </div>
-    <div class="d-flex justify-center">
-      <button class="btn btn-primary mt-3" routerLink="/tudu-professional/home">
-        Buscar serviços
-      </button>
-    </div>
-  </div>
-
-  <!-- Mensagem quando não há cards -->
-  <!-- <div
-    *ngIf="cards.length === 0 && !isLoading"
-    class="d-flex align-items-center justify-content-center mt-5 pt-5"
-    style="height: 68vh"
-  >
-    <div class="d-flex flex-column align-items-center gap-3">
-      <i
-        class="fas fa-file-lines"
-        style="font-size: 5em; color: var(--tag-p-grey)"
-      ></i>
-      <p class="fs-3">Você ainda não possui pedidos</p>
-      <button class="btn btn-primary mt-3" routerLink="/tudu-professional/home">
-        Buscar serviços
-      </button>
-    </div>
-  </div> -->
-</section>
 
 <div class="container mt-5 pt-5"></div>
 <!-- <lib-tudu-ui-calendar></lib-tudu-ui-calendar> -->

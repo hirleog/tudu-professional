@@ -30,6 +30,9 @@ export class ProgressComponent implements OnInit {
   flow: string = '';
   offset: number = 0;
 
+  selectedDate: Date = new Date();
+  viewMode: 'calendar' | 'list' = 'calendar';
+
   filters = {
     dataInicial: '',
     dataFinal: '',
@@ -37,6 +40,9 @@ export class ProgressComponent implements OnInit {
     valorMax: null,
     categorias: [] as string[],
   };
+  agendaCards: any;
+  showAllServices: boolean = true;
+
   constructor(
     public cardService: CardService,
     public route: Router,
@@ -53,28 +59,6 @@ export class ProgressComponent implements OnInit {
   ngOnInit() {
     this.listCards('pendente'); // Chama a função para listar os cartões ao iniciar o componente
   }
-
-  // listCards() {
-  //   this.cardService.getCards().subscribe({
-  //     next: (response) => {
-  //       this.cards = (response as CardOrders[]).map((card) => ({
-  //         ...card, // Mantém os campos existentes
-  //         icon: this.cardService.getIconByLabel(card.categoria) || '', // Garante que o ícone nunca seja null
-  //         renegotiateActive: true, // Adiciona o campo manualmente
-  //         calendarActive: false, // Adiciona o campo manualmente
-  //         horario_preferencial: card.horario_preferencial, // Usa o valor existente ou um padrão
-  //         placeholderDataHora: '', // Adiciona o campo manualmente
-  //       }));
-  //       this.selectItem(0);
-  //     },
-  //     error: (error) => {
-  //       console.error('Erro ao obter os cartões:', error);
-  //     },
-  //     complete: () => {
-  //       console.log('Requisição concluída');
-  //     },
-  //   });
-  // }
 
   listCards(flow: string) {
     if (this.carregandoMais || this.finalDaLista) {
@@ -124,16 +108,6 @@ export class ProgressComponent implements OnInit {
     // Preparar parâmetros de filtro
     const filterParams: any = {};
 
-    // if (this.filters.dataInicial) {
-    //   filterParams.dataInicial = moment(this.filters.dataInicial).format(
-    //     'YYYY-MM-DD'
-    //   );
-    // }
-    // if (this.filters.dataFinal) {
-    //   filterParams.dataFinal = moment(this.filters.dataFinal).format(
-    //     'YYYY-MM-DD'
-    //   );
-    // }
     if (this.filters.valorMin !== null) {
       filterParams.valorMin = this.filters.valorMin;
     }
@@ -219,14 +193,19 @@ export class ProgressComponent implements OnInit {
     });
   }
 
-  // updateHeaderCounts() {
-  //   this.stateManagement.clearAllState();
+  onDateSelected(date: Date) {
+    this.selectedDate = date;
+    this.showAllServices = false
+  }
 
-  //   this.headerPageOptions = [
-  //     `Pendentes(${this.counts.pendente})`,
-  //     `Cancelados(${this.counts.cancelado})`,
-  //   ];
-  // }
+  onViewModeChanged(mode: 'calendar' | 'list') {
+    this.viewMode = mode;
+  }
+
+  onServiceStarted(card: CardOrders) {
+    // Lógica para iniciar serviço
+    this.startCard(card);
+  }
 
   getMinhaCandidatura(card: CardOrders) {
     return card.candidaturas?.find((c) => c.prestador_id === this.id_prestador);
@@ -262,11 +241,6 @@ export class ProgressComponent implements OnInit {
     this.route.navigate(['tudu-professional/progress-detail'], {
       queryParams: { id: card.id_pedido },
     });
-  }
-
-  onDateSelected(date: string) {
-    console.log('Data selecionada:', date);
-    // Faça algo com a data selecionada
   }
 
   selectItem(index: number): void {

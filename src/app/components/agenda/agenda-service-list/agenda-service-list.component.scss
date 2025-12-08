@@ -1,0 +1,196 @@
+/* agenda-service-list.component.css */
+.agenda-service-list {
+  background: white;
+}
+
+.day-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-left: 4px solid var(--primary, #007bff);
+}
+
+.service-card-wrapper {
+  position: relative;
+}
+
+.service-card {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  padding: 1rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.service-card.next-in-line {
+  border-color: var(--primary, #007bff);
+  background-color: rgba(0, 123, 255, 0.02);
+}
+
+.service-card.blocked {
+  opacity: 0.7;
+  border-color: #dee2e6;
+  background-color: #f8f9fa;
+}
+
+.order-indicator {
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: #6c757d;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.order-indicator.active {
+  background: var(--primary, #007bff);
+  width: 35px;
+  height: 35px;
+}
+
+.card-header {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 1rem;
+}
+
+.service-time {
+  font-size: 1.1rem;
+}
+
+.time-helper {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.service-title {
+  color: #343a40;
+  font-weight: 600;
+}
+
+.client-info {
+  background: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.address-info {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.negotiated-time {
+  background: #e8f5e9;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border-left: 3px solid #4caf50;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.detail-item i {
+  width: 20px;
+}
+
+.service-description {
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #17a2b8;
+}
+
+.card-footer {
+  background: transparent;
+  border-top: 1px solid #e9ecef;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.card-footer .btn {
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.card-footer .btn-primary {
+  font-weight: 500;
+}
+
+.card-footer .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.empty-state {
+  color: #6c757d;
+}
+
+/* Animação para o próximo serviço */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}
+
+.service-card.next-in-line {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .agenda-service-list {
+    padding: 1rem;
+  }
+
+  .service-card {
+    padding: 0.75rem;
+  }
+
+  .card-footer {
+    flex-wrap: wrap;
+  }
+
+  .card-footer .btn {
+    flex: 1 0 calc(50% - 0.5rem);
+    margin-bottom: 0.5rem;
+  }
+
+  .order-indicator {
+    width: 25px;
+    height: 25px;
+    font-size: 0.75rem;
+    left: -8px;
+  }
+
+  .order-indicator.active {
+    width: 28px;
+    height: 28px;
+  }
+}
