@@ -12,6 +12,7 @@ export class AgendaCalendarHeaderComponent implements OnInit {
 
   @Output() dateSelected = new EventEmitter<Date>();
   @Output() viewModeChanged = new EventEmitter<'calendar' | 'list'>();
+  @Output() showAllCards = new EventEmitter<any>();
 
   viewMode: 'calendar' | 'list' = 'calendar';
   weekDays: any[] = [];
@@ -94,6 +95,10 @@ export class AgendaCalendarHeaderComponent implements OnInit {
   selectDate(date: Date) {
     this.selectedDate = date;
     this.dateSelected.emit(date);
+  }
+  showAllCardsEventEmitter() {
+    // this.selectedDate = date;
+    this.showAllCards.emit();
   }
 
   // --- Funções de Utilitários de Data ---

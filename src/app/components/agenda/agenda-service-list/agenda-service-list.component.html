@@ -1,6 +1,5 @@
-<div class="agenda-service-list">
-  <!-- Cabeçalho do dia -->
-  <!-- <div
+<!-- Cabeçalho do dia -->
+<!-- <div
     class="day-header p-4 bg-white border-b border-gray-200 sticky top-0 z-10"
   >
     <div
@@ -36,160 +35,156 @@
       </div>
     </div>
   </div> -->
-  <div class="services-container">
+<div class="services-container">
+  <div class="container" *ngIf="isLoading">
+    <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
+  </div>
+
+  <section class="max-w-4xl mx-auto lg:px-8 pt-3">
     <div class="container" *ngIf="isLoading">
       <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
     </div>
 
-    <section class="max-w-4xl mx-auto lg:px-8 pt-3">
-      <div class="container" *ngIf="isLoading">
-        <app-card-skeleton *ngFor="let i of [1, 2, 3, 4]"></app-card-skeleton>
-      </div>
-
-      <!-- Template Unificado -->
-      <div
-        class="container mx-auto"
-        *ngIf="(cardFiltered && cardFiltered.length > 0) || isLoading"
-      >
-        <div class="row g-3 m-0 p-0">
-          <!-- SERVIÇOS EM ANDAMENTO -->
-          <ng-container *ngIf="selectedIndex === 0">
-            <div
-              class="col-12 m-0 p-0"
-              *ngFor="let c of cardFiltered; let i = index"
-            >
-              <ng-container *ngIf="c.candidaturas && c.candidaturas.length > 0">
-                <div
-                  *ngFor="let candidatura of c.candidaturas; let j = index"
-                  class="position-relative"
+    <!-- Template Unificado -->
+    <div
+      class="container mx-auto"
+      *ngIf="(cardFiltered && cardFiltered.length > 0) || isLoading"
+    >
+      <div class="row g-3 m-0 p-0">
+        <!-- SERVIÇOS EM ANDAMENTO -->
+        <ng-container *ngIf="selectedIndex === 0">
+          <div
+            class="col-12 m-0 p-0"
+            *ngFor="let c of cardFiltered; let i = index"
+          >
+            <ng-container *ngIf="c.candidaturas && c.candidaturas.length > 0">
+              <div
+                *ngFor="let candidatura of c.candidaturas; let j = index"
+                class="position-relative"
+              >
+                <lib-card-layout
+                  [statusPedido]="c.status_pedido"
+                  [cardTemplateIndicator]="1"
                 >
-                  <lib-card-layout
-                    [statusPedido]="c.status_pedido"
-                    [cardTemplateIndicator]="1"
+                  <!-- Header -->
+                  <div
+                    service-icon
+                    class="cursor-pointer"
+                    (click)="goToDetails(c.id_pedido)"
                   >
-                    <!-- Header -->
-                    <div
-                      service-icon
-                      class="cursor-pointer"
-                      (click)="goToDetails(c.id_pedido)"
-                    >
-                      <i
-                        [class]="c.icon"
-                        class="text-2xl"
-                        style="color: var(--light) !important"
-                      ></i>
-                    </div>
-
-                    <div
-                      service-title
-                      (click)="goToDetails(c.id_pedido)"
-                      class="cursor-pointer"
-                    >
-                      <div>{{ c.categoria }}</div>
-                    </div>
-
-                    <div service-address>
-                      <i
-                        class="fas fa-map-marker-alt text-xs mr-1"
-                        style="
-                          font-size: 12px;
-                          color: var(--primary) !important;
-                        "
-                      ></i>
-                      {{ c.address.city }}, {{ c.address.state }} -
-                      {{ c.address.neighborhood }}
-                    </div>
-
                     <i
-                      details-btn
-                      (click)="goToDetails(c)"
-                      class="fa-solid fa-magnifying-glass cursor-pointer"
-                      style="color: var(--primary) !important"
+                      [class]="c.icon"
+                      class="text-2xl"
+                      style="color: var(--light) !important"
                     ></i>
+                  </div>
 
-                    <div order-number>#{{ c.id_pedido }}</div>
+                  <div
+                    service-title
+                    (click)="goToDetails(c.id_pedido)"
+                    class="cursor-pointer"
+                  >
+                    <div>{{ c.categoria }}</div>
+                  </div>
 
-                    <!-- Status -->
-                    <div status-badge class="status-badge">
-                      <i
-                        class="fas fa-circle text-xs mr-1 notification-pulse"
-                      ></i>
-                      {{ c.status_pedido | titlecase }}
-                    </div>
+                  <div service-address>
+                    <i
+                      class="fas fa-map-marker-alt text-xs mr-1"
+                      style="font-size: 12px; color: var(--primary) !important"
+                    ></i>
+                    {{ c.address.city }}, {{ c.address.state }} -
+                    {{ c.address.neighborhood }}
+                  </div>
 
-                    <!-- Subcategoria como tags -->
-                    <div *ngIf="c.subcategoria" filter-tag class="filter-tag">
-                      {{ c.subcategoria }}
-                    </div>
+                  <i
+                    details-btn
+                    (click)="goToDetails(c)"
+                    class="fa-solid fa-magnifying-glass cursor-pointer"
+                    style="color: var(--primary) !important"
+                  ></i>
 
-                    <!-- Informações de valor e horário -->
-                    <div info-row class="info-row flex justify-between">
-                      <span class="info-label" style="color: var(--tab-link)"
-                        >Valor combinado:</span
-                      >
-                      <span class="info-value fw-semibold">
-                        {{ c.valorFormatted | currency : "BRL" }}
-                      </span>
-                    </div>
+                  <div order-number>#{{ c.id_pedido }}</div>
 
-                    <div info-row class="info-row flex justify-between">
-                      <span class="info-label" style="color: var(--tab-link)"
-                        >Data combinada:</span
-                      >
-                      <span class="info-value fw-semibold">
-                        {{
-                          candidatura.horario_negociado !==
-                          c.horario_preferencial
-                            ? (candidatura.horario_negociado
-                              | date : "dd/MM/yyyy - HH:mm")
-                            : (c.horario_preferencial
-                              | date : "dd/MM/yyyy - HH:mm")
-                        }}
-                      </span>
-                    </div>
+                  <!-- Status -->
+                  <div status-badge class="status-badge">
+                    <!-- <i
+                      class="fas fa-circle text-xs mr-1 notification-pulse" -->
+                    <i class="fas fa-circle text-xs mr-1"></i>
+                    {{ c.status_pedido | titlecase }}
+                  </div>
 
-                    <!-- Footer com botões -->
-                    <button
-                      price
-                      *ngIf="c.status_pedido !== 'cancelado'"
-                      style="width: 100%"
-                      class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
-                      (click)="startCard(cards)"
-                      [ngClass]="{
-                        'change-button':
-                          candidatura.valor_negociado &&
-                          candidatura.valor_negociado !== c.valor
-                      }"
+                  <!-- Subcategoria como tags -->
+                  <div *ngIf="c.subcategoria" filter-tag class="filter-tag">
+                    {{ c.subcategoria }}
+                  </div>
+
+                  <!-- Informações de valor e horário -->
+                  <div info-row class="info-row flex justify-between">
+                    <span class="info-label" style="color: var(--tab-link)"
+                      >Valor combinado:</span
                     >
-                      Iniciar
+                    <span class="info-value fw-semibold">
+                      {{ c.valorFormatted | currency : "BRL" }}
+                    </span>
+                  </div>
+
+                  <div info-row class="info-row flex justify-between">
+                    <span class="info-label" style="color: var(--tab-link)"
+                      >Data combinada:</span
+                    >
+                    <span class="info-value fw-semibold">
+                      {{
+                        candidatura.horario_negociado !== c.horario_preferencial
+                          ? (candidatura.horario_negociado
+                            | date : "dd/MM/yyyy - HH:mm")
+                          : (c.horario_preferencial
+                            | date : "dd/MM/yyyy - HH:mm")
+                      }}
+                    </span>
+                  </div>
+
+                  <!-- Footer com botões -->
+                  <button
+                    price
+                    *ngIf="c.status_pedido !== 'cancelado'"
+                    style="width: 100%"
+                    class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
+                    (click)="startCard(cards)"
+                    [ngClass]="{
+                      'change-button':
+                        candidatura.valor_negociado &&
+                        candidatura.valor_negociado !== c.valor
+                    }"
+                  >
+                    Iniciar
+                  </button>
+
+                  <div main-btn>
+                    <button
+                      class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
+                      (click)="goToDetails(c.id_pedido)"
+                      style="
+                        border: 1px solid var(--tag-p-grey);
+                        color: var(--primary);
+                        background-color: var(--light);
+                        width: 100%;
+                      "
+                    >
+                      <i class="fas fa-search"></i>
+                      Detalhes
                     </button>
+                  </div>
 
-                    <div main-btn>
-                      <button
-                        class="request-quote-btn text-xs sm:text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis"
-                        (click)="goToDetails(c.id_pedido)"
-                        style="
-                          border: 1px solid var(--tag-p-grey);
-                          color: var(--primary);
-                          background-color: var(--light);
-                          width: 100%;
-                        "
-                      >
-                        <i class="fas fa-search"></i>
-                        Detalhes
-                      </button>
-                    </div>
-
-                    <!-- <div price>{{ card.valorFormatted | currency : "BRL" }}</div> -->
-                  </lib-card-layout>
-                </div>
-              </ng-container>
-            </div>
-          </ng-container>
-        </div>
+                  <!-- <div price>{{ card.valorFormatted | currency : "BRL" }}</div> -->
+                </lib-card-layout>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
       </div>
+    </div>
 
-      <div
+    <!-- <div
         *ngIf="cardFiltered && cardFiltered.length === 0 && !isLoading"
         class="empty-state-container"
       >
@@ -215,10 +210,19 @@
             Buscar serviços
           </button>
         </div>
-      </div>
+      </div> -->
 
-      <!-- Mensagem quando não há cards -->
-      <!-- <div
+    <div class="container">
+      <lib-fallback-message
+        *ngIf="cardFiltered && cardFiltered.length === 0 && !isLoading"
+        [statusPedido]="'sem servicos'"
+        (click)="goToHome()"
+      >
+      </lib-fallback-message>
+    </div>
+
+    <!-- Mensagem quando não há cards -->
+    <!-- <div
     *ngIf="cards.length === 0 && !isLoading"
     class="d-flex align-items-center justify-content-center mt-5 pt-5"
     style="height: 68vh"
@@ -234,8 +238,8 @@
       </button>
     </div>
   </div> -->
-    </section>
-    <!-- <div
+  </section>
+  <!-- <div
       *ngFor="let card of card; let i = index"
       class="service-card-wrapper mb-3"
     >
@@ -382,20 +386,19 @@
         </div>
       </div>
     </div> -->
-  </div>
+</div>
 
-  <!-- Paginação/Scroll infinito -->
-  <div class="text-center mt-4" *ngIf="hasMoreCards && !isLoadingMore">
-    <button class="btn btn-outline-primary" (click)="loadMore()">
-      <i class="fas fa-plus me-1"></i>
-      Carregar mais serviços
-    </button>
-  </div>
+<!-- Paginação/Scroll infinito -->
+<div class="text-center mt-4" *ngIf="hasMoreCards && !isLoadingMore">
+  <button class="btn btn-outline-primary" (click)="loadMore()">
+    <i class="fas fa-plus me-1"></i>
+    Carregar mais serviços
+  </button>
+</div>
 
-  <div class="text-center mt-2" *ngIf="isLoadingMore">
-    <div class="spinner-border spinner-border-sm text-primary" role="status">
-      <span class="visually-hidden">Carregando...</span>
-    </div>
-    <span class="ms-2 small text-muted">Carregando mais serviços...</span>
+<div class="text-center mt-2" *ngIf="isLoadingMore">
+  <div class="spinner-border spinner-border-sm text-primary" role="status">
+    <span class="visually-hidden">Carregando...</span>
   </div>
+  <span class="ms-2 small text-muted">Carregando mais serviços...</span>
 </div>

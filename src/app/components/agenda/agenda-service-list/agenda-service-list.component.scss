@@ -146,6 +146,11 @@
   color: #6c757d;
 }
 
+.status-badge i.notification-pulse {
+  animation: pulse 2s infinite;
+}
+
+
 /* Animação para o próximo serviço */
 @keyframes pulse {
   0% {

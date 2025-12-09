@@ -225,4 +225,12 @@ export class AgendaServiceListComponent implements OnInit, OnChanges {
       },
     });
   }
+
+  goToHome() {
+    this.route.navigate(['/tudu-professional/home'], {
+      queryParams: {
+        param: 'professional',
+      },
+    });
+  }
 }

@@ -61,9 +61,9 @@ export class ProgressComponent implements OnInit {
   }
 
   listCards(flow: string) {
-    if (this.carregandoMais || this.finalDaLista) {
-      return;
-    }
+    // if (this.carregandoMais || this.finalDaLista) {
+    //   return;
+    // }
 
     this.isLoading = true;
 
@@ -195,7 +195,14 @@ export class ProgressComponent implements OnInit {
 
   onDateSelected(date: Date) {
     this.selectedDate = date;
-    this.showAllServices = false
+    this.showAllServices = false;
+  }
+
+  showAllCards($event: any) {
+    this.cards = [];
+    this.selectedDate = null as any;
+    this.showAllServices = true;
+    this.listCards('pendente');
   }
 
   onViewModeChanged(mode: 'calendar' | 'list') {

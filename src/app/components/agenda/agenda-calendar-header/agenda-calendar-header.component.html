@@ -64,6 +64,12 @@
     </div>
 
     <div class="d-flex items-center justify-center gap-5 mt-3">
+      <button
+        class="text-sm font-medium primary-font-color hover:text-indigo-600 transition duration-150"
+        (click)="goToToday()"
+      >
+        Ver Hoje
+      </button>
       <div class="services-count text-center text-sm text-gray-500">
         <i class="fas fa-tasks mr-1"></i>
         <span class="font-medium text-gray-700">
@@ -79,9 +85,9 @@
       </div>
       <button
         class="text-sm font-medium primary-font-color hover:text-indigo-600 transition duration-150"
-        (click)="goToToday()"
+        (click)="showAllCardsEventEmitter()"
       >
-        Ver Hoje
+        Ver Todos
       </button>
     </div>
   </div>
