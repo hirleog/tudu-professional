@@ -27,51 +27,51 @@ export class AgendaCalendarHeaderComponent implements OnInit {
   }
 
   // Inicia o primeiro dia no meio do calendario horizontal
-  // generateWeekDays() {
-  //   // Calcula o dia de início da exibição (3 dias antes da data central)
-  //   const startOfWeekDisplay = new Date(this.currentWeekStart);
-  //   startOfWeekDisplay.setDate(startOfWeekDisplay.getDate() - 3);
-
-  //   this.weekDays = [];
-
-  //   for (let i = 0; i < 7; i++) {
-  //     const date = new Date(startOfWeekDisplay);
-  //     date.setDate(startOfWeekDisplay.getDate() + i);
-
-  //     this.weekDays.push({
-  //       date: date,
-  //       name: this.getDayName(date),
-  //       number: date.getDate(),
-  //     });
-  //   }
-
-  //   this.currentWeekNumber = this.getWeekNumber(this.currentWeekStart);
-  // }
-  // inicia a semana no primeiro dia do calendario horizontal
   generateWeekDays() {
-    const date = new Date(this.currentWeekStart);
-
-    const daysToSubtract = date.getDay() === 0 ? 6 : date.getDay() - 1; // Subtrai para chegar na Segunda (1ª)
-
-    const startOfWeek = new Date(date);
-    startOfWeek.setDate(date.getDate() - daysToSubtract);
+    // Calcula o dia de início da exibição (3 dias antes da data central)
+    const startOfWeekDisplay = new Date(this.currentWeekStart);
+    startOfWeekDisplay.setDate(startOfWeekDisplay.getDate() - 3);
 
     this.weekDays = [];
 
-    // 2. Popula os 7 dias a partir do início da semana
     for (let i = 0; i < 7; i++) {
-      const dayDate = new Date(startOfWeek);
-      dayDate.setDate(startOfWeek.getDate() + i);
+      const date = new Date(startOfWeekDisplay);
+      date.setDate(startOfWeekDisplay.getDate() + i);
 
       this.weekDays.push({
-        date: dayDate,
-        name: this.getDayName(dayDate),
-        number: dayDate.getDate(),
+        date: date,
+        name: this.getDayName(date),
+        number: date.getDate(),
       });
     }
 
     this.currentWeekNumber = this.getWeekNumber(this.currentWeekStart);
   }
+  // inicia a semana no primeiro dia do calendario horizontal
+  // generateWeekDays() {
+  //   const date = new Date(this.currentWeekStart);
+
+  //   const daysToSubtract = date.getDay() === 0 ? 6 : date.getDay() - 1; // Subtrai para chegar na Segunda (1ª)
+
+  //   const startOfWeek = new Date(date);
+  //   startOfWeek.setDate(date.getDate() - daysToSubtract);
+
+  //   this.weekDays = [];
+
+  //   // 2. Popula os 7 dias a partir do início da semana
+  //   for (let i = 0; i < 7; i++) {
+  //     const dayDate = new Date(startOfWeek);
+  //     dayDate.setDate(startOfWeek.getDate() + i);
+
+  //     this.weekDays.push({
+  //       date: dayDate,
+  //       name: this.getDayName(dayDate),
+  //       number: dayDate.getDate(),
+  //     });
+  //   }
+
+  //   this.currentWeekNumber = this.getWeekNumber(this.currentWeekStart);
+  // }
 
   nextWeek() {
     this.currentWeekStart = new Date(this.currentWeekStart);
