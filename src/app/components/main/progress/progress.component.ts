@@ -57,13 +57,14 @@ export class ProgressComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.listCards('pendente'); // Chama a função para listar os cartões ao iniciar o componente
+    this.flow = 'pendente'; // Define o flow explicitamente aqui
+    this.listCards(this.flow);
   }
 
   listCards(flow: string) {
-    // if (this.carregandoMais || this.finalDaLista) {
-    //   return;
-    // }
+    if (this.carregandoMais || this.finalDaLista) {
+      return;
+    }
 
     this.isLoading = true;
 
@@ -298,11 +299,17 @@ export class ProgressComponent implements OnInit {
 
   @HostListener('window:scroll', [])
   onScroll(): void {
+    // Se já estiver carregando ou chegou no fim, não faz nada
+    if (this.carregandoMais || this.finalDaLista) {
+      return;
+    }
+
     const posicao = window.innerHeight + window.scrollY;
     const alturaMaxima = document.body.offsetHeight;
 
     if (posicao >= alturaMaxima - 200) {
-      this.listCards(this.flow); // ou o status atual selecionado
+      // Agora this.flow terá 'pendente' desde o início
+      this.listCards(this.flow);
     }
   }
 }
