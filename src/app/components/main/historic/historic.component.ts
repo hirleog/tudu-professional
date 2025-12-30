@@ -335,6 +335,10 @@ export class HistoricComponent implements OnInit {
     this.location.back();
   }
 
+  goToHome(): void {
+    this.route.navigate(['/tudu-professional/home']);
+  }
+
   @HostListener('window:scroll', [])
   onScroll(): void {
     const posicao = window.innerHeight + window.scrollY;
